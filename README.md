@@ -1,16 +1,34 @@
-# React + Vite
+# Presentación PIML — Series de Tiempo y Sistemas Energéticos
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Deck de diapositivas a pantalla completa con la revisión de **Modelos Informados por Física (PIML)** para series de tiempo y sistemas energéticos (versión matemática).
 
-Currently, two official plugins are available:
+## 🌐 Ver en línea
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**<https://ropero99.github.io/presentacion-piml/>**
 
-## React Compiler
+## Contenido
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- 29 diapositivas en español que cubren el documento `revision_piml_series_tiempo_energia_matematica.md` (§1–§9)
+- 6 diagramas de decisión interactivos construidos con [ReactFlow](https://reactflow.dev) desde los bloques Mermaid del documento
+- Ecuaciones renderizadas con [MathJax](https://www.mathjax.org) (LaTeX literal del documento)
+- Navegación: teclado (flechas / Home / End), clic en el rail de módulos, botones, swipe táctil y modo enfoque (`f`)
+- Reanudación automática de la última diapositiva (localStorage)
 
-## Expanding the Oxlint configuration
+## Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+React 19 · Vite 8 · Tailwind CSS 4 · ReactFlow 12 · better-react-mathjax · Oxlint
+
+## Desarrollo
+
+```bash
+npm install
+npm run dev        # http://localhost:5173/presentacion-piml/
+npm run build      # genera dist/
+npm run lint       # oxlint
+```
+
+## Despliegue
+
+Automático vía GitHub Actions: cada push a `main` compila y publica en GitHub Pages (`.github/workflows/deploy.yml`).
+
+Basado en: `revision_piml_series_tiempo_energia_matematica.md` — Maestría en Ingeniería, Universidad Nacional de Colombia.
