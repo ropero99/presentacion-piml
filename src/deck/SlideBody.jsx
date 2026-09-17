@@ -37,12 +37,12 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
           {slide.subtitle ? <p className="cover-subtitle">{slide.subtitle}</p> : null}
           <div className="cover-logos">
             <img
-              src="/escudo_unal.png"
+              src={`${import.meta.env.BASE_URL}escudo_unal.png`}
               alt="Universidad Nacional de Colombia"
               className="cover-logo-unal"
             />
             <img
-              src="/logo_labIA.png"
+              src={`${import.meta.env.BASE_URL}logo_labIA.png`}
               alt="Laboratorio de Inteligencia Artificial UNAL"
               className="cover-logo-labia"
             />

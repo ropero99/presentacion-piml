@@ -176,12 +176,12 @@ export default function DeckShell() {
         </p>
         <img
           className="controls-logo controls-logo-unal"
-          src="/escudo_unal.png"
+          src={`${import.meta.env.BASE_URL}escudo_unal.png`}
           alt="Universidad Nacional de Colombia"
         />
         <img
           className="controls-logo"
-          src="/logo_labIA.png"
+          src={`${import.meta.env.BASE_URL}logo_labIA.png`}
           alt="Laboratorio de Inteligencia Artificial UNAL"
         />
         <button
