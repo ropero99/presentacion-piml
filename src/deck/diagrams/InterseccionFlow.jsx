@@ -1,5 +1,5 @@
 import React from 'react';
-import DeckFlowPanel, { LABEL_STYLE, LABEL_BG } from './DeckFlowPanel.jsx';
+import DeckFlowPanel, { LABEL_STYLE, LABEL_BG, makeEdge } from './DeckFlowPanel.jsx';
 
 // Diagrama 4 — La intersección TS+física en sistemas energéticos (§5b, Mermaid).
 const nodes = [
@@ -61,14 +61,21 @@ const nodes = [
       color: '#C0392B',
       title: '▲ CUADRANTE VACÍO',
       lines: ['dinámica de edificio + multi-horizonte', '+ rigor + UQ conformal'],
+      // Dos llegadas (desde C y desde D) separadas en el canto superior.
+      targetHandles: [
+        { id: 't0', yPct: 35 },
+        { id: 't1', yPct: 65 },
+      ],
     },
     position: { x: 160, y: 400 },
   },
 ];
 
+// El rojo #C0392B es semántico (señala el cuadrante vacío resaltado en rojo),
+// se conserva aunque no coincida con el color de los nodos origen C/D.
 const edges = [
-  { id: 'c-vac', source: 'c', target: 'vac', type: 'smoothstep', style: { stroke: '#C0392B', strokeWidth: 2.4 } },
-  { id: 'd-vac', source: 'd', target: 'vac', type: 'smoothstep', style: { stroke: '#C0392B', strokeWidth: 2.4 } },
+  makeEdge('c', 'vac', { id: 'c-vac', color: '#C0392B', targetHandle: 't0', offset: 0, strokeWidth: 2.4 }),
+  makeEdge('d', 'vac', { id: 'd-vac', color: '#C0392B', targetHandle: 't1', offset: 12, strokeWidth: 2.4 }),
 ];
 
 export default function InterseccionFlow({ active, title }) {

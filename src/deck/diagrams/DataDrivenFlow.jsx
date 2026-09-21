@@ -1,7 +1,9 @@
 import React from 'react';
-import DeckFlowPanel, { LABEL_STYLE, LABEL_BG } from './DeckFlowPanel.jsx';
+import DeckFlowPanel, { LABEL_STYLE, LABEL_BG, makeEdge } from './DeckFlowPanel.jsx';
 
 // Diagrama 3 — Familias data-driven E1–E8 (§5a, Mermaid).
+const E8_SOURCES = [25, 50, 75]; // 3 salidas repartidas en el canto derecho
+
 const nodes = [
   {
     id: 'e1',
@@ -52,18 +54,20 @@ const nodes = [
       color: '#E67E22',
       title: 'E8 · Descomposición + híbridos',
       lines: ['VMD/EMD/CEEMDAN + red profunda', 'combina E3–E5 · patrón dominante en carga'],
+      sourceHandles: E8_SOURCES.map((yPct, j) => ({ id: `s${j}`, yPct })),
     },
     position: { x: 280, y: 280 },
   },
 ];
 
-const DASH = { stroke: '#E67E22', strokeWidth: 1.8, strokeDasharray: '6 5' };
 const EDGE_LABEL = { fontSize: 9, fontWeight: 600, fill: '#A64F08' };
 
+// Color = color del nodo origen (e8); anclajes + offsets 0/12/24 separan
+// las tres aristas "combina" que antes salían del mismo píxel.
 const edges = [
-  { id: 'e8-e3', source: 'e8', target: 'e3', type: 'smoothstep', label: 'combina', labelStyle: EDGE_LABEL, labelBgStyle: LABEL_BG, style: DASH },
-  { id: 'e8-e4', source: 'e8', target: 'e4', type: 'smoothstep', label: 'combina', labelStyle: EDGE_LABEL, labelBgStyle: LABEL_BG, style: DASH },
-  { id: 'e8-e5', source: 'e8', target: 'e5', type: 'smoothstep', label: 'combina', labelStyle: EDGE_LABEL, labelBgStyle: LABEL_BG, style: DASH },
+  makeEdge('e8', 'e3', { id: 'e8-e3', color: '#E67E22', sourceHandle: 's0', offset: 0, dashed: true, strokeWidth: 1.8, label: 'combina', labelStyle: EDGE_LABEL, labelBgStyle: LABEL_BG }),
+  makeEdge('e8', 'e5', { id: 'e8-e5', color: '#E67E22', sourceHandle: 's1', offset: 12, dashed: true, strokeWidth: 1.8, label: 'combina', labelStyle: EDGE_LABEL, labelBgStyle: LABEL_BG }),
+  makeEdge('e8', 'e4', { id: 'e8-e4', color: '#E67E22', sourceHandle: 's2', offset: 24, dashed: true, strokeWidth: 1.8, label: 'combina', labelStyle: EDGE_LABEL, labelBgStyle: LABEL_BG }),
 ];
 
 export default function DataDrivenFlow({ active, title }) {

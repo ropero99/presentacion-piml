@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+src/scripts/captures/
+presentacion_piml_v*.pdf

@@ -1,5 +1,5 @@
 import React from 'react';
-import DeckFlowPanel, { LABEL_STYLE, LABEL_BG } from './DeckFlowPanel.jsx';
+import DeckFlowPanel, { LABEL_STYLE, LABEL_BG, makeEdge } from './DeckFlowPanel.jsx';
 
 // Diagrama 5 — Enfoques ①–④ → problemas resueltos (§6, Mermaid + tabla ASCII).
 const doors = [
@@ -16,41 +16,81 @@ const problems = [
   { id: 'pla', title: 'Plausibilidad física / extrapolación', lines: ['evidencia: Tang 2026 · PhyDNet'] },
 ];
 
+// Un anclaje de salida por arista de cada puerta, repartido en el canto
+// derecho (nodo ~90px: 15% ≈ 13px, 85% ≈ 76px, siempre dentro del nodo).
+const doorSources = {
+  p1: [15, 38, 62, 85],
+  p2: [25, 50, 75],
+  p3: [35, 65],
+  p4: [25, 50, 75],
+};
+
+// Un anclaje de llegada por arista entrante, ordenado por la posición
+// vertical de la puerta que lo origina (mapeo monótono → sin cruces).
+const problemTargets = {
+  esc: [35, 65],
+  int: [25, 50, 75],
+  tra: [15, 38, 62, 85],
+  pla: [25, 50, 75],
+};
+
 const nodes = [
   ...doors.map((d, i) => ({
     id: d.id,
     type: 'deck',
-    data: { color: d.color, title: d.title, lines: d.lines },
+    data: {
+      color: d.color,
+      title: d.title,
+      lines: d.lines,
+      sourceHandles: doorSources[d.id].map((yPct, j) => ({ id: `s${j}`, yPct })),
+    },
     position: { x: 0, y: i * 115 },
   })),
   ...problems.map((p, i) => ({
     id: p.id,
     type: 'deck',
-    data: { color: '#F0F4F8', title: p.title, lines: p.lines },
+    data: {
+      color: '#F0F4F8',
+      title: p.title,
+      lines: p.lines,
+      targetHandles: problemTargets[p.id].map((yPct, j) => ({ id: `t${j}`, yPct })),
+    },
     position: { x: 560, y: i * 115 },
   })),
 ];
 
-const edges = [
-  { id: 'p1-esc', source: 'p1', target: 'esc', label: '★★★' },
-  { id: 'p1-int', source: 'p1', target: 'int', label: '★★' },
-  { id: 'p1-tra', source: 'p1', target: 'tra', label: '★★' },
-  { id: 'p1-pla', source: 'p1', target: 'pla', label: '★★' },
-  { id: 'p2-int', source: 'p2', target: 'int', label: '★★★' },
-  { id: 'p2-tra', source: 'p2', target: 'tra', label: '★★★' },
-  { id: 'p2-pla', source: 'p2', target: 'pla', label: '★★★' },
-  { id: 'p3-tra', source: 'p3', target: 'tra', label: '★★★' },
-  { id: 'p3-pla', source: 'p3', target: 'pla', label: '★★' },
-  { id: 'p4-esc', source: 'p4', target: 'esc', label: '★★★' },
-  { id: 'p4-int', source: 'p4', target: 'int', label: '★★' },
-  { id: 'p4-tra', source: 'p4', target: 'tra', label: '★★' },
-].map((e) => ({
-  ...e,
-  type: 'smoothstep',
-  labelStyle: LABEL_STYLE,
-  labelBgStyle: LABEL_BG,
-  style: { stroke: '#5B8DBE', strokeWidth: 1.6 },
-}));
+const doorColor = Object.fromEntries(doors.map((d) => [d.id, d.color]));
+
+// [id, puerta, problema, anclaje salida, anclaje llegada, fuerza] —
+// emparejado por cercanía vertical para minimizar cruces.
+const EDGE_TABLE = [
+  ['p1-esc', 'p1', 'esc', 0, 0, '★★★'],
+  ['p1-int', 'p1', 'int', 1, 0, '★★'],
+  ['p1-tra', 'p1', 'tra', 2, 0, '★★'],
+  ['p1-pla', 'p1', 'pla', 3, 0, '★★'],
+  ['p2-int', 'p2', 'int', 0, 1, '★★★'],
+  ['p2-tra', 'p2', 'tra', 1, 1, '★★★'],
+  ['p2-pla', 'p2', 'pla', 2, 2, '★★★'],
+  ['p3-tra', 'p3', 'tra', 0, 2, '★★★'],
+  ['p3-pla', 'p3', 'pla', 1, 2, '★★'],
+  ['p4-esc', 'p4', 'esc', 0, 1, '★★★'],
+  ['p4-int', 'p4', 'int', 1, 2, '★★'],
+  ['p4-tra', 'p4', 'tra', 2, 3, '★★'],
+];
+
+const edges = EDGE_TABLE.map(([id, src, tgt, sIdx, tIdx, label], i) =>
+  makeEdge(src, tgt, {
+    id,
+    color: doorColor[src],
+    sourceHandle: `s${sIdx}`,
+    targetHandle: `t${tIdx}`,
+    label,
+    labelStyle: LABEL_STYLE,
+    labelBgStyle: LABEL_BG,
+    offset: (i % 3) * 12,
+    opacity: label === '★★' ? 0.85 : 1,
+  })
+);
 
 export default function ProblemasFlow({ active, title }) {
   return <DeckFlowPanel flow="lr" nodes={nodes} edges={edges} title={title} active={active} />;

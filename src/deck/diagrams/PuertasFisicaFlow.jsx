@@ -1,7 +1,10 @@
 import React from 'react';
-import DeckFlowPanel from './DeckFlowPanel.jsx';
+import DeckFlowPanel, { makeEdge } from './DeckFlowPanel.jsx';
 
 // Diagrama 1 — Las cuatro puertas por las que entra la física (§3, Mermaid).
+const FIS_SOURCES = [15, 38, 62, 85]; // 4 salidas repartidas en el canto derecho
+const ML_TARGETS = [15, 38, 62, 85]; // 4 llegadas repartidas en el canto izquierdo
+
 const nodes = [
   {
     id: 'fis',
@@ -10,6 +13,7 @@ const nodes = [
       color: '#1E3A5F',
       title: 'Conocimiento físico',
       lines: ['EDO/EDP · leyes · restricciones de forma'],
+      sourceHandles: FIS_SOURCES.map((yPct, j) => ({ id: `s${j}`, yPct })),
     },
     position: { x: 0, y: 140 },
   },
@@ -60,20 +64,22 @@ const nodes = [
       color: '#34495E',
       title: 'Modelo ML/DL',
       lines: ['ŷ = f_θ(x)'],
+      targetHandles: ML_TARGETS.map((yPct, j) => ({ id: `t${j}`, yPct })),
     },
     position: { x: 660, y: 150 },
   },
 ];
 
+// Color = color del nodo origen; offsets 0/12/24 separan las rutas paralelas.
 const edges = [
-  { id: 'fis-p1', source: 'fis', target: 'p1', type: 'smoothstep', style: { stroke: '#5B8DBE', strokeWidth: 2.2 } },
-  { id: 'fis-p2', source: 'fis', target: 'p2', type: 'smoothstep', style: { stroke: '#5B8DBE', strokeWidth: 2.2 } },
-  { id: 'fis-p3', source: 'fis', target: 'p3', type: 'smoothstep', style: { stroke: '#5B8DBE', strokeWidth: 2.2 } },
-  { id: 'fis-p4', source: 'fis', target: 'p4', type: 'smoothstep', style: { stroke: '#5B8DBE', strokeWidth: 2.2 } },
-  { id: 'p1-ml', source: 'p1', target: 'ml', type: 'smoothstep', style: { stroke: '#2E86AB', strokeWidth: 2.2 } },
-  { id: 'p2-ml', source: 'p2', target: 'ml', type: 'smoothstep', style: { stroke: '#7D3C98', strokeWidth: 2.2 } },
-  { id: 'p3-ml', source: 'p3', target: 'ml', type: 'smoothstep', style: { stroke: '#16A085', strokeWidth: 2.2 } },
-  { id: 'p4-ml', source: 'p4', target: 'ml', type: 'smoothstep', style: { stroke: '#E67E22', strokeWidth: 2.2 } },
+  makeEdge('fis', 'p1', { color: '#1E3A5F', sourceHandle: 's0', offset: 0 }),
+  makeEdge('fis', 'p2', { color: '#1E3A5F', sourceHandle: 's1', offset: 12 }),
+  makeEdge('fis', 'p3', { color: '#1E3A5F', sourceHandle: 's2', offset: 24 }),
+  makeEdge('fis', 'p4', { color: '#1E3A5F', sourceHandle: 's3', offset: 12 }),
+  makeEdge('p1', 'ml', { color: '#2E86AB', targetHandle: 't0', offset: 0 }),
+  makeEdge('p2', 'ml', { color: '#7D3C98', targetHandle: 't1', offset: 12 }),
+  makeEdge('p3', 'ml', { color: '#16A085', targetHandle: 't2', offset: 24 }),
+  makeEdge('p4', 'ml', { color: '#E67E22', targetHandle: 't3', offset: 12 }),
 ];
 
 export default function PuertasFisicaFlow({ active, title }) {

@@ -1,7 +1,9 @@
 import React from 'react';
-import DeckFlowPanel from './DeckFlowPanel.jsx';
+import DeckFlowPanel, { makeEdge } from './DeckFlowPanel.jsx';
 
 // Diagrama 2 — Familias PIML para series de tiempo F1–F6 (§4, Mermaid).
+const TS_SOURCES = [8, 22, 36, 62, 76, 90]; // 6 salidas repartidas en el canto inferior
+
 const nodes = [
   {
     id: 'ts',
@@ -10,6 +12,7 @@ const nodes = [
       color: '#1E3A5F',
       title: 'Serie de tiempo y(t)',
       lines: ['observar un sistema dinámico'],
+      sourceHandles: TS_SOURCES.map((yPct, j) => ({ id: `s${j}`, yPct })),
     },
     position: { x: 420, y: 0 },
   },
@@ -75,13 +78,15 @@ const nodes = [
   },
 ];
 
+// Color = color del nodo origen (ts); offsets 0/12/24 separan las rutas
+// paralelas hacia cada familia (de izquierda a derecha, por columna).
 const edges = [
-  { id: 'ts-f1', source: 'ts', target: 'f1', type: 'smoothstep', style: { stroke: '#5B8DBE', strokeWidth: 2 } },
-  { id: 'ts-f2', source: 'ts', target: 'f2', type: 'smoothstep', style: { stroke: '#5B8DBE', strokeWidth: 2 } },
-  { id: 'ts-f3', source: 'ts', target: 'f3', type: 'smoothstep', style: { stroke: '#5B8DBE', strokeWidth: 2 } },
-  { id: 'ts-f4', source: 'ts', target: 'f4', type: 'smoothstep', style: { stroke: '#5B8DBE', strokeWidth: 2 } },
-  { id: 'ts-f5', source: 'ts', target: 'f5', type: 'smoothstep', style: { stroke: '#5B8DBE', strokeWidth: 2 } },
-  { id: 'ts-f6', source: 'ts', target: 'f6', type: 'smoothstep', style: { stroke: '#5B8DBE', strokeWidth: 2 } },
+  makeEdge('ts', 'f1', { color: '#1E3A5F', sourceHandle: 's0', offset: 0 }),
+  makeEdge('ts', 'f2', { color: '#1E3A5F', sourceHandle: 's1', offset: 12 }),
+  makeEdge('ts', 'f3', { color: '#1E3A5F', sourceHandle: 's2', offset: 24 }),
+  makeEdge('ts', 'f4', { color: '#1E3A5F', sourceHandle: 's3', offset: 0 }),
+  makeEdge('ts', 'f5', { color: '#1E3A5F', sourceHandle: 's4', offset: 12 }),
+  makeEdge('ts', 'f6', { color: '#1E3A5F', sourceHandle: 's5', offset: 24 }),
 ];
 
 export default function FamiliasPimlFlow({ active, title }) {

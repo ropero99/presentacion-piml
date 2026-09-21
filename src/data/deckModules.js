@@ -2,9 +2,7 @@
 // revision_piml_series_tiempo_energia_matematica.md con su tono de acento.
 export const MODULES = [
   { id: 'portada', label: 'Portada', tone: 'cyan' },
-  { id: 'mapa', label: 'Mapa del documento', tone: 'blue' },
   { id: 'notacion', label: 'Notación', tone: 'purple' },
-  { id: 'resumen', label: 'Resumen ejecutivo', tone: 'green' },
   { id: 'd1', label: 'D1 · Cuatro puertas', tone: 'blue' },
   { id: 'd2', label: 'D2 · Familias PIML', tone: 'purple' },
   { id: 'd3', label: 'D3 · Data-driven', tone: 'orange' },
