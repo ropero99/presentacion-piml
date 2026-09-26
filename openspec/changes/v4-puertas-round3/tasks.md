@@ -27,12 +27,12 @@ Runtime harness (build required first): `npm run build && node src/scripts/captu
 - [x] 1.3 (AD-3, REF-3/R3) `d1-mr`: add damping-envelope meaning bullet (prose + inline math, no 4th eq); eq-boxes untouched.
 - [x] 1.4 (AD-5, REF-5/R5) `d1-puerta2`: drop diagram keys; eq 1 = canonical state (verbatim from `d1-mr` eq 2), existing boxes → eq 2–4; derivation-strip chips under lema; HJ path/MR meaning as conn prose; ≤4 eqs.
 - [x] 1.5 (AD-6, REF-2b/R2b) `d1-puerta4`: 2 bullets (why hybrids; when over pure PINN — Bacher & Madsen); 2nd eq-box only if literal from source doc, else prose.
-- [ ] 1.6 (AD-1, REF-4/R4) Insert `d1-puerta{1,2,3}-diagram` after each door slide: kind:'diagram', module:'d1', diagram mr1/mr2/mr3, door-template kicker, legend copied, tone matched, title omitted; doors ①②③ drop diagram/diagramTitle/legend keys; `d1-puerta4` stays last of d1 (29 → 32 slides).
+- [x] 1.6 (AD-1, REF-4/R4) Insert `d1-puerta{1,2,3}-diagram` after each door slide: kind:'diagram', module:'d1', diagram mr1/mr2/mr3, door-template kicker, legend copied, tone matched, title omitted; doors ①②③ drop diagram/diagramTitle/legend keys; `d1-puerta4` stays last of d1 (29 → 32 slides).
 
 ## Phase 2: Component + CSS — `src/deck/`
 
-- [ ] 2.1 (AD-1, REF-4/R4) `src/deck/SlideBody.jsx`: `data-id={slide.id}` on all 3 branch returns; hasFigure includes 'diagram'; diagram branch = kicker + optional title + full-area .slide-figure + legend figcaption, no bullets/eqs.
-- [ ] 2.2 (AD-1/3/5) `src/deck/deck.css`: .is-diagram grid; .door-columns.is-solo-math full-width; scoped `.slide[data-id="d1-mr"] .eq-conn` 0.98rem + .eq-heading 1rem (no global bump); .derivation-strip ~10 lines reusing legend-chip/legend-dot.
+- [x] 2.1 (AD-1, REF-4/R4) `src/deck/SlideBody.jsx`: `data-id={slide.id}` on all 3 branch returns; hasFigure includes 'diagram'; diagram branch = kicker + optional title + full-area .slide-figure + legend figcaption, no bullets/eqs.
+- [x] 2.2 (AD-1/3/5) `src/deck/deck.css`: .is-diagram grid; .door-columns.is-solo-math full-width; scoped `.slide[data-id="d1-mr"] .eq-conn` 0.98rem + .eq-heading 1rem (no global bump); .derivation-strip ~10 lines reusing legend-chip/legend-dot.
 
 ## Phase 3: Verification — design AD-8
 

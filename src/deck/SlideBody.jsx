@@ -11,8 +11,8 @@ function pad(value) {
 /**
  * Cuerpo de un slide según su kind: cover (portada/cierre), split
  * (contenido + figura de diagrama), door (página completa de puerta:
- * lema + matemática + diagrama MR) o wide (columna única: bullets/tabla/
- * pila de ecuaciones).
+ * lema + matemática + diagrama MR), diagram (solo figura MR a página
+ * completa) o wide (columna única: bullets/tabla/pila de ecuaciones).
  */
 export default function SlideBody({ slide, index, total, phaseClass }) {
   const cls = ['slide'];
@@ -23,6 +23,8 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
     cls.push('is-wide');
   } else if (slide.kind === 'door') {
     cls.push('is-door');
+  } else if (slide.kind === 'diagram') {
+    cls.push('is-diagram');
   }
   if (phaseClass) cls.push(...phaseClass);
 
@@ -30,6 +32,7 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
     return (
       <article
         className={cls.join(' ')}
+        data-id={slide.id}
         data-index={index}
         data-module={slide.module}
         data-tone={slide.tone}
@@ -64,15 +67,47 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
   }
 
   const hasFigure =
-    (slide.kind === 'split' || slide.kind === 'door') &&
+    ['split', 'door', 'diagram'].includes(slide.kind) &&
     slide.diagram &&
     DIAGRAM_COMPONENTS[slide.diagram];
   const Diagram = hasFigure ? DIAGRAM_COMPONENTS[slide.diagram] : null;
+
+  if (slide.kind === 'diagram') {
+    return (
+      <article
+        className={cls.join(' ')}
+        data-id={slide.id}
+        data-index={index}
+        data-module={slide.module}
+        data-tone={slide.tone}
+        aria-label={`${pad(index + 1)} de ${pad(total)}`}
+      >
+        <div className="slide-content">
+          <p className="slide-kicker">{slide.kicker}</p>
+          {slide.title ? <h2>{slide.title}</h2> : null}
+          <figure className="slide-figure">
+            <div className="rf-host">
+              <Diagram active title={slide.diagramTitle} legend={slide.legend} />
+            </div>
+            <figcaption className="figure-legend">
+              {(slide.legend || []).map((chip, i) => (
+                <span className="legend-chip" key={i}>
+                  <span className="legend-dot" style={{ background: chip.color }} />
+                  {chip.label}
+                </span>
+              ))}
+            </figcaption>
+          </figure>
+        </div>
+      </article>
+    );
+  }
 
   if (slide.kind === 'door') {
     return (
       <article
         className={cls.join(' ')}
+        data-id={slide.id}
         data-index={index}
         data-module={slide.module}
         data-tone={slide.tone}
@@ -87,7 +122,17 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
                 <RichText text={slide.lema} />
               </p>
             ) : null}
-            <div className="door-columns">
+            {slide.derivation ? (
+              <div className="derivation-strip">
+                {slide.derivation.map((chip, i) => (
+                  <span className="legend-chip" key={i}>
+                    <span className="legend-dot" />
+                    {chip}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+            <div className={hasFigure ? 'door-columns' : 'door-columns is-solo-math'}>
               <div className="door-math">
                 {slide.equations ? (
                   <div className="math-stack">
@@ -129,6 +174,7 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
   return (
     <article
       className={cls.join(' ')}
+      data-id={slide.id}
       data-index={index}
       data-module={slide.module}
       data-tone={slide.tone}

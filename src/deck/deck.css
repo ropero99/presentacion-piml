@@ -650,6 +650,54 @@ p {
   line-height: 1.35;
 }
 
+/* ---------- MR diagram on a full page (solo figura) ---------- */
+/* Split-like canvas, single column: the figure card stretches over the
+   whole slide area; fitView in DeckFlowPanel does the up-scaling (AD-2). */
+.slide.is-diagram {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.slide.is-diagram .slide-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.slide.is-diagram .slide-figure {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Door page without its figure (moved to its own diagram slide):
+   the math stack takes the full width (AD-1). */
+.slide.is-door .door-columns.is-solo-math {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* ---------- Derivation strip (door 2, AD-5) ---------- */
+/* One-line flex of chips reusing the .legend-chip / .legend-dot
+   primitives; dot carries the purple architecture tone #7D3C98. */
+.derivation-strip {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-size: 0.82rem;
+  overflow-x: auto;
+}
+
+.derivation-strip .legend-dot {
+  background: var(--moderno);
+}
+
+.derivation-strip .legend-chip:not(:last-child)::after {
+  content: '→';
+  margin-left: 8px;
+  color: var(--accent);
+  font-weight: 700;
+}
+
 /* ---------- Página completa de puerta (pantallas angostas) ---------- */
 @media (max-width: 1040px) {
   .slide.is-door .door-columns {
@@ -701,6 +749,16 @@ p {
   font-size: 0.94rem;
   font-weight: 700;
   color: var(--fg);
+}
+
+/* Round 3 (AD-3): bounded companion-text step for the MR page only —
+   scoped by stable id, never a global .eq-conn bump. */
+.slide[data-id='d1-mr'] .eq-conn {
+  font-size: 0.98rem;
+}
+
+.slide[data-id='d1-mr'] .eq-heading {
+  font-size: 1rem;
 }
 
 /* ---------- Nodos ReactFlow (estilo deck, no v1) ---------- */
