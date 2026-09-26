@@ -925,6 +925,24 @@ p {
   line-height: 1.4;
 }
 
+/* Variante densa: la tabla de notación debe llenar su página completa
+   (REF-1) — celdas altas, tipografía un paso mayor y primera col. ancla. */
+.slide[data-id='notacion'] .reading-table {
+  font-size: 1rem;
+}
+
+.slide[data-id='notacion'] .reading-table th,
+.slide[data-id='notacion'] .reading-table td {
+  padding: 14px 16px;
+  line-height: 1.65;
+}
+
+.slide[data-id='notacion'] .reading-table td:first-child {
+  font-weight: 700;
+  color: var(--fg);
+  white-space: normal;
+}
+
 .reading-table th {
   background: var(--claro);
   color: var(--fg);

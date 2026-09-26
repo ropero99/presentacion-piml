@@ -38,7 +38,7 @@ export const SLIDES = [
       [
         'Codificador RFF multibanda (artículo guía)',
         'kernel $\\kappa$, bandas $K$ con ancho $\\mathrm{softplus}(\\rho_k)$, $N_f$ features por banda, mapeo $\\boldsymbol{\\phi}_k$ (Ecuación 24), embedding $\\mathbf{z}_t \\in \\mathbb{R}^{F}$ con $F = K N_f$, secuencia $\\mathbf{Z} = \\Phi_{MB}(\\mathbf{X})$; pre-set $B = (6, 24, 72)$ h.',
-        'Codificador espectral del artículo guía (F6/PINT); el mapeo RFF canónico es la Ecuación (24) y la densidad espectral es $p(\\mathbf{w}) = \\mathcal{N}(\\mathbf{0}, \\rho^{-2}\\mathbf{I})$.',
+        'Codificador espectral del artículo guía (familia F6 — TS con física embebida, PINT como ejemplo canónico); el mapeo RFF canónico es la Ecuación (24) y la densidad espectral es $p(\\mathbf{w}) = \\mathcal{N}(\\mathbf{0}, \\rho^{-2}\\mathbf{I})$.',
       ],
       [
         'TSB y recurrencia',
@@ -59,6 +59,11 @@ export const SLIDES = [
         'Símbolos locales',
         '$\\mathcal{B}$ (rezago en E1), $\\mathbf{A}, \\mathbf{B}, \\mathbf{C}$ (SSM en E6).',
         'Leyenda semántica: existen solo dentro de su ecuación y no se reutilizan fuera de contexto.',
+      ],
+      [
+        'Decisiones de unificación',
+        '$\\lambda_{phys}$ peso físico (único); $\\breve{k}, \\breve{d}$ extremos del bloque TSB; $\\mathbf{u}_t$ compuerta GRU (no $z_t$); $f_{fisica} \\equiv f_{fis}$.',
+        'Reglas de escritura del documento verificable con esta tabla: cada decisión evita colisiones y ambigüedad entre familias E/F.',
       ],
     ],
   },
