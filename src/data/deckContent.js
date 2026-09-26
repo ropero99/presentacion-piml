@@ -27,16 +27,40 @@ export const SLIDES = [
     tone: 'purple',
     kind: 'wide',
     kicker: '2 · Notación',
-    title: 'Tabla de notación: cinco grupos, símbolos fijos',
-    bullets: [
-      '**Series y marco general:** $y_t$ observada, $\\hat{\\mathbf{y}} \\in \\mathbb{R}^h$ multi-paso directa, ventana $\\mathbf{X} \\in \\mathbb{R}^{\\tau \\times d}$, pérdidas $\\mathcal{L}_{MSE}$, $\\mathcal{L}_{physics}$, $\\mathcal{L}_{total}$, peso $\\lambda_{phys}$, residuo $\\mathcal{R}_{phys}$, ley $\\mathcal{N}[u] = 0$ en dominio $\\Omega_T$.',
-      '**Codificador RFF multibanda (artículo guía):** kernel $\\kappa$, bandas $K$ con ancho $\\mathrm{softplus}(\\rho_k)$, $N_f$ features por banda, mapeo $\\boldsymbol{\\phi}_k$ (Ecuación 24), embedding $\\mathbf{z}_t \\in \\mathbb{R}^{F}$ con $F = K N_f$, secuencia $\\mathbf{Z} = \\Phi_{MB}(\\mathbf{X})$; pre-set $B = (6, 24, 72)$ h.',
-      '**TSB y recurrencia:** convolución con dilatación $\\breve{d}$ y kernel $\\breve{k}$, GELU $\\breve{\\sigma}$, LayerNorm $\\mathrm{LN}$, estado $\\breve{\\mathbf{h}}_t$, módulo $f_{RNN}$; en GRU la compuerta de actualización es $\\mathbf{u}_t$ (**no** $z_t$, para no colisionar con el embedding espectral).',
-      '**Física térmica RC (PINN-RC):** temperaturas $T_{in}, T_{out}, T_m$; capacidades $C_{in}, C_m$; resistencias $R_{ea}, R_{in}, R_{out}$; exógenas $I_{sol}, A_w, \\dot{Q}_{int}, P_{HVAC}$.',
-      '**Símbolos locales:** existen solo dentro de su ecuación (p. ej. $\\mathcal{B}$ del rezago en E1, $\\mathbf{A},\\mathbf{B},\\mathbf{C}$ del SSM en E6) y no se reutilizan fuera de contexto.',
+    title: 'Tabla de notación: grupos, símbolos y su uso',
+    table: [
+      ['Grupo', 'Símbolos', 'Uso'],
+      [
+        'Series y marco general',
+        '$y_t$ observada, $\\hat{\\mathbf{y}} \\in \\mathbb{R}^h$ multi-paso directa, ventana $\\mathbf{X} \\in \\mathbb{R}^{\\tau \\times d}$, pérdidas $\\mathcal{L}_{MSE}$, $\\mathcal{L}_{physics}$, $\\mathcal{L}_{total}$, peso $\\lambda_{phys}$, residuo $\\mathcal{R}_{phys}$, ley $\\mathcal{N}[u] = 0$ en dominio $\\Omega_T$.',
+        'Marco común de toda la revisión: series, pérdidas y ley física. Decisiones de unificación: el peso físico es siempre $\\lambda_{phys}$ y $f_{fisica} \\equiv f_{fis}$ son sinónimos.',
+      ],
+      [
+        'Codificador RFF multibanda (artículo guía)',
+        'kernel $\\kappa$, bandas $K$ con ancho $\\mathrm{softplus}(\\rho_k)$, $N_f$ features por banda, mapeo $\\boldsymbol{\\phi}_k$ (Ecuación 24), embedding $\\mathbf{z}_t \\in \\mathbb{R}^{F}$ con $F = K N_f$, secuencia $\\mathbf{Z} = \\Phi_{MB}(\\mathbf{X})$; pre-set $B = (6, 24, 72)$ h.',
+        'Codificador espectral del artículo guía (F6/PINT); el mapeo RFF canónico es la Ecuación (24) y la densidad espectral es $p(\\mathbf{w}) = \\mathcal{N}(\\mathbf{0}, \\rho^{-2}\\mathbf{I})$.',
+      ],
+      [
+        'TSB y recurrencia',
+        'convolución con dilatación $\\breve{d}$ y kernel $\\breve{k}$, GELU $\\breve{\\sigma}$, LayerNorm $\\mathrm{LN}$, estado $\\breve{\\mathbf{h}}_t$, módulo $f_{RNN}$.',
+        'Backbone secuencial del artículo guía (bloque TCN: residual + GELU + LN); en GRU la compuerta de actualización es $\\mathbf{u}_t$ (**no** $z_t$, para no colisionar con el embedding espectral).',
+      ],
+      [
+        'Física térmica RC (PINN-RC)',
+        'temperaturas $T_{in}, T_{out}, T_m$; capacidades $C_{in}, C_m$; resistencias $R_{ea}, R_{in}, R_{out}$.',
+        'Variables de estado y parámetros del circuito térmico 2R2C (patrón D, §5b) cuyo residuo penaliza la PINN-RC.',
+      ],
+      [
+        'Exógenas y drivers',
+        '$I_{sol}$, $A_w$, $\\dot{Q}_{int}$, $P_{HVAC}$; drivers de calendario y ocupación.',
+        'Forzamientos (entradas exógenas) del modelo RC y covariables de calendario/ocupación del forecasting.',
+      ],
+      [
+        'Símbolos locales',
+        '$\\mathcal{B}$ (rezago en E1), $\\mathbf{A}, \\mathbf{B}, \\mathbf{C}$ (SSM en E6).',
+        'Leyenda semántica: existen solo dentro de su ecuación y no se reutilizan fuera de contexto.',
+      ],
     ],
-    notes:
-      'Decisiones de unificación adoptadas: el peso físico siempre $\\lambda_{phys}$; densidad espectral $p(\\mathbf{w}) = \\mathcal{N}(\\mathbf{0}, \\rho^{-2}\\mathbf{I})$; el mapeo RFF canónico es la Ecuación (24); $f_{fisica} \\equiv f_{fis}$ son sinónimos.',
   },
 
   // ── §3 Diagrama 1 — Cuatro puertas ──────────────────────────────────────
@@ -49,7 +73,7 @@ export const SLIDES = [
     title: 'Las cuatro puertas por las que entra la física',
     bullets: [
       'Un solo punto de partida: el modelo ML $\\hat{y} = f_\\theta(\\mathbf{x})$ y el conocimiento físico $\\mathcal{N}[u] = 0$.',
-      '**④ Híbrido:** simulador + red residual: $f_{fisica}(\\mathbf{x}) + g_\\theta(\\mathbf{x})$.',
+      'De ese binomio **modelo + ley física** salen cuatro canales de entrada, ordenados por fuerza de garantía: **① penalización débil → ② arquitectura → ③ datos/features → ④ híbrido**.',
     ],
     diagram: 'd1',
     diagramTitle: 'Diagrama 1 · ¿Cómo entra la física en un modelo ML/DL?',
@@ -74,6 +98,7 @@ export const SLIDES = [
     title: 'El sistema ejemplar: masa-resorte-amortiguador (MR)',
     bullets: [
       'Un solo sistema físico para comparar las tres puertas: la ley $\\mathcal{N}[u]=0$ instanciada en el MR.',
+      '**Envolvente amortiguada:** en régimen subamortiguado la solución $x(t) \\sim e^{-\\gamma t}\\cos(\\omega t)$, con $\\omega = \\sqrt{k/m - \\gamma^2}$, decae dentro de una envolvente exponencial $\\pm e^{-\\gamma t}$; $\\gamma = c/2m$ controla cuánto tarda en apagarse la oscilación — conexión directa con la disipación térmica que la puerta ① inyecta como pérdida.',
     ],
     equations: [
       {
@@ -103,14 +128,6 @@ export const SLIDES = [
     kicker: '3 · Puerta ① · Forma débil',
     title: 'Puerta ① — Función de pérdida (PINN)',
     lema: 'La física entra en la **función de costo**: se penaliza, no se garantiza.',
-    diagram: 'mr1',
-    diagramTitle: 'MR · Puerta ① — la física entra en la función de costo',
-    legend: [
-      { color: '#1E3A5F', label: 'Sistema MR / física' },
-      { color: '#2E86AB', label: '① Pérdida (débil)' },
-      { color: '#34495E', label: 'Modelo ML f_θ' },
-      { color: '#C0392B', label: 'Minimización → θ*' },
-    ],
     equations: [
       {
         heading: 'Modelo',
@@ -140,6 +157,21 @@ export const SLIDES = [
     ],
   },
   {
+    id: 'd1-puerta1-diagram',
+    module: 'd1',
+    tone: 'blue',
+    kind: 'diagram',
+    kicker: '3 · Puerta ① · Forma débil · diagrama',
+    diagram: 'mr1',
+    diagramTitle: 'MR · Puerta ① — la física entra en la función de costo',
+    legend: [
+      { color: '#1E3A5F', label: 'Sistema MR / física' },
+      { color: '#2E86AB', label: '① Pérdida (débil)' },
+      { color: '#34495E', label: 'Modelo ML f_θ' },
+      { color: '#C0392B', label: 'Minimización → θ*' },
+    ],
+  },
+  {
     id: 'd1-puerta2',
     module: 'd1',
     tone: 'purple',
@@ -147,15 +179,13 @@ export const SLIDES = [
     kicker: '3 · Puerta ② · Forma fuerte',
     title: 'Puerta ② — Arquitectura (Hamiltonian NN)',
     lema: 'La física entra en la **estructura del modelo**: se cumple SIEMPRE, para todo $\\theta$.',
-    diagram: 'mr2',
-    diagramTitle: 'MR · Puerta ② — la física entra en la estructura del modelo',
-    legend: [
-      { color: '#1E3A5F', label: 'Sistema MR / física' },
-      { color: '#7D3C98', label: '② Arquitectura (fuerte)' },
-      { color: '#34495E', label: 'Modelo ML f_θ' },
-      { color: '#C0392B', label: 'Minimización → θ*' },
-    ],
+    derivation: ['estado canónico', '$H_\\theta(q, p)$', '$\\mathbb{J}\\,\\nabla H_\\theta$ (simetría)', '$\\mathcal{L}_{MSE}$ (solo datos)', '$\\theta^*$'],
     equations: [
+      {
+        heading: 'Estado canónico y Hamiltoniano (del MR conservativo)',
+        tex: '\\mathbf{q} = x(t), \\quad \\mathbf{p} = m\\,\\dot{x}(t), \\quad H(q, p) = \\frac{p^2}{2m} + \\frac{kq^2}{2} \\quad (c = 0)',
+        conn: '**Conexión:** ruta Hamilton–Jacobi: del par canónico $(q, p)$ y de $H(q,p)$ salen las ecuaciones de Hamilton $\\dot{x} = \\partial H/\\partial p$ y $\\dot{p} = -\\partial H/\\partial q$, que en el MR ($c = 0$) reproducen $m\\,\\ddot{x} + kx = 0$; es el mismo Hamiltoniano que la puerta ② aprende.',
+      },
       {
         heading: 'Modelo (estructura simpléctica, MR conservativo c = 0)',
         tex: '\\frac{d}{dt}\\begin{bmatrix} \\mathbf{q} \\\\ \\mathbf{p} \\end{bmatrix} = \\mathbb{J}\\,\\nabla H_\\theta(\\mathbf{q}, \\mathbf{p}), \\qquad \\mathbb{J} = \\begin{bmatrix} \\mathbf{0} & \\mathbf{I} \\\\ -\\mathbf{I} & \\mathbf{0} \\end{bmatrix}, \\qquad H_\\theta \\approx \\frac{p^2}{2m} + \\frac{kq^2}{2}',
@@ -179,6 +209,21 @@ export const SLIDES = [
     ],
   },
   {
+    id: 'd1-puerta2-diagram',
+    module: 'd1',
+    tone: 'purple',
+    kind: 'diagram',
+    kicker: '3 · Puerta ② · Forma fuerte · diagrama',
+    diagram: 'mr2',
+    diagramTitle: 'MR · Puerta ② — la física entra en la estructura del modelo',
+    legend: [
+      { color: '#1E3A5F', label: 'Sistema MR / física' },
+      { color: '#7D3C98', label: '② Arquitectura (fuerte)' },
+      { color: '#34495E', label: 'Modelo ML f_θ' },
+      { color: '#C0392B', label: 'Minimización → θ*' },
+    ],
+  },
+  {
     id: 'd1-puerta3',
     module: 'd1',
     tone: 'cyan',
@@ -186,14 +231,6 @@ export const SLIDES = [
     kicker: '3 · Puerta ③ · Física en los datos',
     title: 'Puerta ③ — Física en los datos / features',
     lema: 'La física entra **en los datos/features**: indirectamente, antes del modelo.',
-    diagram: 'mr3',
-    diagramTitle: 'MR · Puerta ③ — la física entra en los datos / features',
-    legend: [
-      { color: '#1E3A5F', label: 'Sistema MR / física' },
-      { color: '#16A085', label: '③ Datos / features' },
-      { color: '#34495E', label: 'Modelo ML f_θ' },
-      { color: '#C0392B', label: 'Minimización → θ*' },
-    ],
     equations: [
       {
         heading: 'Modelo (entrada aumentada)',
@@ -224,12 +261,31 @@ export const SLIDES = [
     ],
   },
   {
+    id: 'd1-puerta3-diagram',
+    module: 'd1',
+    tone: 'cyan',
+    kind: 'diagram',
+    kicker: '3 · Puerta ③ · Física en los datos · diagrama',
+    diagram: 'mr3',
+    diagramTitle: 'MR · Puerta ③ — la física entra en los datos / features',
+    legend: [
+      { color: '#1E3A5F', label: 'Sistema MR / física' },
+      { color: '#16A085', label: '③ Datos / features' },
+      { color: '#34495E', label: 'Modelo ML f_θ' },
+      { color: '#C0392B', label: 'Minimización → θ*' },
+    ],
+  },
+  {
     id: 'd1-puerta4',
     module: 'd1',
     tone: 'blue',
     kind: 'wide',
     kicker: '3 · Puerta ④ · Híbrido',
     title: 'Puerta ④ — Híbrido simulador + red (grey-box)',
+    bullets: [
+      '**¿Por qué existen?:** un simulador confiable **subvenciona** a la red: $f_{fisica}$ da la predicción base —interpretable y físicamente correcta— y $g_\\theta$ aprende solo el residuo.',
+      '**¿Cuándo se eligen sobre la PINN pura?:** cuando existe un simulador/ley confiable y el riesgo de soluciones no físicas del entrenamiento PINN es alto; hereda la tradición grey-box de identificación de parámetros.',
+    ],
     equations: [
       {
         heading: '④ Híbrido simulador + red (grey-box)',

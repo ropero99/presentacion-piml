@@ -22,11 +22,11 @@ Runtime harness (build required first): `npm run build && node src/scripts/captu
 
 ## Phase 1: Content edits — `src/data/deckContent.js`
 
-- [ ] 1.1 (AD-7, REF-1/R1) `notacion` → `.reading-table` slide.table 6×3 (Grupo|Símbolos|Uso); RichText cells, MathJax inline; 5 groups verbatim, exogenous covariates own row, local-symbol legend final row.
-- [ ] 1.2 (AD-4, REF-2/R2) `d1-figura`: remove door-4 bullet; add problem-general line (model + physical law → four entry channels); keep diagram/legend/refs.
-- [ ] 1.3 (AD-3, REF-3/R3) `d1-mr`: add damping-envelope meaning bullet (prose + inline math, no 4th eq); eq-boxes untouched.
-- [ ] 1.4 (AD-5, REF-5/R5) `d1-puerta2`: drop diagram keys; eq 1 = canonical state (verbatim from `d1-mr` eq 2), existing boxes → eq 2–4; derivation-strip chips under lema; HJ path/MR meaning as conn prose; ≤4 eqs.
-- [ ] 1.5 (AD-6, REF-2b/R2b) `d1-puerta4`: 2 bullets (why hybrids; when over pure PINN — Bacher & Madsen); 2nd eq-box only if literal from source doc, else prose.
+- [x] 1.1 (AD-7, REF-1/R1) `notacion` → `.reading-table` slide.table 6×3 (Grupo|Símbolos|Uso); RichText cells, MathJax inline; 5 groups verbatim, exogenous covariates own row, local-symbol legend final row.
+- [x] 1.2 (AD-4, REF-2/R2) `d1-figura`: remove door-4 bullet; add problem-general line (model + physical law → four entry channels); keep diagram/legend/refs.
+- [x] 1.3 (AD-3, REF-3/R3) `d1-mr`: add damping-envelope meaning bullet (prose + inline math, no 4th eq); eq-boxes untouched.
+- [x] 1.4 (AD-5, REF-5/R5) `d1-puerta2`: drop diagram keys; eq 1 = canonical state (verbatim from `d1-mr` eq 2), existing boxes → eq 2–4; derivation-strip chips under lema; HJ path/MR meaning as conn prose; ≤4 eqs.
+- [x] 1.5 (AD-6, REF-2b/R2b) `d1-puerta4`: 2 bullets (why hybrids; when over pure PINN — Bacher & Madsen); 2nd eq-box only if literal from source doc, else prose.
 - [ ] 1.6 (AD-1, REF-4/R4) Insert `d1-puerta{1,2,3}-diagram` after each door slide: kind:'diagram', module:'d1', diagram mr1/mr2/mr3, door-template kicker, legend copied, tone matched, title omitted; doors ①②③ drop diagram/diagramTitle/legend keys; `d1-puerta4` stays last of d1 (29 → 32 slides).
 
 ## Phase 2: Component + CSS — `src/deck/`
