@@ -1,0 +1,52 @@
+# openspec/config.yaml — presentacion_piml
+schema: spec-driven
+
+context: |
+  Stack: Vite 8 + React 19 (JSX) + Tailwind CSS 4 (@tailwindcss/vite)
+  Modules: @xyflow/react 12 (interactive decision diagrams), better-react-mathjax + katex (math render)
+  Architecture: static slide deck; data-driven (src/data/deckContent.js + deckModules.js); deck components src/deck/*
+  Deploy: GitHub Pages via .github/workflows/deploy.yml (base /presentacion-piml/)
+  Testing: no test runner; lint oxlint (npm run lint); Playwright used for visual capture/QA scripts only
+
+projects:
+  - path: .
+    stack: Vite 8 + React 19 + Tailwind 4 (JavaScript)
+    test_command: ""
+    lint_command: "npm run lint"
+    type_check_command: ""
+    format_command: ""
+    notes: >-
+      Single in-scope project (workspace root = project root, isolated git child).
+      No test script, no vitest/jest, no test config files. Playwright (devDep)
+      powers src/scripts/capture-slides.mjs + export-pdf.mjs for visual QA and
+      PDF export — verification-visual tooling, not a test framework.
+      Requires `npm run build` first (vite preview on :4179).
+
+strict_tdd: false
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    guidelines:
+      - Follow existing code patterns (deck components in src/deck/, content in src/data/)
+    tdd: false
+    test_command: ""
+    verify_visual: "npm run build && node src/scripts/capture-slides.mjs"  # visual QA per slide (requires build first)
+  verify:
+    test_command: ""
+    build_command: "npm run build"
+    lint_command: "npm run lint"
+    coverage_threshold: 0
+    verify_visual: "node src/scripts/capture-slides.mjs"  # slide PNGs under src/scripts/captures/ for manual review
+  archive:
+    - Warn before merging destructive deltas

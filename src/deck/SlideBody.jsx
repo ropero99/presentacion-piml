@@ -10,7 +10,8 @@ function pad(value) {
 
 /**
  * Cuerpo de un slide según su kind: cover (portada/cierre), split
- * (contenido + figura de diagrama) o wide (columna única: bullets/tabla/
+ * (contenido + figura de diagrama), door (página completa de puerta:
+ * lema + matemática + diagrama MR) o wide (columna única: bullets/tabla/
  * pila de ecuaciones).
  */
 export default function SlideBody({ slide, index, total, phaseClass }) {
@@ -20,6 +21,8 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
     cls.push('is-cover');
   } else if (slide.kind === 'wide') {
     cls.push('is-wide');
+  } else if (slide.kind === 'door') {
+    cls.push('is-door');
   }
   if (phaseClass) cls.push(...phaseClass);
 
@@ -60,8 +63,68 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
     );
   }
 
-  const hasFigure = slide.kind === 'split' && slide.diagram && DIAGRAM_COMPONENTS[slide.diagram];
+  const hasFigure =
+    (slide.kind === 'split' || slide.kind === 'door') &&
+    slide.diagram &&
+    DIAGRAM_COMPONENTS[slide.diagram];
   const Diagram = hasFigure ? DIAGRAM_COMPONENTS[slide.diagram] : null;
+
+  if (slide.kind === 'door') {
+    return (
+      <article
+        className={cls.join(' ')}
+        data-index={index}
+        data-module={slide.module}
+        data-tone={slide.tone}
+        aria-label={`${pad(index + 1)} de ${pad(total)}`}
+      >
+        <div className="slide-content">
+          <MathJax>
+            <p className="slide-kicker">{slide.kicker}</p>
+            <h2>{slide.title}</h2>
+            {slide.lema ? (
+              <p className="door-lema">
+                <RichText text={slide.lema} />
+              </p>
+            ) : null}
+            <div className="door-columns">
+              <div className="door-math">
+                {slide.equations ? (
+                  <div className="math-stack">
+                    {slide.equations.map((eq, i) => (
+                      <EquationBox key={i} heading={eq.heading} tex={eq.tex} conn={eq.conn} />
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+              {hasFigure ? (
+                <figure className="slide-figure">
+                  <div className="rf-host">
+                    <Diagram active title={slide.diagramTitle} legend={slide.legend} />
+                  </div>
+                  <figcaption className="figure-legend">
+                    {(slide.legend || []).map((chip, i) => (
+                      <span className="legend-chip" key={i}>
+                        <span className="legend-dot" style={{ background: chip.color }} />
+                        {chip.label}
+                      </span>
+                    ))}
+                  </figcaption>
+                </figure>
+              ) : null}
+            </div>
+            {slide.refs ? (
+              <ul className="slide-references">
+                {slide.refs.map((r, i) => (
+                  <li key={i}>{r}</li>
+                ))}
+              </ul>
+            ) : null}
+          </MathJax>
+        </div>
+      </article>
+    );
+  }
 
   return (
     <article

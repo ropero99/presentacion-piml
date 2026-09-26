@@ -5,6 +5,9 @@ import DataDrivenFlow from './DataDrivenFlow.jsx';
 import InterseccionFlow from './InterseccionFlow.jsx';
 import ProblemasFlow from './ProblemasFlow.jsx';
 import OpcionesFlow from './OpcionesFlow.jsx';
+import MRPuerta1Flow from './MRPuerta1Flow.jsx';
+import MRPuerta2Flow from './MRPuerta2Flow.jsx';
+import MRPuerta3Flow from './MRPuerta3Flow.jsx';
 
 // id de diagrama (deckContent) -> componente ReactFlow del deck.
 export const DIAGRAM_COMPONENTS = {
@@ -14,4 +17,7 @@ export const DIAGRAM_COMPONENTS = {
   d4: InterseccionFlow,
   d5: ProblemasFlow,
   d6: OpcionesFlow,
+  mr1: MRPuerta1Flow,
+  mr2: MRPuerta2Flow,
+  mr3: MRPuerta3Flow,
 };

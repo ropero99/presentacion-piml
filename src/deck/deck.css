@@ -567,6 +567,100 @@ p {
   grid-template-columns: minmax(0, 1fr);
 }
 
+/* ---------- Página completa de puerta (①②③) ---------- */
+/* Dos columnas densas: matemática (izquierda) + diagrama MR (derecha).
+   El lema superior declara en una línea dónde entra la física. */
+.slide.is-door {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.slide.is-door .door-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(8px, 1.2vw, 14px);
+  align-items: stretch;
+  min-height: 0;
+}
+
+.slide.is-door .door-math {
+  min-height: 0;
+  min-width: 0;
+}
+
+.slide.is-door .door-lema {
+  margin: 0 0 8px;
+  font-size: 0.96rem;
+  line-height: 1.45;
+  color: var(--subtext1);
+  border-top: 1px dashed var(--line);
+  border-bottom: 1px dashed var(--line);
+  padding: 6px 2px;
+}
+
+.slide.is-door .door-lema strong {
+  color: var(--fg);
+}
+
+/* Cajas de ecuación de la página de puerta: apiladas y estiradas para
+   llenar el alto de la columna — la ronda 2 agranda la tipografía. */
+.slide.is-door .eq-box {
+  padding: 7px clamp(10px, 1.2vw, 14px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.slide.is-door .eq-box .eq-display {
+  font-size: clamp(1rem, 1.35vw, 1.22rem);
+  line-height: 1.5;
+}
+
+.slide.is-door .eq-box .eq-heading {
+  margin: 4px 0 2px;
+  font-size: 0.92rem;
+}
+
+.slide.is-door .eq-box .eq-conn {
+  font-size: 0.84rem;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+.slide.is-door .math-stack {
+  gap: clamp(6px, 1vh, 10px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.slide.is-door .slide-figure {
+  padding: 6px;
+}
+
+.slide.is-door .figure-legend {
+  padding: 4px 2px 0;
+  font-size: 0.66rem;
+  gap: 4px 10px;
+}
+
+.slide.is-door .slide-references {
+  margin-top: 8px;
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+/* ---------- Página completa de puerta (pantallas angostas) ---------- */
+@media (max-width: 1040px) {
+  .slide.is-door .door-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .slide.is-door .slide-figure {
+    min-height: 320px;
+  }
+}
+
 .math-stack {
   display: flex;
   flex-direction: column;
@@ -627,6 +721,10 @@ p {
   box-shadow: 0 8px 18px rgba(30, 41, 59, 0.22);
 }
 
+.deck-node.is-dashed {
+  border-style: dashed;
+}
+
 .deck-node .node-title {
   font-weight: 700;
   color: var(--fg);
@@ -653,6 +751,103 @@ p {
   border-radius: 6px;
   border: 1px solid var(--line);
   color: var(--fg);
+}
+
+/* ---------- Nodos extra del esquema MR (lenguaje TikZ) ---------- */
+.deck-neuron {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1.5px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.15;
+  padding: 2px;
+  box-sizing: border-box;
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(30, 41, 59, 0.14);
+}
+
+.deck-neuron.is-heavy {
+  border-width: 2.5px;
+  box-shadow: 0 6px 14px rgba(30, 41, 59, 0.24);
+}
+
+.deck-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  color: var(--subtext1);
+}
+
+.deck-label.is-theta {
+  font-size: 0.74rem;
+  font-weight: 700;
+  border-top: 2px solid var(--fg);
+  padding-top: 3px;
+  width: max-content;
+  white-space: nowrap;
+}
+
+.deck-label.is-badge {
+  font-size: 0.56rem;
+  font-weight: 700;
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 8px;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.deck-structurebox {
+  border: 2.5px dashed;
+  border-radius: 14px;
+  background: rgba(125, 60, 152, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  padding: 6px 8px;
+  box-sizing: border-box;
+}
+
+.deck-structure-title {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 1px 6px;
+  border-radius: 6px;
+}
+
+.deck-structure-badge {
+  font-size: 0.56rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--purple, #7d3c98);
+  padding: 2px 7px;
+  border-radius: 8px;
+  letter-spacing: 0.02em;
+}
+
+.deck-lossline {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: left;
+  white-space: nowrap;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.deck-lossline .deck-lossline-part {
+  display: block;
 }
 
 /* ---------- Tabla del mapa de lectura ---------- */
@@ -797,6 +992,10 @@ body.focus-mode .deck-controls .controls-logo {
   }
 
   .slide.is-wide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .slide.is-door {
     grid-template-columns: minmax(0, 1fr);
   }
 

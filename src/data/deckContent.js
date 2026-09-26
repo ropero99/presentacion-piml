@@ -66,52 +66,179 @@ export const SLIDES = [
     ],
   },
   {
-    id: 'd1-mat-1',
+    id: 'd1-mr',
     module: 'd1',
     tone: 'blue',
     kind: 'wide',
-    kicker: '3 · Matemática del Diagrama 1',
-    title: 'Puerta ① — Función de pérdida (forma débil)',
+    kicker: '3 · Sistema ejemplar',
+    title: 'El sistema ejemplar: masa-resorte-amortiguador (MR)',
+    bullets: [
+      'Un solo sistema físico para comparar las tres puertas: la ley $\\mathcal{N}[u]=0$ instanciada en el MR.',
+    ],
     equations: [
       {
-        heading: 'Modelo general (bloque "Modelo ML: ŷ = f_θ(x)")',
-        tex: '\\hat{y} = f_\\theta(\\mathbf{x}), \\qquad \\theta \\in \\Theta',
-        conn: 'Todo el diagrama parte de este predictor paramétrico; las cuatro puertas inyectan una ley física conocida en $f_\\theta$.',
+        heading: 'Ecuación de movimiento (residuo físico)',
+        tex: '\\mathcal{N}[x] \\;\\equiv\\; m\\,\\ddot{x}(t) + c\\,\\dot{x}(t) + k\\,x(t) = 0',
+        conn: '**MR:** masa $m$, rigidez $k$, amortiguamiento $c$; la trayectoria $x(t)$ es lo que cada puerta predice.',
       },
       {
-        heading: 'Pérdida compuesta (PINN clásico, Raissi 2019)',
-        tex: '\\mathcal{L}_{total}(\\Theta) = \\underbrace{\\frac{1}{N_d}\\sum_{i=1}^{N_d} \\left| f_\\theta(\\mathbf{x}_i) - y_i \\right|^2}_{\\mathcal{L}_{MSE}} \\;+\\; \\lambda_{phys}\\,\\underbrace{\\frac{1}{N_c}\\sum_{j=1}^{N_c} \\left\\| r_\\theta(\\mathbf{x}_j) \\right\\|^2}_{\\mathcal{L}_{physics}}',
-        conn:
-          '**Conexión:** puerta ① — el bloque "L = L_MSE + λ_phys·L_physics" es exactamente $\\mathcal{L}_{total}$; "r(ŷ) = residuo de la EDO/EDP" ↔ $r_\\theta = \\mathcal{N}[f_\\theta]$ en los *puntos de colocación* $\\mathbf{x}_j$ (formulación PINN-RC del proyecto).',
+        heading: 'Estado canónico y energía',
+        tex: '\\mathbf{q} = x(t), \\quad \\mathbf{p} = m\\,\\dot{x}(t), \\quad H(q, p) = \\frac{p^2}{2m} + \\frac{kq^2}{2} \\quad (c = 0)',
+        conn: '**Conexión:** el caso conservativo ($c=0$) es hamiltoniano puro; es la forma que exige la puerta ②.',
       },
+      {
+        heading: 'Datos disponibles',
+        tex: '\\mathbf{x}_i = (t_i, x_i, \\dot{x}_i), \\qquad i = 1, \\dots, N_d',
+        conn: '**Conexión:** las tres puertas consumen el mismo dato básico: trayectoria medida del MR.',
+      },
+    ],
+    notes:
+      'Las tres páginas siguientes instancian $\\mathcal{N}[u]=0$ sobre este sistema: misma física, distinto punto de entrada.',
+  },
+  {
+    id: 'd1-puerta1',
+    module: 'd1',
+    tone: 'blue',
+    kind: 'door',
+    kicker: '3 · Puerta ① · Forma débil',
+    title: 'Puerta ① — Función de pérdida (PINN)',
+    lema: 'La física entra en la **función de costo**: se penaliza, no se garantiza.',
+    diagram: 'mr1',
+    diagramTitle: 'MR · Puerta ① — la física entra en la función de costo',
+    legend: [
+      { color: '#1E3A5F', label: 'Sistema MR / física' },
+      { color: '#2E86AB', label: '① Pérdida (débil)' },
+      { color: '#34495E', label: 'Modelo ML f_θ' },
+      { color: '#C0392B', label: 'Minimización → θ*' },
+    ],
+    equations: [
+      {
+        heading: 'Modelo',
+        tex: '\\hat{x}(t) = f_\\theta(t), \\qquad \\theta \\in \\Theta',
+        conn: '**Conexión:** la red aproxima la solución del sistema masa-resorte; es el bloque "Modelo ML f_θ" del diagrama.',
+      },
+      {
+        heading: 'Residuo físico (diferenciación automática)',
+        tex: 'r_\\theta(t_j) = m\\,\\ddot{\\hat{x}}_\\theta(t_j) + c\\,\\dot{\\hat{x}}_\\theta(t_j) + k\\,\\hat{x}_\\theta(t_j)',
+        conn: '**Conexión:** la caja punteada "Diff. automática" produce $r_\\theta$ en los puntos de colocación $t_j$; es $\\mathcal{N}[\\hat{x}_\\theta]$ de la ley $\\mathcal{N}[u]=0$.',
+      },
+      {
+        heading: 'Función de costo',
+        tex: '\\mathcal{L}_{total}(\\Theta) = \\underbrace{\\frac{1}{N_d}\\sum_{i=1}^{N_d} \\left| f_\\theta(t_i) - x_i \\right|^2}_{\\mathcal{L}_{MSE}} \\;+\\; \\lambda_{phys}\\,\\underbrace{\\frac{1}{N_c}\\sum_{j=1}^{N_c} \\left\\| r_\\theta(t_j) \\right\\|^2}_{\\mathcal{L}_{physics}}',
+        conn: '**Conexión:** la línea inferior del diagrama es exactamente esta suma: la física entra en el segundo término, no en la estructura.',
+      },
+      {
+        heading: 'Problema de optimización',
+        tex: '\\theta^* = \\arg\\min_{\\theta \\in \\Theta}\\; \\mathcal{L}_{total}(\\theta)',
+        conn: 'El residuo entra en la pérdida, no en la estructura: el cumplimiento depende de $\\lambda_{phys}$ y del entrenamiento.',
+      },
+    ],
+    refs: [
+      'Raissi, Perdikaris, Karniadakis. Physics-informed neural networks. J. Comput. Phys. 378, 686–707, 2019.',
+      'Karniadakis et al. Physics-informed machine learning. Nat. Rev. Phys. 3(6), 422–440, 2021. DOI: 10.1038/s42254-021-00314-5.',
+      'Doumèche. Physics-informed ML: time series forecasting. Tesis Sorbonne, arXiv:2507.08906, 2025.',
     ],
   },
   {
-    id: 'd1-mat-2',
+    id: 'd1-puerta2',
+    module: 'd1',
+    tone: 'purple',
+    kind: 'door',
+    kicker: '3 · Puerta ② · Forma fuerte',
+    title: 'Puerta ② — Arquitectura (Hamiltonian NN)',
+    lema: 'La física entra en la **estructura del modelo**: se cumple SIEMPRE, para todo $\\theta$.',
+    diagram: 'mr2',
+    diagramTitle: 'MR · Puerta ② — la física entra en la estructura del modelo',
+    legend: [
+      { color: '#1E3A5F', label: 'Sistema MR / física' },
+      { color: '#7D3C98', label: '② Arquitectura (fuerte)' },
+      { color: '#34495E', label: 'Modelo ML f_θ' },
+      { color: '#C0392B', label: 'Minimización → θ*' },
+    ],
+    equations: [
+      {
+        heading: 'Modelo (estructura simpléctica, MR conservativo c = 0)',
+        tex: '\\frac{d}{dt}\\begin{bmatrix} \\mathbf{q} \\\\ \\mathbf{p} \\end{bmatrix} = \\mathbb{J}\\,\\nabla H_\\theta(\\mathbf{q}, \\mathbf{p}), \\qquad \\mathbb{J} = \\begin{bmatrix} \\mathbf{0} & \\mathbf{I} \\\\ -\\mathbf{I} & \\mathbf{0} \\end{bmatrix}, \\qquad H_\\theta \\approx \\frac{p^2}{2m} + \\frac{kq^2}{2}',
+        conn: '**Conexión:** la red aprende el Hamiltoniano del MR; con $\\mathbf{q}=x$, $\\mathbf{p}=m\\dot{x}$ la energía se conserva por construcción.',
+      },
+      {
+        heading: 'Función de costo (solo datos, sin $\\lambda_{phys}$)',
+        tex: '\\mathcal{L}_{MSE}(\\theta) = \\frac{1}{N}\\sum_{n=1}^{N} \\left\\| (\\hat{\\mathbf{q}}_n, \\hat{\\mathbf{p}}_n) - (\\mathbf{q}_n, \\mathbf{p}_n) \\right\\|^2',
+        conn: '**Conexión:** no existe $\\mathcal{L}_{physics}$; la línea inferior del diagrama muestra que la pérdida solo mide ajuste a datos.',
+      },
+      {
+        heading: 'Problema de optimización',
+        tex: '\\theta^* = \\arg\\min_{\\theta \\in \\Theta}\\; \\mathcal{L}_{MSE}(\\theta) \\quad \\text{s. a. estructura simpléctica (todo } \\theta \\text{ la cumple)}',
+        conn: '**Conexión:** la restricción es propiedad de $f_\\theta$, no del entrenamiento: se cumple SIEMPRE.',
+      },
+    ],
+    refs: [
+      'Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks. NeurIPS 2019.',
+      'Cranmer et al. Lagrangian Neural Networks. arXiv:2003.04630, 2020.',
+      'Chen et al. Neural Ordinary Differential Equations. NeurIPS 2018.',
+    ],
+  },
+  {
+    id: 'd1-puerta3',
+    module: 'd1',
+    tone: 'cyan',
+    kind: 'door',
+    kicker: '3 · Puerta ③ · Física en los datos',
+    title: 'Puerta ③ — Física en los datos / features',
+    lema: 'La física entra **en los datos/features**: indirectamente, antes del modelo.',
+    diagram: 'mr3',
+    diagramTitle: 'MR · Puerta ③ — la física entra en los datos / features',
+    legend: [
+      { color: '#1E3A5F', label: 'Sistema MR / física' },
+      { color: '#16A085', label: '③ Datos / features' },
+      { color: '#34495E', label: 'Modelo ML f_θ' },
+      { color: '#C0392B', label: 'Minimización → θ*' },
+    ],
+    equations: [
+      {
+        heading: 'Modelo (entrada aumentada)',
+        tex: '\\tilde{\\mathbf{x}} = \\left[ \\mathbf{x},\\; \\psi_{fis}(\\mathbf{x}) \\right], \\qquad \\psi_{fis} = \\left[\\, x,\\; \\dot{x},\\; E \\,\\right], \\qquad E = \\tfrac{1}{2} m \\dot{x}^2 + \\tfrac{1}{2} k x^2',
+        conn: '**Conexión:** para el MR las features son el espacio de fases y la energía; el bloque "Features ψ_fis" transforma la entrada antes de $f_\\theta$.',
+      },
+      {
+        heading: 'Multi-fidelity (simulador MR de baja fidelidad)',
+        tex: 'y_{HF}(\\mathbf{x}) = \\alpha_{mf}\\, f_{LF}(\\mathbf{x}) + \\delta_{mf}(\\mathbf{x})',
+        conn: '**Conexión:** el simulador MR barato $f_{LF}$ genera datos; la discrepancia $\\delta_{mf}$ se aprende (Kennedy–O\'Hagan).',
+      },
+      {
+        heading: 'Función de costo (sobre datos aumentados)',
+        tex: '\\mathcal{L}_{MSE}(\\theta) = \\frac{1}{N_d}\\sum_{i=1}^{N_d} \\left| f_\\theta(\\tilde{\\mathbf{x}}_i) - y_i \\right|^2',
+        conn: '**Conexión:** la física no aparece como término de penalización; vive en $\\tilde{\\mathbf{x}}$ y en los datos del simulador.',
+      },
+      {
+        heading: 'Problema de optimización (+ physical bottleneck)',
+        tex: '\\theta^* = \\arg\\min_{\\theta \\in \\Theta}\\; \\mathcal{L}_{MSE}(\\theta; \\tilde{\\mathbf{x}}), \\qquad \\mathbf{z}_{bot} = E(\\mathbf{x})',
+        conn: '**Conexión:** variante con bottleneck: la latente $\\mathbf{z}_{bot}$ queda restringida a significado físico explícito (Hao 2022).',
+      },
+    ],
+    refs: [
+      'Hao et al. PIML: A Survey on Problems, Methods and Applications. arXiv:2211.08064, 2022.',
+      'Kennedy, O\'Hagan. Predicting with engineering models (multi-fidelity). Biometrika 87, 2000.',
+      'Willard et al. ACM Computing Surveys, 2022.',
+      'Machine Learning with Physics Knowledge for Prediction: A Survey. arXiv:2408.09840.',
+    ],
+  },
+  {
+    id: 'd1-puerta4',
     module: 'd1',
     tone: 'blue',
     kind: 'wide',
-    kicker: '3 · Matemática del Diagrama 1',
-    title: 'Puertas ② ③ ④ — Arquitectura, datos y híbrido',
+    kicker: '3 · Puerta ④ · Híbrido',
+    title: 'Puerta ④ — Híbrido simulador + red (grey-box)',
     equations: [
-      {
-        heading: '② Conservación hamiltoniana (se cumple para todo θ)',
-        tex: '\\frac{d}{dt}\\begin{bmatrix} \\mathbf{q} \\\\ \\mathbf{p} \\end{bmatrix} = \\mathbb{J}\\,\\nabla H_\\theta(\\mathbf{q}, \\mathbf{p}), \\qquad \\mathbb{J} = \\begin{bmatrix} \\mathbf{0} & \\mathbf{I} \\\\ -\\mathbf{I} & \\mathbf{0} \\end{bmatrix}',
-        conn:
-          '**Conexión:** puerta ② — "invariancias, simetrías, conservación de energía" viven en la estructura de $f_\\theta$ (sin $\\lambda_{phys}$) y garantizan $H_\\theta$ a lo largo de las trayectorias.',
-      },
-      {
-        heading: '③ Datos / features (features de leyes físicas y multi-fidelity)',
-        tex: '\\tilde{\\mathbf{x}} = \\left[ \\mathbf{x},\\; \\psi_{fis}(\\mathbf{x}) \\right], \\qquad y_{HF}(\\mathbf{x}) = \\alpha_{mf}\\, f_{LF}(\\mathbf{x}) + \\delta_{mf}(\\mathbf{x})',
-        conn:
-          '**Conexión:** puerta ③ — "features derivadas de leyes físicas" ↔ $\\psi_{fis}(\\mathbf{x})$; "multi-fidelity" ↔ $f_{LF} + \\delta_{mf}$ (bottleneck: latente $\\mathbf{z}_{bot} = E(\\mathbf{x})$).',
-      },
       {
         heading: '④ Híbrido simulador + red (grey-box)',
         tex: '\\hat{y} = \\underbrace{f_{fisica}(\\mathbf{x})}_{\\text{predicción base física}} + \\underbrace{g_\\theta(\\mathbf{x})}_{\\text{residuo aprendido}} \\quad \\text{o} \\quad \\hat{y} = g_\\theta\\bigl(\\mathbf{x},\\, f_{fisica}(\\mathbf{x})\\bigr)',
-        conn:
-          '**Conexión:** puerta ④ — las dos líneas del bloque (residual learning y feature stacking) son exactamente estas dos ecuaciones.',
+        conn: '**Conexión:** residual learning y feature stacking; tradición grey-box (Bacher & Madsen 2011).',
       },
+    ],
+    refs: [
+      'Bacher & Madsen. Identifying suitable models for the heat dynamics of buildings. Energy and Buildings 43, 2011.',
     ],
   },
 

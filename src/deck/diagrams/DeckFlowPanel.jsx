@@ -10,6 +10,7 @@ import {
   EdgeLabelRenderer,
   getSmoothStepPath,
   useReactFlow,
+  BezierEdge,
 } from '@xyflow/react';
 
 /**
@@ -17,10 +18,26 @@ import {
  * sus nodos/aristas fieles al bloque Mermaid del documento; el estilo visual
  * es el del deck de referencia (blanco, líneas frías, acentos por clase).
  */
-export default function DeckFlowPanel({ flow = 'lr', nodes, edges, title, active }) {
+export default function DeckFlowPanel({
+  flow = 'lr',
+  nodes,
+  edges,
+  title,
+  active,
+  extraNodeTypes,
+  extraEdgeTypes,
+}) {
   return (
     <ReactFlowProvider>
-      <FlowCanvas flow={flow} nodes={nodes} edges={edges} title={title} active={active} />
+      <FlowCanvas
+        flow={flow}
+        nodes={nodes}
+        edges={edges}
+        title={title}
+        active={active}
+        extraNodeTypes={extraNodeTypes}
+        extraEdgeTypes={extraEdgeTypes}
+      />
     </ReactFlowProvider>
   );
 }
@@ -36,7 +53,7 @@ function buildNodeType(flow) {
   return function DeckNode({ data }) {
     const vertical = flow === 'tb';
     return (
-      <div className={`deck-node${data.heavy ? ' is-heavy' : ''}`}>
+      <div className={`deck-node${data.heavy ? ' is-heavy' : ''}${data.dashed ? ' is-dashed' : ''}`}>
         <div
           className="node-bar"
           style={{ background: data.color || '#2E86AB' }}
@@ -196,8 +213,19 @@ const LABEL_BG = {
   borderRadius: 6,
 };
 
-function FlowCanvas({ flow, nodes, edges, title, active }) {
+function FlowCanvas({ flow, nodes, edges, title, active, extraNodeTypes, extraEdgeTypes }) {
   const nodeType = useMemo(() => buildNodeType(flow), [flow]);
+  const nodeTypes = useMemo(
+    () => ({ deck: nodeType, ...(extraNodeTypes || {}) }),
+    [nodeType, extraNodeTypes],
+  );
+  const edgeTypes = useMemo(
+    // Registrar 'default' explícitamente: al pasar edgeTypes propios,
+    // ReactFlow v12 desactiva los tipos builtin y la malla de neuronas
+    // (bezier por defecto) dejaría de renderizarse.
+    () => ({ default: BezierEdge, deck: DeckEdge, ...(extraEdgeTypes || {}) }),
+    [extraEdgeTypes],
+  );
   const { fitView } = useReactFlow();
 
   useEffect(() => {
@@ -211,8 +239,8 @@ function FlowCanvas({ flow, nodes, edges, title, active }) {
     <ReactFlow
       nodes={nodes}
       edges={edges}
-      nodeTypes={{ deck: nodeType }}
-      edgeTypes={{ deck: DeckEdge }}
+      nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
       fitView
       fitViewOptions={{ padding: 0.12 }}
       minZoom={0.35}
