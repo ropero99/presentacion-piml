@@ -109,3 +109,47 @@ Verification MUST run the existing pipeline in place: `npm run build`, capture v
 ## Out of scope
 
 Modules d2..d6, lectura, and cierre are untouched. No new PDF infrastructure (existing `capture-slides.mjs` / `export-pdf.mjs`; only wait-time tweaks if needed). No version bump or filename change. No GitHub upload. No GUI changes beyond the deck content and components listed above.
+
+## ADDED Requirements (round 4 — post-verify user feedback)
+
+### Requirement: R7 — Stacked door-figure page
+
+Slide `d1-figura` SHALL render its text (intro bullets + references) ABOVE the diagram, with the diagram occupying the full slide width below (kind `diagram` with `lead`), instead of the previous side-by-side split.
+
+#### Scenario: Full-width diagram on the doors overview
+
+- GIVEN slide `d1-figura` at 1920x1080
+- WHEN rendered
+- THEN the two intro lines and references appear above the figure
+- AND the Diagrama 1 canvas spans the full content width with all node labels legible
+
+### Requirement: R8 — Door-2 mathematical derivation page
+
+A new slide `d1-puerta2-deriv` (kind `door`, module `d1`) MUST be inserted immediately after `d1-puerta2` and before `d1-puerta2-diagram`, with a 4-step breakdown: Hamilton equations derived from H, recomposition into the MR ODE, conservation argument (dH/dt = ∇Hᵀ J ∇H = 0), and the Euler–Lagrange variant (literal from the source document §F3). Display equations ≤ 4; Spanish academic register.
+
+#### Scenario: Derivation page between door 2 and its diagram
+
+- GIVEN the SLIDES array
+- WHEN inspected
+- THEN `d1-puerta2-deriv` sits between `d1-puerta2` and `d1-puerta2-diagram`
+- AND the deck grows to 33 slides with unique ids
+
+### Requirement: R9 — Hamiltonian entry visible in the door-2 diagram
+
+The door-2 solo diagram MUST show where the Hamiltonian enters: the dashed structure box carries the equation chip `d/dt [q, p] = J ∇H_θ` inside the box, its title is enlarged (0.74rem), and the Física N[u]=0 box keeps its arrow into the structure.
+
+#### Scenario: Physics entry unmistakable
+
+- GIVEN the `d1-puerta2-diagram` slide at 1920x1080
+- WHEN visually reviewed
+- THEN the structure box displays the symplectic-flow equation inside the dashed box with the entry badge below it
+
+### Requirement: R10 — Door-3 diagram tidy geometry
+
+In the door-3 solo diagram, the Features box and the Física box form a clean bottom row (Física → Features horizontal edge; Datos drops into the Features top anchor) using declared target handles, with the Features→ψ_fis feedback edge routed through empty canvas (no box overlaps, no θ-label collision).
+
+#### Scenario: No messy crossings
+
+- GIVEN the `d1-puerta3-diagram` slide at 1920x1080
+- WHEN visually reviewed
+- THEN no edge overlaps a box, the θ label is collision-free, and the feedback edge reads as a clean bow through empty space

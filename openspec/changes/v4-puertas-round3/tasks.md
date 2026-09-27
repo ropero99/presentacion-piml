@@ -36,6 +36,14 @@ Runtime harness (build required first): `npm run build && node src/scripts/captu
 
 ## Phase 3: Verification — design AD-8
 
-- [ ] 3.1 (RV) `npm run build && node src/scripts/capture-slides.mjs` (read-only): expect 32 PNGs slide-01..32; vision-review 10 touched slides by id→index (notacion, d1-figura, d1-mr, d1-puerta4, d1-puerta1/2/3, d1-puerta{1,2,3}-diagram) vs REF-1..6 + REF-2b; ≤2 tuning passes/slide else escalate; git status shows ONLY the 4 design-listed entries.
-- [ ] 3.2 (RV) `node src/scripts/export-pdf.mjs presentacion_piml_v4_puertas_2026-09.pdf` (read-only invocation); verify PDF = 32 pages.
-- [ ] 3.3 `npm run lint` clean; conventional local commit, NO push; apply chain-split only if diff > 400 lines.
+- [x] 3.1 (RV) `npm run build && node src/scripts/capture-slides.mjs` (read-only): expect 32 PNGs slide-01..32; vision-review 10 touched slides by id→index (notacion, d1-figura, d1-mr, d1-puerta4, d1-puerta1/2/3, d1-puerta{1,2,3}-diagram) vs REF-1..6 + REF-2b; ≤2 tuning passes/slide else escalate; git status shows ONLY the 4 design-listed entries.
+- [x] 3.2 (RV) `node src/scripts/export-pdf.mjs presentacion_piml_v4_puertas_2026-09.pdf` (read-only invocation); verify PDF = 32 pages.
+- [x] 3.3 `npm run lint` clean; conventional local commit, NO push; apply chain-split only if diff > 400 lines.
+
+## Phase 4: Round-4 refinements (post-verify user feedback)
+
+- [x] 4.1 (R7) `d1-figura` → kind 'diagram' with `lead` (text above, full-width diagram); SlideBody diagram branch renders optional lead/refs inside MathJax; CSS lead classes.
+- [x] 4.2 (R8) New slide `d1-puerta2-deriv` (door, 4 eq: Hamilton eqs from H → MR ODE → dH/dt=0 conservation → Euler–Lagrange §F3 literal), inserted after `d1-puerta2` (deck 32→33).
+- [x] 4.3 (R9) mrPipeline modelo: structure box carries eq chip `d/dt [q, p] = J ∇H_θ`; StructureNode renders `data.eq`; title 0.74rem; box bg 0.08.
+- [x] 4.4 (R10) mrPipeline datos: feat (430,470) with targetHandles t-datos 25%/t-fis 75%; fis (40,470) straight edge; feedback bezier through empty canvas.
+- [x] 4.5 (RV) build + 33 captures + vision review of slides 03/08/09/11 (all PASS) + PDF in place (33 pages) + commit 80b49b9.
