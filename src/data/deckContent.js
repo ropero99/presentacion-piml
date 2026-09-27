@@ -73,10 +73,10 @@ export const SLIDES = [
     id: 'd1-figura',
     module: 'd1',
     tone: 'blue',
-    kind: 'split',
+    kind: 'diagram',
     kicker: '3 · Diagrama 1',
     title: 'Las cuatro puertas por las que entra la física',
-    bullets: [
+    lead: [
       'Un solo punto de partida: el modelo ML $\\hat{y} = f_\\theta(\\mathbf{x})$ y el conocimiento físico $\\mathcal{N}[u] = 0$.',
       'De ese binomio **modelo + ley física** salen cuatro canales de entrada, ordenados por fuerza de garantía: **① penalización débil → ② arquitectura → ③ datos/features → ④ híbrido**.',
     ],
@@ -205,6 +205,42 @@ export const SLIDES = [
         heading: 'Problema de optimización',
         tex: '\\theta^* = \\arg\\min_{\\theta \\in \\Theta}\\; \\mathcal{L}_{MSE}(\\theta) \\quad \\text{s. a. estructura simpléctica (todo } \\theta \\text{ la cumple)}',
         conn: '**Conexión:** la restricción es propiedad de $f_\\theta$, no del entrenamiento: se cumple SIEMPRE.',
+      },
+    ],
+    refs: [
+      'Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks. NeurIPS 2019.',
+      'Cranmer et al. Lagrangian Neural Networks. arXiv:2003.04630, 2020.',
+      'Chen et al. Neural Ordinary Differential Equations. NeurIPS 2018.',
+    ],
+  },
+  {
+    id: 'd1-puerta2-deriv',
+    module: 'd1',
+    tone: 'purple',
+    kind: 'door',
+    kicker: '3 · Puerta ② · Desglose matemático',
+    title: 'Puerta ② · De dónde salen las ecuaciones de Hamilton',
+    lema: 'El desglose completo: $H(q,p)$ → ecuaciones de Hamilton → EDO del MR → por qué la conservación se cumple SIEMPRE.',
+    equations: [
+      {
+        heading: 'Paso 1 · Las ecuaciones de Hamilton (derivando H)',
+        tex: '\\dot{x}(t) = \\frac{\\partial H}{\\partial \\mathbf{p}} = \\frac{\\mathbf{p}}{m}, \\qquad \\dot{\\mathbf{p}}(t) = -\\frac{\\partial H}{\\partial \\mathbf{q}} = -k\\,\\mathbf{q}(t)',
+        conn: '**Conexión:** de dónde sale: se deriva el Hamiltoniano $H(q, p) = \\frac{p^2}{2m} + \\frac{kq^2}{2}$ (diapositiva del sistema MR) respecto al par canónico. La pendiente en $\\mathbf{p}$ da la velocidad; la pendiente en $\\mathbf{q}$ da la fuerza. Son las dos EDO acopladas que la estructura simpléctica $\\mathbb{J}\\,\\nabla H$ codifica.',
+      },
+      {
+        heading: 'Paso 2 · Recomposición → la EDO del MR',
+        tex: '\\dot{\\mathbf{p}} = m\\,\\ddot{\\mathbf{q}} \\;\\Rightarrow\\; m\\,\\ddot{x}(t) + k\\,x(t) = 0 \\qquad (c = 0)',
+        conn: '**Conexión:** con $\\mathbf{p} = m\\dot{x}$, la segunda ecuación de Hamilton recupera exactamente la ley $\\mathcal{N}[x] = 0$ del sistema MR: la dinámica no se aprende — sale de $H$ por derivación.',
+      },
+      {
+        heading: 'Paso 3 · Por qué la física se cumple SIEMPRE',
+        tex: '\\frac{d H_\\theta}{dt} = \\nabla H_\\theta^{\\top}\\, \\mathbb{J}\\, \\nabla H_\\theta = 0 \\quad \\Rightarrow \\quad H_\\theta \\text{ constante a lo largo de } (\\mathbf{q}, \\mathbf{p})',
+        conn: '**Conexión:** la antisimetría de $\\mathbb{J}$ anula la derivada temporal de la energía: conservación por construcción, para todo $\\theta$ — la restricción es propiedad de $f_\\theta$, no del entrenamiento (Greydanus 2019).',
+      },
+      {
+        heading: 'Paso 4 · Variante equivalente: Lagrangian NN (Euler–Lagrange)',
+        tex: '\\frac{d}{dt}\\,\\frac{\\partial L_\\theta}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L_\\theta}{\\partial \\mathbf{q}} = 0',
+        conn: '**Conexión:** variante del documento (§F3): aprender el escalar $L_\\theta(\\mathbf{q}, \\dot{\\mathbf{q}})$ y derivar la dinámica por Euler–Lagrange; HNN y LNN son la misma idea en dos formulaciones.',
       },
     ],
     refs: [

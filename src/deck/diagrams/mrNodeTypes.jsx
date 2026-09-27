@@ -53,6 +53,7 @@ export function StructureNode({ data }) {
       <span className="deck-structure-title" style={{ color: data.color }}>
         {data.label}
       </span>
+      {data.eq ? <span className="deck-structure-eq">{data.eq}</span> : null}
       {data.badge ? <span className="deck-structure-badge">★ PUNTO DE ENTRADA DE LA FÍSICA</span> : null}
     </div>
   );

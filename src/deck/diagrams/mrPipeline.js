@@ -215,7 +215,8 @@ export function buildMrDiagram({ entry }) {
       zIndex: 0,
       data: {
         color: MORADO,
-        label: 'estructura física (conservación de H_θ)',
+        label: 'estructura física (conserva H_θ)',
+        eq: 'd/dt [q, p] = J ∇H_θ',
         badge: false,
         style: {
           width: last.x - first.x + NEURON_SIZE + 32,
@@ -279,7 +280,7 @@ export function buildMrDiagram({ entry }) {
       ? { x: 640, y: 360 } // bajo la salida: flecha corta a la caja autodiff
       : entry === 'modelo'
         ? { x: 240, y: 415 } // bajo la red: flecha corta a la estructura
-        : { x: 0, y: 400 }; // bajo los datos/features
+        : { x: 40, y: 470 }; // a la izquierda de feat: arista recta t-fis
   nodes.push({
     id: 'fis',
     type: 'deck',
@@ -341,23 +342,30 @@ export function buildMrDiagram({ entry }) {
     );
   } else {
     // ③: la física entra a los datos/features; ψ_fis alimenta la entrada.
+    // Geometría ordenada: feat bajo la columna de entrada con dos anclajes
+    // de llegada (datos arriba-izquierda, fis a la izquierda en fila recta);
+    // el retorno feat→in-psi es bezier corta por el corredor libre.
     nodes.push({
       id: 'feat',
       type: 'deck',
-      position: { x: 285, y: 408 },
+      position: { x: 430, y: 470 },
       data: {
         color: TEAL,
         dashed: true,
         heavy: true,
         title: 'Features ψ_fis·f_LF',
         lines: ['→ x̃ aumentada', BADGE],
+        targetHandles: [
+          { id: 't-datos', yPct: 25 },
+          { id: 't-fis', yPct: 75 },
+        ],
       },
     });
     edges.push(
       makeEdge('out', 'cmp', { color: GRIS_CLARO }),
       makeEdge('cmp', 'opt', { color: AZUL }),
-      makeEdge('datos', 'feat', { color: TEAL }),
-      makeEdge('fis', 'feat', { color: NAVY }),
+      makeEdge('datos', 'feat', { color: TEAL, targetHandle: 't-datos' }),
+      makeEdge('fis', 'feat', { color: NAVY, targetHandle: 't-fis' }),
       {
         id: 'feat-in-psi',
         source: 'feat',

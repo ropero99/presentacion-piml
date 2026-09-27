@@ -83,8 +83,26 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
         aria-label={`${pad(index + 1)} de ${pad(total)}`}
       >
         <div className="slide-content">
-          <p className="slide-kicker">{slide.kicker}</p>
-          {slide.title ? <h2>{slide.title}</h2> : null}
+          <MathJax>
+            <p className="slide-kicker">{slide.kicker}</p>
+            {slide.title ? <h2>{slide.title}</h2> : null}
+            {slide.lead ? (
+              <ul className="slide-list slide-list-lead">
+                {slide.lead.map((b, i) => (
+                  <li key={i}>
+                    <RichText text={b} />
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {slide.refs ? (
+              <ul className="slide-references slide-references-lead">
+                {slide.refs.map((r, i) => (
+                  <li key={i}>{r}</li>
+                ))}
+              </ul>
+            ) : null}
+          </MathJax>
           <figure className="slide-figure">
             <div className="rf-host">
               <Diagram active title={slide.diagramTitle} legend={slide.legend} />
