@@ -47,3 +47,10 @@ Runtime harness (build required first): `npm run build && node src/scripts/captu
 - [x] 4.3 (R9) mrPipeline modelo: structure box carries eq chip `d/dt [q, p] = J ∇H_θ`; StructureNode renders `data.eq`; title 0.74rem; box bg 0.08.
 - [x] 4.4 (R10) mrPipeline datos: feat (430,470) with targetHandles t-datos 25%/t-fis 75%; fis (40,470) straight edge; feedback bezier through empty canvas.
 - [x] 4.5 (RV) build + 33 captures + vision review of slides 03/08/09/11 (all PASS) + PDF in place (33 pages) + commit 80b49b9.
+
+## Phase 5: Round-5 diagram tweaks (post-round-4 feedback)
+
+- [x] 5.1 (R7 scope) `.rf-title` chip 0.78→0.98rem — diagram caption readable deck-wide.
+- [x] 5.2 (new R11) Door-1 diagram: Diff. automática box BESIDE Comparar con datos (row cmp→ad→opt at y=92/172; cmp→ad edge explicit; fis→ad bezier under the row; loss line under ad row). Commit 346798e.
+- [x] 5.3 (new R12) Door-3 diagram: Features box UNDER Datos/entrenamiento (185,430); fis horizontal edge (t-fis anchor); feat→ψ_fis near-vertical bezier; redundant datos→feat edge removed (datos keeps its direct short hook to ψ_fis). Commit 346798e.
+- [x] 5.4 (RV) build + 33 captures + vision review slides 03/06/11 PASS + PDF in place (33 pages).
