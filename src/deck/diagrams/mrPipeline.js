@@ -259,19 +259,29 @@ export function buildMrDiagram({ entry }) {
   });
 
   if (entry === 'ad') {
+    // ①: fila horizontal cmp → ad (al lado, pedido ronda 5) → opt;
+    // la física entra a la autodiff por bezier bajo la fila; flecha fina
+    // baja de la autodiff a la línea de pérdida (estilo TikZ).
     nodes.push({
       id: 'ad',
       type: 'deck',
-      position: { x: BOX_X, y: 252 },
+      position: { x: BOX_X + 260, y: 92 },
       data: {
         color: AZUL,
         dashed: true,
         heavy: true,
         title: 'Diff. automática',
         lines: ['ẋ̂_θ, ẍ̂_θ → r_θ', BADGE],
+        targetHandles: [
+          { id: 't-cmp', yPct: 30 },
+          { id: 't-fis', yPct: 80 },
+        ],
       },
     });
-    edges.push(makeEdge('cmp', 'ad', { color: AZUL }));
+    nodes.find((n) => n.id === 'ad').data.targetHandles = [
+      { id: 't-cmp', yPct: 30 },
+      { id: 't-fis', yPct: 80 },
+    ];
   }
 
   // ── Física (esqueleto aprobado) + su flecha al punto de entrada ──
@@ -280,7 +290,7 @@ export function buildMrDiagram({ entry }) {
       ? { x: 640, y: 360 } // bajo la salida: flecha corta a la caja autodiff
       : entry === 'modelo'
         ? { x: 240, y: 415 } // bajo la red: flecha corta a la estructura
-        : { x: 40, y: 470 }; // a la izquierda de feat: arista recta t-fis
+        : { x: 0, y: 441 }; // a la izquierda de feat: arista horizontal a t-fis
   nodes.push({
     id: 'fis',
     type: 'deck',
@@ -293,7 +303,7 @@ export function buildMrDiagram({ entry }) {
   nodes.push({
     id: 'opt',
     type: 'deck',
-    position: { x: BOX_X + 240, y: entry === 'ad' ? 172 : 176 },
+    position: { x: BOX_X + (entry === 'ad' ? 520 : 240), y: entry === 'ad' ? 172 : 176 },
     data: { color: ROJO, title: 'Minimización', lines: ['→ θ*'] },
   });
 
@@ -307,7 +317,7 @@ export function buildMrDiagram({ entry }) {
   nodes.push({
     id: 'loss',
     type: 'lossline',
-    position: { x: entry === 'ad' ? 840 : BOX_X - 30, y: entry === 'ad' ? 435 : 310 },
+    position: { x: entry === 'ad' ? BOX_X + 260 : BOX_X - 30, y: entry === 'ad' ? 360 : 310 },
     data: { lines: lossLines, color: 'var(--fg)' },
   });
 
@@ -325,12 +335,20 @@ export function buildMrDiagram({ entry }) {
 
   if (entry === 'ad') {
     // ①: salida → comparación → autodiff (residuo) → minimización;
-    // la física entra a la autodiff por el residuo; una flecha fina baja
-    // de la autodiff a la línea de pérdida (estilo TikZ).
+    // la física entra a la autodiff por bezier bajo la fila (sin cruzar
+    // la caja de comparación); flecha fina baja a la línea de pérdida.
     edges.push(
       makeEdge('out', 'cmp', { color: GRIS_CLARO }),
+      makeEdge('cmp', 'ad', { color: AZUL, targetHandle: 't-cmp' }),
       makeEdge('ad', 'opt', { color: AZUL, offset: 10 }),
-      makeEdge('fis', 'ad', { color: NAVY }),
+      {
+        id: 'fis-ad',
+        source: 'fis',
+        target: 'ad',
+        targetHandle: 't-fis',
+        type: 'default',
+        style: { stroke: NAVY, strokeWidth: 2 },
+      },
       thinArrow('ad', 'loss'),
     );
   } else if (entry === 'modelo') {
@@ -342,29 +360,25 @@ export function buildMrDiagram({ entry }) {
     );
   } else {
     // ③: la física entra a los datos/features; ψ_fis alimenta la entrada.
-    // Geometría ordenada: feat bajo la columna de entrada con dos anclajes
-    // de llegada (datos arriba-izquierda, fis a la izquierda en fila recta);
-    // el retorno feat→in-psi es bezier corta por el corredor libre.
+    // Geometría ronda 5: feat DEBAJO de Datos/entrenamiento → conector
+    // casi vertical a ψ_fis (sin diagonal); fis a la izquierda en fila.
+    // Datos ya alimenta a ψ_fis con su arista corta directa.
     nodes.push({
       id: 'feat',
       type: 'deck',
-      position: { x: 430, y: 470 },
+      position: { x: 185, y: 430 },
       data: {
         color: TEAL,
         dashed: true,
         heavy: true,
         title: 'Features ψ_fis·f_LF',
         lines: ['→ x̃ aumentada', BADGE],
-        targetHandles: [
-          { id: 't-datos', yPct: 25 },
-          { id: 't-fis', yPct: 75 },
-        ],
+        targetHandles: [{ id: 't-fis', yPct: 50 }],
       },
     });
     edges.push(
       makeEdge('out', 'cmp', { color: GRIS_CLARO }),
       makeEdge('cmp', 'opt', { color: AZUL }),
-      makeEdge('datos', 'feat', { color: TEAL, targetHandle: 't-datos' }),
       makeEdge('fis', 'feat', { color: NAVY, targetHandle: 't-fis' }),
       {
         id: 'feat-in-psi',
