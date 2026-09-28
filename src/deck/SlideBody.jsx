@@ -176,6 +176,11 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
                 </figure>
               ) : null}
             </div>
+            {slide.notes ? (
+              <p className="slide-notes">
+                <RichText text={slide.notes} />
+              </p>
+            ) : null}
             {slide.refs ? (
               <ul className="slide-references">
                 {slide.refs.map((r, i) => (

@@ -692,6 +692,29 @@ p {
   grid-template-columns: minmax(0, 1fr);
 }
 
+/* Door 2 (round 6) carries 4 eq boxes + strip + notes + refs: compact the
+   boxes slightly so the whole stack fits 1080p without clipping refs. */
+.slide[data-id='d1-puerta2'] .eq-box {
+  padding: 5px clamp(10px, 1.2vw, 14px);
+}
+
+.slide[data-id='d1-puerta2'] .eq-box .eq-conn {
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.slide[data-id='d1-puerta2'] .eq-box .eq-display {
+  font-size: clamp(0.95rem, 1.25vw, 1.12rem);
+}
+
+.slide[data-id='d1-puerta2'] .derivation-strip {
+  margin: 0 0 6px;
+}
+
+.slide[data-id='d1-puerta2'] .slide-notes {
+  margin: 8px 0 0;
+}
+
 /* ---------- Derivation strip (door 2, AD-5) ---------- */
 /* One-line flex of chips reusing the .legend-chip / .legend-dot
    primitives; dot carries the purple architecture tone #7D3C98. */
@@ -878,6 +901,66 @@ p {
   border-radius: 8px;
   letter-spacing: 0.02em;
   white-space: nowrap;
+}
+
+/* Ronda 7 · variantes de zona para el diagrama HNN (puerta ②):
+   chip de fila (entrenamiento/predicción), panel de resalte y divisor. */
+.deck-label.is-chip {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.deck-label.is-panel {
+  border-radius: 14px;
+}
+
+.deck-label.is-divider {
+  border-top: 2px dashed rgba(27, 32, 41, 0.22);
+  height: 0;
+}
+
+/* Ronda 7 · bumps solo para el diagrama HNN (scoping por className en el
+   panel ReactFlow): cajas, texto y ecuaciones un paso más grandes, sin
+   tocar los otros diagramas ya afinados en rondas 4–5. */
+.flow-hnn .deck-node {
+  padding: 9px 12px;
+  min-width: 165px;
+  font-size: 0.78rem;
+  border-radius: 11px;
+}
+
+.flow-hnn .deck-node .node-title {
+  font-size: 0.84rem;
+  margin-bottom: 3px;
+}
+
+.flow-hnn .deck-node .node-bar {
+  height: 5px;
+  margin: -9px -12px 7px;
+  border-radius: 10px 10px 0 0;
+}
+
+.flow-hnn .deck-neuron {
+  width: 52px;
+  height: 52px;
+  font-size: 0.66rem;
+}
+
+.flow-hnn .deck-label {
+  font-size: 0.64rem;
+}
+
+.flow-hnn .deck-label.is-theta {
+  font-size: 0.8rem;
+}
+
+.flow-hnn .deck-label.is-badge {
+  font-size: 0.62rem;
+  padding: 3px 9px;
 }
 
 .deck-structurebox {

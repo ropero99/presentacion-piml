@@ -404,3 +404,211 @@ function thinArrow(source, target) {
     markerEnd: { type: 'arrowclosed', color: NAVY, width: 12, height: 12 },
   };
 }
+
+/**
+ * Puerta ② (ronda 7) — flujo completo de una Hamiltonian NN sobre el MR
+ * conservativo (c = 0), en 10 etapas con rama de predicción. Ajustes de
+ * ronda 7: bloque de entrada de la física resaltado con panel morado
+ * (autodiff + grad(H_θ) + ecuaciones de Hamilton), entrenamiento y
+ * predicción separados con chips + divisor, integrador numérico
+ * (preferiblemente simpléctico), L_HNN(θ) en toda la notación y cajas/
+ * texto más grandes con menos espacio vacío (scoping CSS .flow-hnn).
+ *   1 sistema físico → 2 datos → 3 conversión canónica → 4 entrada (q, p)
+ *   → 5 red (salida única H_θ) → 6 autodiff → 7 estructura Hamiltoniana
+ *   (★ LA FÍSICA ENTRA AQUÍ) → 8 comparar dinámicas → L_HNN(θ) → 9 θ → θ*
+ *   y rama 10: (q₀,p₀) → H_θ* → grad → ecuaciones de Hamilton → (q̇,ṗ)
+ *   → integrador → (q(t),p(t)) → x(t).
+ * Colores: azul = sistema/variables físicas, teal = datos, morado = red,
+ * Hamiltoniano, autodiff y estructura, naranja = L_HNN, rojo = optimización.
+ */
+const NARANJA = '#E67E22'; // L_HNN (loss, rojo suave/naranja)
+
+export function buildHnnDiagram() {
+  // Tamaño de neurona propio del diagrama HNN (el compartido es 46/22):
+  // cajas y texto más grandes (ronda 7) con la malla recalculada.
+  const HN = 52; // lado del círculo
+  const HG = 24; // separación vertical entre neuronas
+  const NET_Y0 = 140;
+
+  const nodes = [];
+  const edges = [];
+
+  // 0 · Panel de resalte del bloque donde entra la física (bajo los nodos).
+  nodes.push({
+    id: 'hnn-panel-fisica',
+    type: 'label',
+    position: { x: 914, y: 176 },
+    data: {
+      label: '',
+      variant: 'panel',
+      style: {
+        width: 412,
+        height: 152,
+        background: 'rgba(125, 60, 152, 0.07)',
+        border: '2px solid rgba(125, 60, 152, 0.30)',
+      },
+    },
+  });
+
+  // Chip de fila: entrenamiento (arriba).
+  nodes.push({
+    id: 'hnn-chip-train',
+    type: 'label',
+    position: { x: 0, y: 168 },
+    data: { label: 'ENTRENAMIENTO · ajuste de θ con L_HNN(θ)', variant: 'chip', color: NAVY },
+  });
+
+  // 1 · Sistema físico (conservativo)
+  nodes.push({
+    id: 'hnn-mr',
+    type: 'deck',
+    position: { x: 0, y: 200 },
+    data: {
+      color: NAVY,
+      title: 'Sistema físico',
+      lines: ['m·ẍ + k·x = 0', 'masa-resorte conservativo', 'c = 0 · estado: (x, ẋ)'],
+    },
+  });
+
+  // 2 · Datos medidos
+  nodes.push({
+    id: 'hnn-datos',
+    type: 'deck',
+    position: { x: 215, y: 218 },
+    data: { color: TEAL, title: 'Datos medidos', lines: ['(t_n, x_n, ẋ_n)'] },
+  });
+
+  // 3 · Conversión a variables canónicas
+  nodes.push({
+    id: 'hnn-conv',
+    type: 'deck',
+    position: { x: 408, y: 195 },
+    data: {
+      color: NAVY,
+      title: 'Conversión canónica',
+      lines: ['q_n = x_n', 'p_n = m·ẋ_n', '→ (q_n, p_n)'],
+    },
+  });
+
+  // 4 · Entrada de la HNN (dos nodos de estado)
+  nodes.push(neuron('hnn-in-q', 'q', NAVY, { x: 600, y: NET_Y0 }, {}));
+  nodes.push(neuron('hnn-in-p', 'p', NAVY, { x: 600, y: NET_Y0 + 2 * (HN + HG) }, {}));
+  const hnnInputIds = ['hnn-in-q', 'hnn-in-p'];
+
+  // 5 · Red neuronal (malla compacta, salida ÚNICA H_θ)
+  const hnnHiddenIds = [0, 1].map((l) =>
+    [0, 1, 2].map((r) => {
+      const id = `hnn-h${l + 1}-${r + 1}`;
+      nodes.push(
+        neuron(id, '', GRIS, { x: 686 + l * 76, y: NET_Y0 + r * (HN + HG) }, { fill: '#f6eff9' }),
+      );
+      return id;
+    }),
+  );
+  nodes.push(
+    neuron('hnn-out', 'H_θ', MORADO, { x: 848, y: NET_Y0 + HN + HG }, { fill: '#f6eff9', heavy: true }),
+  );
+  edges.push(...neuronMesh(hnnInputIds, hnnHiddenIds[0]));
+  edges.push(...neuronMesh(hnnHiddenIds[0], hnnHiddenIds[1]));
+  edges.push(...neuronMesh(hnnHiddenIds[1], ['hnn-out']));
+  nodes.push(layerLabel('hnn-cap', 'La red aprende el Hamiltoniano', 600, 112));
+  nodes.push(layerLabel('hnn-sal', 'salida única: H_θ(q, p)', 820, 288));
+  nodes.push(layerLabel('hnn-theta', 'θ = {W_ℓ, b_ℓ}_{ℓ=1}^L', 680, 356, 'theta'));
+
+  // 6 · Autodiff (dentro del panel de la física)
+  nodes.push({
+    id: 'hnn-autodiff',
+    type: 'deck',
+    position: { x: 934, y: 205 },
+    data: { color: MORADO, dashed: true, title: 'Autodiff', lines: ['∂H_θ/∂q', '∂H_θ/∂p'] },
+  });
+
+  // 7 · Estructura Hamiltoniana (punto de entrada de la física)
+  nodes.push({
+    id: 'hnn-estructura',
+    type: 'deck',
+    position: { x: 1128, y: 198 },
+    data: {
+      color: MORADO,
+      heavy: true,
+      title: 'Estructura Hamiltoniana',
+      lines: ['q̇_θ = ∂H_θ/∂p', 'ṗ_θ = −∂H_θ/∂q', 'ż_θ = J ∇H_θ'],
+    },
+  });
+  nodes.push({
+    id: 'hnn-badge',
+    type: 'label',
+    position: { x: 1148, y: 292 },
+    data: { label: '★ LA FÍSICA ENTRA AQUÍ', variant: 'badge', color: MORADO },
+  });
+
+  // 8 · Comparación con datos (L_HNN(θ))
+  nodes.push({
+    id: 'hnn-cmp',
+    type: 'deck',
+    position: { x: 1330, y: 200 },
+    data: {
+      color: NARANJA,
+      dashed: true,
+      title: 'Comparar dinámicas',
+      lines: ['(q̇_θ, ṗ_θ) vs (q̇_n, ṗ_n)', '→ L_HNN(θ)'],
+    },
+  });
+
+  // 9 · Optimización
+  nodes.push({
+    id: 'hnn-opt',
+    type: 'deck',
+    position: { x: 1564, y: 215 },
+    data: { color: ROJO, title: 'Optimización', lines: ['θ → θ*'] },
+  });
+
+  // 10 · Rama de predicción (después del entrenamiento, con θ*)
+  nodes.push({
+    id: 'hnn-divider',
+    type: 'label',
+    position: { x: 0, y: 398 },
+    data: { label: '', variant: 'divider', style: { width: 1740 } },
+  });
+  nodes.push({
+    id: 'hnn-chip-pred',
+    type: 'label',
+    position: { x: 0, y: 414 },
+    data: { label: 'PREDICCIÓN · después del entrenamiento · usando θ*', variant: 'chip', color: TEAL },
+  });
+  const predChain = [
+    { id: 'hnn-p1', x: 0, y: 458, color: NAVY, title: '(q₀, p₀)', lines: ['estado inicial'] },
+    { id: 'hnn-p2', x: 200, y: 460, color: MORADO, title: 'H_θ*', lines: [] },
+    { id: 'hnn-p3', x: 400, y: 460, color: MORADO, title: 'grad(H_θ*)', lines: [] },
+    { id: 'hnn-p4', x: 600, y: 448, color: MORADO, heavy: true, title: 'ecuaciones de Hamilton', lines: ['J ∇H_θ*'] },
+    { id: 'hnn-p5', x: 812, y: 460, color: NAVY, title: '(q̇, ṗ)', lines: [] },
+    { id: 'hnn-p6', x: 1010, y: 452, color: GRIS, title: 'integrador numérico', lines: ['preferiblemente simpléctico'] },
+    { id: 'hnn-p7', x: 1250, y: 458, color: NAVY, title: '(q(t), p(t))', lines: [] },
+    { id: 'hnn-p8', x: 1445, y: 458, color: NAVY, title: 'x(t) = q(t)', lines: [] },
+  ];
+  predChain.forEach((p) => {
+    nodes.push({
+      id: p.id,
+      type: 'deck',
+      position: { x: p.x, y: p.y },
+      data: { color: p.color, title: p.title, lines: p.lines, ...(p.heavy ? { heavy: true } : {}) },
+    });
+  });
+  for (let i = 0; i < predChain.length - 1; i += 1) {
+    edges.push(makeEdge(predChain[i].id, predChain[i + 1].id, { color: NAVY }));
+  }
+
+  // Aristas de la fila principal (izquierda → derecha, colores por rol)
+  edges.push(
+    makeEdge('hnn-mr', 'hnn-datos', { color: NAVY }),
+    makeEdge('hnn-datos', 'hnn-conv', { color: TEAL }),
+    makeEdge('hnn-conv', 'hnn-in-q', { color: NAVY }),
+    makeEdge('hnn-conv', 'hnn-in-p', { color: NAVY }),
+    makeEdge('hnn-out', 'hnn-autodiff', { color: MORADO }),
+    makeEdge('hnn-autodiff', 'hnn-estructura', { color: MORADO }),
+    makeEdge('hnn-estructura', 'hnn-cmp', { color: NARANJA }),
+    makeEdge('hnn-cmp', 'hnn-opt', { color: ROJO }),
+  );
+
+  return { nodes, edges };
+}

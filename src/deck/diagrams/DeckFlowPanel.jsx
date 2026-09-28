@@ -26,6 +26,7 @@ export default function DeckFlowPanel({
   active,
   extraNodeTypes,
   extraEdgeTypes,
+  className,
 }) {
   return (
     <ReactFlowProvider>
@@ -37,6 +38,7 @@ export default function DeckFlowPanel({
         active={active}
         extraNodeTypes={extraNodeTypes}
         extraEdgeTypes={extraEdgeTypes}
+        className={className}
       />
     </ReactFlowProvider>
   );
@@ -213,7 +215,7 @@ const LABEL_BG = {
   borderRadius: 6,
 };
 
-function FlowCanvas({ flow, nodes, edges, title, active, extraNodeTypes, extraEdgeTypes }) {
+function FlowCanvas({ flow, nodes, edges, title, active, extraNodeTypes, extraEdgeTypes, className }) {
   const nodeType = useMemo(() => buildNodeType(flow), [flow]);
   const nodeTypes = useMemo(
     () => ({ deck: nodeType, ...(extraNodeTypes || {}) }),
@@ -241,6 +243,7 @@ function FlowCanvas({ flow, nodes, edges, title, active, extraNodeTypes, extraEd
       edges={edges}
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
+      className={className}
       fitView
       fitViewOptions={{ padding: 0.12 }}
       minZoom={0.35}
