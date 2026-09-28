@@ -32,14 +32,17 @@ export function NeuronNode({ data }) {
   );
 }
 
-/** Etiqueta de capa o de llave (texto plano, sin caja). */
+/** Etiqueta de capa, chip, panel de zona o divisor (texto plano o caja). */
 export function LabelNode({ data }) {
   const style =
-    data.variant === 'badge'
+    data.variant === 'badge' || data.variant === 'chip'
       ? { background: data.color, color: '#fff' }
       : { color: data.color };
   return (
-    <div className={`deck-label${data.variant ? ` is-${data.variant}` : ''}`} style={style}>
+    <div
+      className={`deck-label${data.variant ? ` is-${data.variant}` : ''}`}
+      style={{ ...style, ...(data.style || {}) }}
+    >
       {data.label}
     </div>
   );
