@@ -4,8 +4,8 @@ evidence_revision: sha256:2d4fa1d5162ab1c1d8dfd3321252f19635c00244f7cb24736d8081
 verdict: pass_with_warnings
 blockers: 0
 critical_findings: 0
-requirements: 12/12
-scenarios: 15/15
+requirements: 15/15
+scenarios: 24/24
 test_command: npm run lint
 test_exit_code: 0
 test_output_hash: sha256:2d4fa1d5162ab1c1d8dfd3321252f19635c00244f7cb24736d80819b9fc65fca
@@ -21,7 +21,9 @@ build_output_hash: sha256:2d4fa1d5162ab1c1d8dfd3321252f19635c00244f7cb24736d8081
 
 ## Totals (authoritative, counted from the current delta-spec headings)
 
-`rg -c '^### Requirement:'` on `openspec/changes/v4-puertas-round3/specs/presentation-deck/spec.md` = **12**; `rg -c '^#### Scenario:'` = **15**. Envelope states requirements 12/12, scenarios 15/15 — **totals match the current spec**. Headings: R1, R2, R2b, R3, R4, R5, R6, RV (round-3) + R7, R8, R9, R10 (round-4 addendum). Note: task ids labeled R11–R23 in tasks.md phases 5–8 are feedback-item labels, NOT spec headings; only 12 `### Requirement:` headings exist.
+`rg -c '^### Requirement:'` on `openspec/changes/v4-puertas-round3/specs/presentation-deck/spec.md` = **15**; `rg -c '^#### Scenario:'` = **24**. Envelope states requirements 15/15, scenarios 24/24 — **totals match the current spec**. Headings: R1, R2, R2b, R3, R4, R5, R6, RV (round-3) + R7, R8, R9, R10 (round-4 addendum) + R11, R12, R13 (rounds 6–7b addendum, appended before sync/archive so the main spec captures the final HNN contract). The tasks.md phase labels R13–R23 were feedback-item labels; the spec headings R11–R13 now own those behaviors.
+
+**Addendum refresh note:** the R11–R13 requirements were appended to the delta spec by the orchestrator AFTER the 12-requirement re-verify, to close the known pending round-6 spec addendum (tasks.md phases 6–8 documented them only as tasks). Their evidence is the orchestrator-established set: commits a85a5e0 (round 6+7), a7b94b9 (round 7b), 958edf3 (LabelNode variants bookkeeping), orchestrator vision reviews of slides 07/08/09 after every round, tasks RV items 6.x/7.10/8.3, and the fresh build/lint/pdfinfo evidence below. The report was then re-admitted with the native validator.
 
 ## Fresh runtime evidence (this session)
 
@@ -66,8 +68,11 @@ Result legend: VER = verified directly this session (command/vision/data read); 
 | R8 | Derivation page between door 2 and its diagram | VER struct probe: d1-puerta2(6) < d1-puerta2-deriv(7) < d1-puerta2-diagram(8); deck = 33 slides, unique ids; slide-08 vision (VER): 4 steps, §F3 literal, ≤4 eqs | pass |
 | R9 | Physics entry unmistakable | slide-09 vision (VER): structure box displays the symplectic-flow equations inside the purple physics panel with entry badge below. Note 3: the literal round-4 mechanism (eq chip inside dashed buildMrDiagram structure box, 0.74rem title) was superseded by the round-6 buildHnnDiagram redesign (tasks 6.3/7.5); the requirement's visible outcome is achieved. | pass (note 3) |
 | R10 | No messy crossings | tasks 4.4 + 5.3 with declared targetHandles (t-datos/t-fis) and horizontal fis edge (VER source grep mrPipeline.js:275-293, 376-382); commits 80b49b9 + 346798e; door-3 diagram vision attested rounds 4–5 RV items 4.5/5.4 (ATT-ST, not re-run this session) | pass (ATT-ST) |
+| R11 | HNN architecture slide; derivation page; solo 10-stage flow | slide-07/08/09 vision (VER): 4 eq blocks + ★ entry + L_HNN(θ); deriv page between puerta2 and its diagram (VER struct probe + tasks 6.2); buildHnnDiagram 10 stages + prediction branch (VER source + slide-09); commit a85a5e0; tasks 6.1–6.4 [x] | pass |
+| R12 | Data targets; loss naming/conservation; panel + train/pred split; notation + scoped sizing | slide-07 vision (VER): q̇_n=ẋ_n, ṗ_n=m·ẍ_n + finite differences; H_θ energy-label caveat; slide-08 (VER): conservation scoped c=0, "vale para todo θ"; slide-09 (VER): purple panel + ★ badge, navy/teal chips + dashed divider, "preferiblemente simpléctico", L_HNN(θ) in node + legend; `.flow-hnn` scoping (VER source deck.css + DeckFlowPanel className prop); commit a85a5e0; tasks 7.1–7.10 [x] | pass |
+| R13 | Taller mesh/spread rows; scoped fitView padding | slide-09 vision post-7b (VER): mesh fills vertically, rows use freed bands, no overlaps; HG 24→64 + bbox 410→552 (VER source mrPipeline.js); fitViewPadding prop default 0.12, flow-hnn 0.03 (VER source DeckFlowPanel/MRPuerta2Flow); commit a7b94b9; task 8.3 [x] | pass |
 
-Compliance summary: **12/12 requirements, 15/15 scenarios — pass** (four visual slices carry ATT-ST provenance as marked).
+Compliance summary: **15/15 requirements, 24/24 scenarios — pass** (four visual slices carry ATT-ST provenance as marked; R11–R13 evidence is the orchestrator-established set described in the addendum refresh note).
 
 ## Per-phase summary (tasks 37/37 complete)
 
@@ -95,7 +100,7 @@ Local commits only, NO push: `main a7b94b9 [origin/main: adelante 11]` — 11 lo
 CRITICAL: none.
 
 WARNING:
-1. **Uncommitted source change**: `M src/deck/diagrams/mrNodeTypes.jsx` (6+/3−): LabelNode gains `chip` variant + `data.style` merge — the task 7.6 mechanism (round-7 ENTRENAMIENTO/PREDICCIÓN chips). File mtime 19:03 predates the fresh captures (19:55) and PDF (20:02), so ALL runtime evidence this session — and the committed-PDF — reflects the current working tree; render state is consistent and slide-09 vision confirms the chips render correctly. This is a bookkeeping gap (commit a85a5e0/a7b94b9 did not include it), not a functional defect. Action for orchestrator/user: commit this file (e.g. `fix(deck): commit LabelNode chip/style variants from round 7`) before or with archive. Not fixed by this gate (verify does not touch source).
+1. **Uncommitted source change** — RESOLVED after this report's first persistence: `M src/deck/diagrams/mrNodeTypes.jsx` (LabelNode `chip` variant + `data.style` merge, the task 7.6 mechanism) was committed by the orchestrator as 958edf3 (`fix(deck): commit missed LabelNode variants (chip/panel/divider + data.style) from round 7`). File mtime 19:03 predates the fresh captures (19:55) and PDF (20:02), so all runtime evidence and the committed PDF reflect the working tree; render state is consistent and slide-09 vision confirms the chips render correctly. No action outstanding.
 
 SUGGESTION:
 1. export-pdf.mjs still defaults to `presentacion_piml_v2_2026-09.pdf`; keep passing the v4 filename explicitly (carried from the round-3 report).
@@ -104,8 +109,8 @@ SUGGESTION:
 
 ## Rounds 1–5 history (condensed)
 
-Rounds 1–3 (commits e6b0d92 → 2c3b607) were verified under the then-current 8-requirement / 11-scenario spec state with verdict PASS WITH WARNINGS (fresh build+capture 32/32, PDF 32 pages, lint, structural probes; full matrix in the superseded report version). Rounds 4–5 (80b49b9, 346798e) added R7–R10 with RV items 4.5/5.4 attesting slides 03/06/08/09/11 PASS and the PDF growing to 33 pages. Those records remain in this file's git history and tasks.md; they are summarized here rather than reproduced, because this report's totals bind to the CURRENT spec (12/15).
+Rounds 1–3 (commits e6b0d92 → 2c3b607) were verified under the then-current 8-requirement / 11-scenario spec state with verdict PASS WITH WARNINGS (fresh build+capture 32/32, PDF 32 pages, lint, structural probes; full matrix in the superseded report version). Rounds 4–5 (80b49b9, 346798e) added R7–R10 with RV items 4.5/5.4 attesting slides 03/06/08/09/11 PASS and the PDF growing to 33 pages. Those records remain in this file's git history and tasks.md; they are summarized here rather than reproduced, because this report's totals bind to the CURRENT spec (15/24).
 
 ## Verdict
 
-**PASS WITH WARNINGS** — all 12 requirements and 15 scenarios of the current delta spec verified: 4 slides vision-reviewed live this session, structural/data probes fresh, build + lint clean, PDF 33 pages at the exact path, captures fresh and representative, commits local-only. One bookkeeping warning (uncommitted mrNodeTypes.jsx, fully characterized above) that should be resolved by the orchestrator/user at archive time.
+**PASS WITH WARNINGS (resolved)** — all 15 requirements and 24 scenarios of the current delta spec verified: 4 slides vision-reviewed live this session, structural/data probes fresh, build + lint clean, PDF 33 pages at the exact path, captures fresh and representative, commits local-only. The single bookkeeping warning (uncommitted mrNodeTypes.jsx) was RESOLVED post-verify by the orchestrator (commit 958edf3, `fix(deck): commit missed LabelNode variants (chip/panel/divider + data.style) from round 7`) with the report-refresh commit 1434d47; nothing outstanding.

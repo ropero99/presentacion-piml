@@ -153,3 +153,71 @@ In the door-3 solo diagram, the Features box and the Física box form a clean bo
 - GIVEN the `d1-puerta3-diagram` slide at 1920x1080
 - WHEN visually reviewed
 - THEN no edge overlaps a box, the θ label is collision-free, and the feedback edge reads as a clean bow through empty space
+
+## ADDED Requirements (rounds 6–7b — HNN door-② final state)
+
+### Requirement: R11 — Door-② HNN architecture trio (round 6)
+
+The door-② strong form SHALL be presented as an HNN trio: slide `d1-puerta2` restructured as a 5-block architecture page (canonical state + physical H, f_θ ↦ H_θ as scalar learner, ★ physics entry with Autodiff + Hamilton equations + J, L_HNN(θ) + argmin θ*), a new derivation slide `d1-puerta2-deriv` from H to the MR ODE, and the door-② solo diagram rebuilt as a 10-stage HNN flow with a prediction branch (`buildHnnDiagram()`, colors: navy physical, teal data, purple HNN/autodiff/structure, orange L_HNN, red optimization). The damped system MUST NOT be mixed into door-② content.
+
+#### Scenario: HNN architecture slide restructured
+
+- GIVEN slide `d1-puerta2` at 1920x1080
+- WHEN rendered
+- THEN the four equation blocks and the message-key note present the HNN architecture (loss L_HNN(θ), argmin θ*) within the viewport with references visible
+
+#### Scenario: Derivation page inserted
+
+- GIVEN the SLIDES array
+- WHEN inspected
+- THEN `d1-puerta2-deriv` sits between `d1-puerta2` and `d1-puerta2-diagram` with the H → Hamilton-equation → MR-ODE → conservation chain
+
+#### Scenario: Solo 10-stage flow with prediction branch
+
+- GIVEN the `d1-puerta2-diagram` slide
+- WHEN rendered
+- THEN the flow shows the 10 training stages and a prediction branch chain ending in x(t), built by `buildHnnDiagram()`
+
+### Requirement: R12 — HNN final adjustments (round 7)
+
+The HNN slides and diagram SHALL carry the user's final adjustments: data targets named (q̇_n = ẋ_n, ṗ_n = m·ẍ_n, ṗ_n by finite differences when no acceleration is measured), H_θ explicitly NOT necessarily compared with energy labels (learned because its gradient must reproduce observed dynamics), energy conservation scoped to the conservative case c = 0 without external force, loss naming L_HNN(θ) everywhere, the physics-entry block (Autodiff + grad(H_θ) + Hamilton equations) highlighted with a purple panel and ★ badge, training and prediction visually separated (navy/teal chips + dashed divider), the integrator labeled "integrador numérico (preferiblemente simpléctico)", consistent notation (q, p, H_θ, θ, θ*, J, L_HNN), and larger diagram boxes/text scoped to this diagram.
+
+#### Scenario: Data-derived targets named
+
+- GIVEN the cost block of slide `d1-puerta2`
+- WHEN read or rendered
+- THEN the target derivation q̇_n = ẋ_n, ṗ_n = m·ẍ_n and the finite-difference fallback are stated
+
+#### Scenario: Loss naming and conservation scoping
+
+- GIVEN the HNN slides 7–9 and legend
+- WHEN inspected
+- THEN L_HNN(θ) is the only loss name, and the conservation statement scopes it to c = 0 without external force (in the HNN, for all θ)
+
+#### Scenario: Physics entry panel and train/pred separation
+
+- GIVEN the `d1-puerta2-diagram` slide at 1920x1080
+- WHEN visually reviewed
+- THEN the purple panel wraps Autodiff + Estructura Hamiltoniana + ★ badge, navy ENTRENAMIENTO and teal PREDICCIÓN chips with a dashed divider separate the rows, and the integrator reads "preferiblemente simpléctico"
+
+#### Scenario: Notation audit and scoped sizing
+
+- GIVEN the HNN trio and its diagram
+- WHEN inspected
+- THEN notation (q, p, H_θ, θ, θ*, J, L_HNN(θ)) is consistent, and the sizing bumps apply only under the `flow-hnn` CSS scope
+
+### Requirement: R13 — HNN diagram vertical fill (round 7b)
+
+The door-② solo diagram SHALL use the vertical canvas: mesh neuron gap enlarged (24→64), rows spread (bounding height 410→552), and the panel gains a `fitViewPadding` prop (default 0.12 preserved for other diagrams; `flow-hnn` passes 0.03) for a larger fitView zoom — structure unchanged.
+
+#### Scenario: Taller mesh and spread rows
+
+- GIVEN the `d1-puerta2-diagram` slide at 1920x1080
+- WHEN visually reviewed
+- THEN the mesh fills its block vertically, the rows use the freed blank bands, and no element overlaps
+
+#### Scenario: Scoped fitView padding
+
+- GIVEN the DeckFlowPanel component
+- WHEN inspected
+- THEN `fitViewPadding` defaults to 0.12 and only the HNN flow passes 0.03, leaving rounds 4–5 diagram tuning untouched
