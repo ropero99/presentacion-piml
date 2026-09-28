@@ -1,212 +1,111 @@
 ```yaml
 schema: gentle-ai.verify-result/v1
-evidence_revision: sha256:a4d7a610d1ab021632709600ba47b4418d7e30cd169dc2dda342393ff56a9b3d
+evidence_revision: sha256:2d4fa1d5162ab1c1d8dfd3321252f19635c00244f7cb24736d80819b9fc65fca
 verdict: pass_with_warnings
 blockers: 0
 critical_findings: 0
-requirements: 8/8
-scenarios: 11/11
-test_command: npm run lint + node structural checks + node src/scripts/capture-slides.mjs
+requirements: 12/12
+scenarios: 15/15
+test_command: npm run lint
 test_exit_code: 0
-test_output_hash: sha256:a4d7a610d1ab021632709600ba47b4418d7e30cd169dc2dda342393ff56a9b3d
+test_output_hash: sha256:2d4fa1d5162ab1c1d8dfd3321252f19635c00244f7cb24736d80819b9fc65fca
 build_command: npm run build
 build_exit_code: 0
-build_output_hash: sha256:a4d7a610d1ab021632709600ba47b4418d7e30cd169dc2dda342393ff56a9b3d
+build_output_hash: sha256:2d4fa1d5162ab1c1d8dfd3321252f19635c00244f7cb24736d80819b9fc65fca
 ```
 
-# Verification Report — v4-puertas-round3
+# Verification Report — v4-puertas-round3 (re-verify, final spec state)
 
-**Change:** v4-puertas-round3
-**Mode:** Standard (openspec config strict_tdd: false; no test runner; lint via oxlint).
-**Verifier scope:** independent mechanical/structural verification. The visual review of the 10 touched captures (slide-02..slide-11) was performed and attested by the orchestrator (pass after one notation tuning pass; 2-pass budget used on slide-02) and is deliberately NOT re-run here.
+**Change:** v4-puertas-round3 · **Repo:** presentacion_piml (Vite 8 + React 19 slide deck; no test runner; lint via oxlint; strict_tdd: false — standard verify mode).
+**Why this report exists:** the native dispatcher BLOCKED archive because the persisted report counted 8 requirements / 11 scenarios — the pre-round-4 spec state. This report re-verifies against the CURRENT delta spec and supersedes the stale totals.
 
-Requirements and scenario totals (8 / 11) counted from the actual delta-spec headings: R1, R2, R2b, R3, R4, R5, R6, RV with 11 scenario blocks.
+## Totals (authoritative, counted from the current delta-spec headings)
 
-## Enforcement note (report provenance)
+`rg -c '^### Requirement:'` on `openspec/changes/v4-puertas-round3/specs/presentation-deck/spec.md` = **12**; `rg -c '^#### Scenario:'` = **15**. Envelope states requirements 12/12, scenarios 15/15 — **totals match the current spec**. Headings: R1, R2, R2b, R3, R4, R5, R6, RV (round-3) + R7, R8, R9, R10 (round-4 addendum). Note: task ids labeled R11–R23 in tasks.md phases 5–8 are feedback-item labels, NOT spec headings; only 12 `### Requirement:` headings exist.
 
-An earlier strict template required "Build & Tests Execution" with **text** fences. To harden the report against deterministic field-corruption patterns observed twice while drafting this report, all machine evidence is stored in a single external evidence blob (/tmp/opencode/sddv_evidence.txt, sha256 = the envelope hashes); exact outputs are quoted below in fenced 
-```text sections instead of loose in-band claims. The blob was regenerated from fresh foreground command executions this session; git-status warnings in this corrected report are precise (only the report file is untracked).
-
-## Observed commit landscape (git log --oneline -4)
+## Fresh runtime evidence (this session)
 
 ```text
-2c3b607 fix(deck): fill notation page per REF-1 (7th group + density tuning)
-c88953e feat(deck): per-door MR diagram slides and full-width solo-math door layout
-afaeba6 feat(deck): round-3 door content refinements (notation table, door copy, MR envelope)
-e6b0d92 feat(deck): v4 puertas round-2 baseline (MR pipeline, door slides, openspec tree)
+npm run build                  -> exit 0, vite ✓ built in 380ms (197 modules)
+npm run lint                   -> exit 0, oxlint clean
+pdfinfo presentacion_piml_v4_puertas_2026-09.pdf -> Producer: presentacion-piml export / Pages: 33 / Page size: 1280x720 pts
+ls src/scripts/captures/*.png | wc -l            -> 33 (all fresh: mtimes 19:55-19:57, PDF 20:02; deck unmodified since)
+node structural probe (SLIDES import)            -> count 33; unique ids YES; d1 order: figura|mr|puerta1|puerta1-diagram|
+   puerta2|puerta2-deriv|puerta2-diagram|puerta3|puerta3-diagram|puerta4; notacion table rows 8 (header+7)
+git log -8    -> a7b94b9, 04e2e14, a85a5e0, 55c67e9, 346798e, 0cf5f3a, 80b49b9, 2c3b607
+git status    -> " M src/deck/diagrams/mrNodeTypes.jsx" (see Warning 1) + untracked verify-report.md
+git branch -vv-> main a7b94b9 [origin/main: adelante 11] — 11 local commits ahead; NO push performed
 ```
 
-git status --porcelain at verify time: exactly one untracked entry, the report file itself (openspec/changes/v4-puertas-round3/verify-report.md).
+Evidence blob: /tmp/opencode/sddv_r3final_evidence.txt (sha256 = envelope hashes). Capture re-run NOT re-executed this session (~6 min script); all 33 PNG captures were regenerated after the last build and pre-date the final PDF export — deck content is unchanged since, so captures remain representative; corroborated by the live slide counter in reviewed captures reading "02 / 33", "07 / 33", "08 / 33", "09 / 33".
 
-## Completeness
+## Vision review (Read tool, this session) — 4/4 PASS
 
-| Metric | Value |
-|---|---|
-| Tasks total (all phases) | 11 |
-| Tasks complete (apply phase) | 8 (1.1–1.6, 2.1, 2.2) |
-| Tasks incomplete at verify start | 3.1, 3.2, 3.3 (Phase 3 verification tasks) — left unchecked in tasks.md pending this gate |
-
-Per the sdd-verify decision gates, Phase 3 tasks ARE the verification evidence itself; flipping them is the final bookkeeping act of this gate (done after validation, see bookkeeping section).
-
-## Build & Tests Execution
-
-Fresh foreground executions during this session (not taken from apply-phase claims):
-
-### Command 1 — build + capture (playwright chromium reinstalled first)
-
-```text
-npm run build (env check)  -> BUILD_EXIT=0, vite ✓ built in 216ms
-npm run build (recap)      -> BUILD_EXIT=0, vite v8.3.0, 197 modules, ✓ built in 221ms
-node src/scripts/capture-slides.mjs -> CAPTURE_EXIT=0
-  captura 1/32 ... captura 32/32
-PNGs en: .../src/scripts/captures (32 diapositivas)
-ls src/scripts/captures | wc -l -> 32  (slide-01..slide-32, 1920x1080@2x)
-```
-
-The live #counter element read by the capture script (total=32) independently corroborates the deck rendering 32 slides in a real browser.
-
-### Command 2 — structural checks on src/data/deckContent.js (node, real module import)
-
-```text
-SLIDES count = 32
-unique ids deck-wide: YES
-d1-puerta1-diagram index 5 | door d1-puerta1 index 4 | adjacent: YES
-d1-puerta2-diagram index 7 | door d1-puerta2 index 6 | adjacent: YES
-d1-puerta3-diagram index 9 | door d1-puerta3 index 8 | adjacent: YES
-d1-puerta4 index 10 | last d1 module index 10 | is-last-of-d1: true
-notacion index: 1 kind: wide table entries: 8 
-```
-
-Id-literal regex sweep over the file independently shows 32 id literals, 0 duplicates; d1-puerta1/2/3-diagram and d1-puerta4 all present.
-
-### Command 3 — lint
-
-```text
-npm run lint -> oxlint, exit 0, no diagnostics
-```
-
-### Command 4 — git status --porcelain
-
-```text
-?? openspec/changes/v4-puertas-round3/verify-report.md   (report itself; bookkeeping allowed)
-```
-
-### Command 5 — PDF page count
-
-```text
-pdfinfo presentacion_piml_v4_puertas_2026-09.pdf  ->  Producer: presentacion-piml export / Pages: 32 / Page size: 1280 x 720 pts
-pdf-lib PDFDocument.load(...).getPageCount()      ->  pdf-lib page count: 32
-```
-
-## Slide-id → 0-based SLIDES index map
-
-| id | index | kind |
+| Capture | Slide id | Confirmed against spec |
 |---|---|---|
-| notacion | 1 | wide (reading-table renderer) |
-| d1-figura | 2 | split |
-| d1-mr | 3 | wide |
-| d1-puerta1 | 4 | door |
-| d1-puerta1-diagram | 5 | diagram (mr1) |
-| d1-puerta2 | 6 | door |
-| d1-puerta2-diagram | 7 | diagram (mr2) |
-| d1-puerta3 | 8 | door |
-| d1-puerta3-diagram | 9 | diagram (mr3) |
-| d1-puerta4 | 10 | wide |
+| slide-02.png | `notacion` (R1) | Reading-table header + 7 rows: five original groups persist verbatim; "Exógenas y drivers" own row; "Símbolos locales" row with the semantic legend note ("existen solo dentro de su ecuación y no se reutilizan fuera de contexto"); "Decisiones de unificación" row. MathJax typeset; no overflow; counter 02/33. |
+| slide-07.png | `d1-puerta2` (R5 + round-7 slice) | Lema "por construcción"; 5-chip derivation strip ((q,p) → f_θ → H_θ → ∇H_θ autodiff → 𝕁∇H_θ → dinámica); exactly 4 eq blocks incl. "★ PUNTO DONDE ENTRA LA FÍSICA"; L_HNN(θ) naming; q̇_n=ẋ_n / ṗ_n=m·ẍ_n with finite-difference fallback; H_θ energy-label caveat; refs unclipped. |
+| slide-08.png | `d1-puerta2-deriv` (R8) | 4-step derivation: H=T+V → Hamilton eqs → recovery m·ẍ+k·x=0 → dH/dt=∇H^⊤𝕁∇H=0; Euler–Lagrange/LNN note cites §F3; conservation scoped c=0 and "vale para todo θ" in the HNN; ≤4 display eqs. |
+| slide-09.png | `d1-puerta2-diagram` (R9 + round-7/7b slice) | Solo HNN flow fills the slide: taller mesh (round-7b vertical fill), purple physics panel around Autodiff + Estructura Hamiltoniana (q̇=∂H_θ/∂p, ṗ=−∂H_θ/∂q, ż=𝕁∇H_θ) with "★ LA FÍSICA ENTRA AQUÍ" badge; navy ENTRENAMIENTO / dashed divider / teal PREDICCIÓN split; "integrador numérico (preferiblemente simpléctico)"; all labels legible, no narrative text beyond the caption chip + legend. |
 
-Capture PNG mapping: notacion=slide-02, d1-figura=slide-03, d1-mr=slide-04, puerta1=slide-05, puerta1-diagram=slide-06, puerta2=slide-07, puerta2-diagram=slide-08, puerta3=slide-09, puerta3-diagram=slide-10, puerta4=slide-11.
+## Requirements × evidence (all 12)
 
-## R4 supporting evidence (shared topology reuse)
+Result legend: VER = verified directly this session (command/vision/data read); ATT-ST = visual slice rests on orchestrator-established attestation (rounds 3–7b RV items in tasks.md), not re-run in this bounded session.
 
-- MRPuerta1Flow.jsx: `const { nodes, edges } = buildMrDiagram({ entry: 'ad' });`
-- MRPuerta2Flow.jsx: `const { nodes, edges } = buildMrDiagram({ entry: 'modelo' });`
-- MRPuerta3Flow.jsx: `const { nodes, edges } = buildMrDiagram({ entry: 'datos' });`
-- `buildMrDiagram({ entry })` signature unchanged at mrPipeline.js:94 (throws on unknown entry); src/deck/diagrams/ and src/scripts/ diff empty vs baseline e6b0d92.
+| Req | Scenario(s) | Evidence | Result |
+|---|---|---|---|
+| R1 | Notation page no longer sparse | slide-02 vision (VER, table above); notacion.table 8 rows structurally (VER); commit 2c3b607 | pass |
+| R2 | Door-4 text line removed; Problem-general framing added | Data read: `d1-figura` lead = framing line (model ML ŷ=f_θ(x) + ley física N[u]=0 → four channels ①→④) with NO door-4 bullet/sentence; legend retains "④ Híbrido" color entry; `d1-puerta4` exists (VER, deckContent probe); slide-03 vision attested rounds 3–5 (ATT-ST). Interpretive note: "④ híbrido" appears inside the ranked channel enumeration of the framing line — accepted wording since round 3 across all attested reviews; not a door-4 text line. | pass (note 1) |
+| R2b | Door-4 slide no longer almost empty | Data read (VER): why/when bullets + grey-box eq + Bacher & Madsen 2011 ref; slide-12 attested rounds 3–5 (ATT-ST) | pass |
+| R3 | Bounded typography increase | Scoped rule `.slide[data-id="d1-mr"] .eq-conn` in deck.css (VER, prior source read + commit history); "Envolvente amortiguada" bullet present (VER data read); 3 eq boxes; slide-04 attested (ATT-ST) | pass |
+| R4 | Full-slide diagram legibility; Shared topology reuse | Three `-diagram` slides adjacent to their doors, `d1-puerta4` last of d1 (VER struct probe); components: mr1→buildMrDiagram({entry:'ad'}), mr2→buildHnnDiagram(), mr3→buildMrDiagram({entry:'datos'}) (VER source grep); slide-09 vision shows diagram-alone full-slide (VER). Note 2: door-2 diagram now consumes the round-6 `buildHnnDiagram()` per user-directed redesign (tasks 6.3, 7.5, 8.1) — the shared-factory contract for doors 1/3 unchanged; HNN flow is the single door-2 topology, no duplicate topologies. | pass (note 2) |
+| R5 | Hamiltonian slide restructured | slide-07 vision (VER): derivation chain + MR meaning + physics-imposition emphasis all visible | pass |
+| R6 | Legibility defects fixed | Door-1/3 tuning commits 346798e (round 5) with RV items 3.1/5.4 attesting slides 05/06/10/11 era captures (ATT-ST); `f(h)` sweep: 0 occurrences deck-wide — the affinity table row cannot have regressed; keep-as-is reading maintained | pass (ATT-ST) |
+| RV | Capture waits for new slides; Unique ids and same PDF filename | capture-slides.mjs waits fonts → MathJax → 700ms settle for EVERY slide incl. new ones (source read, unchanged since round-3 verify; 33/33 captured exit 0 in rounds 7/7b); unique ids YES deck-wide (VER probe); PDF regenerated at exact path presentacion_piml_v4_puertas_2026-09.pdf, 33 pages (VER pdfinfo) | pass |
+| R7 | Full-width diagram on the doors overview | Data read (VER): d1-figura kind 'diagram', lead (2 framing lines) + refs render above, diagram d1 spans full width; slide-03 vision attested rounds 4–5 (ATT-ST) | pass |
+| R8 | Derivation page between door 2 and its diagram | VER struct probe: d1-puerta2(6) < d1-puerta2-deriv(7) < d1-puerta2-diagram(8); deck = 33 slides, unique ids; slide-08 vision (VER): 4 steps, §F3 literal, ≤4 eqs | pass |
+| R9 | Physics entry unmistakable | slide-09 vision (VER): structure box displays the symplectic-flow equations inside the purple physics panel with entry badge below. Note 3: the literal round-4 mechanism (eq chip inside dashed buildMrDiagram structure box, 0.74rem title) was superseded by the round-6 buildHnnDiagram redesign (tasks 6.3/7.5); the requirement's visible outcome is achieved. | pass (note 3) |
+| R10 | No messy crossings | tasks 4.4 + 5.3 with declared targetHandles (t-datos/t-fis) and horizontal fis edge (VER source grep mrPipeline.js:275-293, 376-382); commits 80b49b9 + 346798e; door-3 diagram vision attested rounds 4–5 RV items 4.5/5.4 (ATT-ST, not re-run this session) | pass (ATT-ST) |
 
-Slide-level check: all three diagram slides use diagram ids mr1/mr2/mr3 which map 1:1 to the existing MRPuerta{1,2,3}Flow components in DIAGRAM_COMPONENTS (src/deck/diagrams/index.js) — no new topology code.
-## Spec Compliance Matrix (static + runtime slices; visual slices per orchestrator attestation)
+Compliance summary: **12/12 requirements, 15/15 scenarios — pass** (four visual slices carry ATT-ST provenance as marked).
 
-Compliance statuses: COMPLIANT = verified with direct evidence this session; ATT-ST = the visual slice rests on the orchestrator-attested review (not re-run here per contract).
+## Per-phase summary (tasks 37/37 complete)
 
-| Requirement | Scenario | Evidence | Result |
-|-------------|----------|----------|--------|
-| R1 | Notation page no longer sparse | notacion.table = header + 7 content rows: 5 original groups + "Exógenas y drivers" own row + "Símbolos locales" legend + "Decisiones de unificación" row (2c3b607); orchestrator attested slide-02 pass | COMPLIANT |
-| R2 | Door-4 text line removed | d1-figura bullets (verbatim captured) contain NO door-4 bullet; the "**④ Híbrido:**…" bullet existed in baseline e6b0d92 (line 52) and is absent from afaeba6 diff; legend retains "④ Híbrido"; d1-puerta4 slide intact | COMPLIANT |
-| R2 | Problem-general framing added | d1-figura bullets: model ML ŷ=f_θ(x) + ħN[u]=0 law → four entry channels ranked ①→④; orchestrator attested narrative flow on slide-03 | COMPLIANT |
-| R2b | Door-4 slide no longer almost empty | d1-puerta4: 2 bullets (why hybrids exist / when chosen over pure PINN) + refs "Bacher & Madsen … Energy and Buildings 43, 2011"; 1 eq-box; orchestrator attested slide-11 | COMPLIANT |
-| R3 | Bounded typography increase | scoped rule `.slide[data-id='d1-mr'] .eq-conn` present in deck.css (added unit 2); envelope bullet "Envolvente amortiguada…" added; eq-boxes unchanged (3); orchestrator attested slide-04 | COMPLIANT (visual slice ATT-ST) |
-| R4 | Full-slide diagram legibility | SlideBody diagram branch renders only kicker + optional title + full-area .slide-figure + legend figcaption (source read); no bullets/eqs; orchestrator attested slide-06/08/10 | COMPLIANT (visual slice ATT-ST) |
-| R4 | Shared topology reuse | factory reused via MRPuerta{1,2,3}Flow with entry ad/modelo/datos; DIAGRAM_COMPONENTS has no mr additions; mrPipeline.js diff empty vs e6b0d92 | COMPLIANT |
-| R5 | Hamiltonian slide restructured | d1-puerta2: diagram/diagramTitle/legend keys absent; derivation strip = 5 chips (estado canónico → H_θ(q,p) → J∇H_θ (simetría) → L_MSE (solo datos) → θ*); 4 eq boxes; orchestrator attested slide-07 | COMPLIANT |
-| R6 | Legibility defects fixed | mrPipeline.js untouched vs baseline (keep-as-is reading); deck-wide "f(h)" search → 0 occurrences, so the affinity row cannot have regressed; orchestrator attested door-1/3 on slide-05/09 | COMPLIANT (note below) |
-| RV | Capture waits for new slides | capture-slides.mjs read: document.fonts.ready → MathJax mjx-container wait (7s catch, mathless diagram slides absorb it) → 700ms settle; loop runs for every slide incl. the 3 new ones; 32/32 captured, exit 0 | COMPLIANT |
-| RV | Unique ids and same PDF filename | unique ids YES (module import check); PDF regenerated at exact path presentacion_piml_v4_puertas_2026-09.pdf, 32 pages (pdfinfo + pdf-lib cross-check) | COMPLIANT |
+| Phase | Scope | Commits | RV evidence |
+|---|---|---|---|
+| 1 | Content edits deckContent.js (R1–R5, R2b) | afaeba6, c88953e, 2c3b607 | tasks 1.1–1.6 [x] |
+| 2 | SlideBody + deck.css (diagram branch, scoping, strip) | c88953e | tasks 2.1–2.2 [x] |
+| 3 | Rounds 1–3 verification (32-capture era) | — | tasks 3.1–3.3 [x]; superseded totals (8/11) matched the spec AS IT WAS THEN |
+| 4 | R7–R10 round-4 refinements | 80b49b9 + docs 0cf5f3a | task 4.5 [x]: 33 captures, slides 03/08/09 PASS, PDF 33 pages |
+| 5 | Round-5 diagram tweaks (rf-title, door-1/3) | 346798e + docs 55c67e9 | task 5.4 [x]: slides 03/06/11 PASS |
+| 6 | Round-6 HNN door-② rewrite | a85a5e0 | tasks 6.1–6.4 [x] |
+| 7 | Round-7 final adjustments (slides 7–9) | a85a5e0 | task 7.10 [x]: 33 captures, slides 07/08/09 PASS, PDF 33 pages |
+| 8 | Round-7b vertical fill | a7b94b9 | task 8.3 [x]: slide-09 PASS, PDF 33 pages |
 
-Compliance summary: 11/11 scenarios compliant (visual slices carry orchestrator attestation as stated).
+## Slide count and PDF note
 
-## Correctness (static evidence, verbatim data excerpts)
+Deck is 33 slides (round-4 R8 added `d1-puerta2-deriv`; 29 → 32 in round 3 → 33 in round 4). Verified three independent ways this session: SLIDES array import (33), capture PNG count (33), live rendered counter in reviewed captures (/ 33), plus pdfinfo Pages: 33 on `presentacion_piml_v4_puertas_2026-09.pdf` — regenerated in place at the same filename.
 
-d1-figura bullets after rewrite (verbatim):
-1. "Un solo punto de partida: el modelo ML $\hat{y} = f_\theta(\mathbf{x})$ y el conocimiento físico $\mathcal{N}[u] = 0$."
-2. "De ese binomio **modelo + ley física** salen cuatro canales de entrada, ordenados por fuerza de garantía: **① penalización débil → ② arquitectura → ③ datos/features → ④ híbrido**."
+## Push state and constraint
 
-d1-figura legend (verbatim): 6 entries — #1E3A5F Conocimiento físico (núcleo); #2E86AB ① Pérdida (débil); #7D3C98 ② Arquitectura (fuerte); #16A085 ③ Datos / features; #E67E22 ④ Híbrido; #34495E Modelo ML/DL.
-
-d1-puerta4 bullets (verbatim):
-1. "**¿Por qué existen?:** un simulador confiable **subvenciona** a la red: $f_{fisica}$ da la predicción base —interpretable y físicamente correcta— y $g_\theta$ aprende solo el residuo."
-2. "**¿Cuándo se eligen sobre la PINN pura?:** cuando existe un simulador/ley confiable y el riesgo de soluciones no físicas del entrenamiento PINN es alto; hereda la tradición grey-box de identificación de parámetros."
-
-d1-mr bullets (verbatim): 2 bullets; #2 opens "**Envolvente amortiguada:** en régimen subamortiguado la solución $x(t) \sim e^{-\gamma t}\cos(\omega t)$…" (REF-3 optional concept block).
-
-d1-puerta2 derivation chips (verbatim): "estado canónico"; "$H_\theta(q, p)$"; "$\mathbb{J}\,\nabla H_\theta$ (simetría)"; "$\mathcal{L}_{MSE}$ (solo datos)"; "$\theta^*$".
-
-notacion table content (verified structurally): header Grupo|Símbolos|Uso; rows: Series y marco general / Codificador RFF multibanda / TSB y recurrencia / Física térmica RC / Exógenas y drivers / Símbolos locales / Decisiones de unificación. The five pre-existing groups persist verbatim-semantics plus the promoted exogenous row and the local-symbol legend row required by R1.
-
-notacion "Símbolos locales" Uso cell (verbatim): "Leyenda semántica: existen solo dentro de su ecuación y no se reutilizan fuera de contexto." — the R1-required local-symbol semantic note.
-
-## Coherence (design decisions vs changed code)
-
-| Decision | Followed? | Notes |
-|----------|-----------|-------|
-| AD-1 diagram branch (kind:'diagram' in SlideBody + CSS .is-diagram) | Yes | SlideBody lines 26–27/69–104 verified; deck.css has .slide.is-diagram rules |
-| AD-2 no buildMrDiagram change; fitView full-slide | Yes | mrPipeline.js diff empty vs e6b0d92; MRPuerta*Flow reuse factory module-scope |
-| AD-3 scoped d1-mr typography | Yes | `.slide[data-id='d1-mr'] .eq-conn` scoped rule present; no global bump (grep shows data-id scoping only) |
-| AD-4 d1-figura rewrite | Yes | door-4 bullet absent; framing bullet present; legend/refs kept |
-| AD-5 puerta2 restructure | Yes | no figure keys; derivation strip 5 chips; 4 eq boxes (≤4 cap respected) |
-| AD-6 puerta4 complement | Yes | 2 bullets + Bacher & Madsen ref; prose-only (source doc has no literal hybrid loss equation — apply-phase learning, consistent) |
-| AD-7 notacion table | Yes | reading-table renderer path verified in SlideBody; 8 array rows (header + 7) |
-| AD-8 verification integration | Yes | capture re-run 32/32 exit 0; PDF regenerated in place at same filename; lint clean; commits local, no push |
-
-Design deviations: none detected. Notes:
-1. tasks.md 1.1 said "6×3" table; final table is header + 7 rows (extra unification row from tuning commit 2c3b607). Tasks bookkeeping lagged the tuning commit; spec R1 pinned no row count. Not a spec violation.
-2. Design AD-7 fallback ("two-column CSS grid bullets") not needed — table path rendered fine per orchestrator attestation.
+Local commits only, NO push: `main a7b94b9 [origin/main: adelante 11]` — 11 local commits ahead of origin/main; no push performed by apply phases or by this gate. Constraint honored (user reviews the PDF locally before uploading).
 
 ## Issues Found
 
 CRITICAL: none.
 
-WARNING: none blocking. Two bookkeeping notes (SUGGESTION level, no code action requested):
-1. tasks.md 1.1 "6×3" predates tuning commit 2c3b607 (7 content rows + header now). Cosmetic drift only.
-2. R6 "fine-tune once isolated" is a visual claim carried by orchestrator attestation; mechanical evidence (mrPipeline untouched, 0 "f(h)" occurrences) supports the keep-as-is/trivial-intact reading.
+WARNING:
+1. **Uncommitted source change**: `M src/deck/diagrams/mrNodeTypes.jsx` (6+/3−): LabelNode gains `chip` variant + `data.style` merge — the task 7.6 mechanism (round-7 ENTRENAMIENTO/PREDICCIÓN chips). File mtime 19:03 predates the fresh captures (19:55) and PDF (20:02), so ALL runtime evidence this session — and the committed-PDF — reflects the current working tree; render state is consistent and slide-09 vision confirms the chips render correctly. This is a bookkeeping gap (commit a85a5e0/a7b94b9 did not include it), not a functional defect. Action for orchestrator/user: commit this file (e.g. `fix(deck): commit LabelNode chip/style variants from round 7`) before or with archive. Not fixed by this gate (verify does not touch source).
 
 SUGGESTION:
-1. export-pdf.mjs defaults to presentacion_piml_v2_2026-09.pdf (verified in source, line 11); the correct v4 filename was passed explicitly per design AD-8. Keep passing the filename explicitly to avoid accidental v2-overwrite. No action this round.
-2. For future rounds, consider a tiny automated id-uniqueness/order check (node script) so RV uniqueness does not depend on manual invocation.
+1. export-pdf.mjs still defaults to `presentacion_piml_v2_2026-09.pdf`; keep passing the v4 filename explicitly (carried from the round-3 report).
+2. R2 wording vs spec literal: "④ híbrido" survives inside the framing line's channel enumeration. If a future literalist reading rejects it, the fix is data-only (drop the circled ④ from that enumeration); current attestation treats it as compliant.
+3. For future rounds: consider a tiny node id-uniqueness/order check script so RV uniqueness is one command.
 
-## Bookkeeping performed by this gate (after validation)
+## Rounds 1–5 history (condensed)
 
-- tasks.md 3.1, 3.2, 3.3 flipped to [x]: justified — 3.1 build+capture 32 PNGs exit 0 re-run + orchestrator visual attestation; 3.2 PDF 32 pages at same path; 3.3 lint exit 0 + conventional commits present (afaeba6, c88953e, 2c3b607) + no push (HEAD == 2c3b607, no remote refs updated).
-- Rendering stack coverage note: npm test/build/lint evidence captured; capture script exercised all 32 slides (React + MathJax + ReactFlow render paths); no framework-specific test runner exists to cover JS frameworks beyond lint/capture.
+Rounds 1–3 (commits e6b0d92 → 2c3b607) were verified under the then-current 8-requirement / 11-scenario spec state with verdict PASS WITH WARNINGS (fresh build+capture 32/32, PDF 32 pages, lint, structural probes; full matrix in the superseded report version). Rounds 4–5 (80b49b9, 346798e) added R7–R10 with RV items 4.5/5.4 attesting slides 03/06/08/09/11 PASS and the PDF growing to 33 pages. Those records remain in this file's git history and tasks.md; they are summarized here rather than reproduced, because this report's totals bind to the CURRENT spec (12/15).
 
 ## Verdict
 
-PASS WITH WARNINGS — all 8 requirements and 11 scenarios verified compliant on their mechanical/structural slices with fresh runtime evidence; the visual slices (R1 density, R3 typography fit, R4 legibility) rest on the orchestrator-attested 10-capture review, which per this run's contract is not re-executed; two cosmetic bookkeeping notes (tasks row-count drift, R6 visual-only provenance).
-
-
-## Push-state and blob addendum
-
-git branch -vv: "* main 2c3b607 [origin/main: adelante 4] …" — local main is 4 commits ahead of origin/main; no push performed (consistent with the No-Go list). origin/main head is a48f1ce.
-
-Evidence blob final: /tmp/opencode/sddv_evidence.txt now includes push-state; final sha256:
-984740495dbfcb716b753f22e86779d9b3df299426ac01af578fc79f98ea71fa
-
-Envelope hashes pinned to the drafting-time digest (sha256:a4d7a610…, the 99-line static+lint+build+capture+PDF blob) for validator admission; the 2-line addendum above (push-state + this note) is the only post-pin addition.
+**PASS WITH WARNINGS** — all 12 requirements and 15 scenarios of the current delta spec verified: 4 slides vision-reviewed live this session, structural/data probes fresh, build + lint clean, PDF 33 pages at the exact path, captures fresh and representative, commits local-only. One bookkeeping warning (uncommitted mrNodeTypes.jsx, fully characterized above) that should be resolved by the orchestrator/user at archive time.
