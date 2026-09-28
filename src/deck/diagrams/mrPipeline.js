@@ -39,13 +39,18 @@ const HIDDEN_STEP = 80; // separación horizontal entre capas
 const NET_X0 = 440; // x de la primera capa oculta
 const NET_Y0 = 132; // y de la primera neurona
 
+// Geometría local por variante del esqueleto MR (patrón HN/HG del HNN,
+// cambio v4): 'ad' y 'datos' expanden la red en vertical sin tocar las
+// constantes compartidas del esqueleto base; 'modelo' hereda las cifras
+// originales (46/22/132). Fila de neurona: y = y0 + row·(size + gap).
+const MR_GEOMETRY = {
+  ad: { y0: NET_Y0, size: NEURON_SIZE, gap: 40 },
+  modelo: { y0: NET_Y0, size: NEURON_SIZE, gap: NEURON_GAP },
+  datos: { y0: NET_Y0, size: 52, gap: 34 },
+};
+
 const HIDDEN_ROWS = Array.from({ length: N_NEURON }, (_, r) => r);
 const HIDDEN_LAYERS = Array.from({ length: N_HIDDEN }, (_, l) => l);
-
-/** Posición (x, y) de la neurona (capa, fila). */
-function neuronPos(layer, row) {
-  return { x: NET_X0 + layer * HIDDEN_STEP, y: NET_Y0 + row * (NEURON_SIZE + NEURON_GAP) };
-}
 
 /** Malla de conexiones entre dos columnas de neuronas (líneas finas). */
 function neuronMesh(fromIds, toIds) {
@@ -95,6 +100,16 @@ export function buildMrDiagram({ entry }) {
   if (!DOOR_COLOR[entry]) {
     throw new Error(`entry desconocido para el diagrama MR: ${entry}`);
   }
+
+  // Geometría de la variante (v4): pitch = lado + separación de neuronas.
+  const geo = MR_GEOMETRY[entry];
+  const pitch = geo.size + geo.gap;
+
+  /** Posición (x, y) de la neurona (capa, fila) con la geometría local. */
+  const neuronPos = (layer, row) => ({
+    x: NET_X0 + layer * HIDDEN_STEP,
+    y: geo.y0 + row * pitch,
+  });
 
   const nodes = [];
   const edges = [];
@@ -148,7 +163,7 @@ export function buildMrDiagram({ entry }) {
         inp.id,
         inp.label,
         inp.color,
-        { x: 360, y: NET_Y0 + inp.row * (NEURON_SIZE + NEURON_GAP) },
+        { x: 360, y: geo.y0 + inp.row * pitch },
         inp,
       ),
     );
@@ -176,7 +191,7 @@ export function buildMrDiagram({ entry }) {
       'out',
       outLabel,
       entry === 'modelo' ? MORADO : ROJO,
-      { x: NET_X0 + N_HIDDEN * HIDDEN_STEP, y: NET_Y0 + NEURON_SIZE + NEURON_GAP },
+      { x: NET_X0 + N_HIDDEN * HIDDEN_STEP, y: geo.y0 + pitch },
       { fill: entry === 'modelo' ? '#f6eff9' : '#fdeeec', heavy: entry !== 'modelo' },
     ),
   );
@@ -184,13 +199,13 @@ export function buildMrDiagram({ entry }) {
   // Etiquetas de capa (sobre las columnas, como en el TikZ).
   // Etiquetas de capa (sobre las columnas, como en el TikZ). Las ocultas
   // usan solo "ℓ=N": el paso entre columnas (80 px) no cabe para más texto.
-  nodes.push(layerLabel('lbl-in', 'capa entrada', 340, NET_Y0 - 34));
+  nodes.push(layerLabel('lbl-in', 'capa entrada', 340, geo.y0 - 34));
   HIDDEN_LAYERS.forEach((l) => {
     nodes.push(
-      layerLabel(`lbl-h${l + 1}`, `ℓ=${l + 1}`, NET_X0 + l * HIDDEN_STEP + 6, NET_Y0 - 34),
+      layerLabel(`lbl-h${l + 1}`, `ℓ=${l + 1}`, NET_X0 + l * HIDDEN_STEP + 6, geo.y0 - 34),
     );
   });
-  nodes.push(layerLabel('lbl-out', 'capa salida', NET_X0 + N_HIDDEN * HIDDEN_STEP - 28, NET_Y0 - 34));
+  nodes.push(layerLabel('lbl-out', 'capa salida', NET_X0 + N_HIDDEN * HIDDEN_STEP - 28, geo.y0 - 34));
 
   // Malla de conexiones: entrada → ocultas → salida (líneas finas).
   const inputIds = inputs.map((i) => i.id);
@@ -203,14 +218,14 @@ export function buildMrDiagram({ entry }) {
   // ── Estructura física (puerta ②): caja morada punteada DENTRO de la red ──
   // La caja arranca sobre la fila de etiquetas para dar cabida al título
   // arriba; el badge va FUERA (nodo etiqueta propio) para no tapar neuronas.
-  let thetaY = NET_Y0 + 3 * (NEURON_SIZE + NEURON_GAP) - 4; // 330 para ① y ③
+  let thetaY = geo.y0 + 3 * pitch - 4; // 386 para ① y ③ (v4)
   if (entry === 'modelo') {
     const first = neuronPos(0, 0);
     const last = neuronPos(N_HIDDEN - 1, N_NEURON - 1);
     nodes.push({
       id: 'estructura',
       type: 'structure',
-      position: { x: first.x - 16, y: NET_Y0 - 60 },
+      position: { x: first.x - 16, y: geo.y0 - 60 },
       targetPosition: 'left',
       zIndex: 0,
       data: {
@@ -218,20 +233,20 @@ export function buildMrDiagram({ entry }) {
         label: 'estructura física (conserva H_θ)',
         eq: 'd/dt [q, p] = J ∇H_θ',
         badge: false,
-        style: {
-          width: last.x - first.x + NEURON_SIZE + 32,
-          height: last.y + NEURON_SIZE + 12 - (NET_Y0 - 60),
-        },
+          style: {
+            width: last.x - first.x + geo.size + 32,
+            height: last.y + geo.size + 12 - (geo.y0 - 60),
+          },
       },
     });
     // Badge del punto de entrada, bajo la caja (fuera, como chip).
     nodes.push({
       id: 'badge-estructura',
       type: 'label',
-      position: { x: first.x + 28, y: NET_Y0 + 3 * (NEURON_SIZE + NEURON_GAP) + 18 },
+      position: { x: first.x + 28, y: geo.y0 + 3 * pitch + 18 },
       data: { label: BADGE, variant: 'badge', color: MORADO },
     });
-    thetaY = NET_Y0 + 3 * (NEURON_SIZE + NEURON_GAP) + 46;
+    thetaY = geo.y0 + 3 * pitch + 46;
   }
 
   // Llave θ bajo las ocultas (etiqueta con línea superior).
@@ -249,7 +264,7 @@ export function buildMrDiagram({ entry }) {
   nodes.push({
     id: 'cmp',
     type: 'deck',
-    position: { x: BOX_X, y: entry === 'ad' ? 92 : 172 },
+    position: { x: BOX_X, y: entry === 'ad' ? 132 : 172 },
     data: {
       color: AZUL,
       dashed: true,
@@ -265,7 +280,7 @@ export function buildMrDiagram({ entry }) {
     nodes.push({
       id: 'ad',
       type: 'deck',
-      position: { x: BOX_X + 260, y: 92 },
+      position: { x: BOX_X + 260, y: 132 },
       data: {
         color: AZUL,
         dashed: true,
@@ -287,10 +302,10 @@ export function buildMrDiagram({ entry }) {
   // ── Física (esqueleto aprobado) + su flecha al punto de entrada ──
   const fisPos =
     entry === 'ad'
-      ? { x: 640, y: 360 } // bajo la salida: flecha corta a la caja autodiff
+      ? { x: 640, y: 460 } // bajo la salida: flecha corta a la caja autodiff
       : entry === 'modelo'
         ? { x: 240, y: 415 } // bajo la red: flecha corta a la estructura
-        : { x: 0, y: 441 }; // a la izquierda de feat: arista horizontal a t-fis
+        : { x: 0, y: 500 }; // a la izquierda de feat: arista horizontal a t-fis
   nodes.push({
     id: 'fis',
     type: 'deck',
@@ -303,7 +318,7 @@ export function buildMrDiagram({ entry }) {
   nodes.push({
     id: 'opt',
     type: 'deck',
-    position: { x: BOX_X + (entry === 'ad' ? 520 : 240), y: entry === 'ad' ? 172 : 176 },
+    position: { x: BOX_X + (entry === 'ad' ? 520 : 240), y: entry === 'ad' ? 232 : 176 },
     data: { color: ROJO, title: 'Minimización', lines: ['→ θ*'] },
   });
 
@@ -317,7 +332,7 @@ export function buildMrDiagram({ entry }) {
   nodes.push({
     id: 'loss',
     type: 'lossline',
-    position: { x: entry === 'ad' ? BOX_X + 260 : BOX_X - 30, y: entry === 'ad' ? 360 : 310 },
+    position: { x: entry === 'ad' ? BOX_X + 260 : BOX_X - 30, y: entry === 'ad' ? 500 : 650 },
     data: { lines: lossLines, color: 'var(--fg)' },
   });
 
@@ -366,7 +381,7 @@ export function buildMrDiagram({ entry }) {
     nodes.push({
       id: 'feat',
       type: 'deck',
-      position: { x: 185, y: 430 },
+      position: { x: 185, y: 512 },
       data: {
         color: TEAL,
         dashed: true,

@@ -16,6 +16,8 @@ export default function MRPuerta1Flow({ active, title }) {
       edges={edges}
       title={title}
       active={active}
+      className="flow-mr1"
+      fitViewPadding={0.04}
       extraNodeTypes={{ neuron: NeuronNode, label: LabelNode, structure: StructureNode, lossline: LossLineNode }}
     />;
 }

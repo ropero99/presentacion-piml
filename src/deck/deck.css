@@ -963,6 +963,94 @@ p {
   padding: 3px 9px;
 }
 
+/* Cambio v4 · bumps por-alcance para el esquema de puertas (flow-d1, slide 03)
+   y las puertas ① (flow-mr1, slide 06) y ③ (flow-mr3, slide 11), espejo del
+   bloque .flow-hnn: cajas y texto un paso más grandes. En flow-mr3 la
+   neurona crece a 52px para que el DOM mida lo mismo que la geometría del
+   layout (ψ_fis); React Flow mide el DOM, el dato y el CSS deben coincidir. */
+.flow-d1 .deck-node {
+  padding: 8px 11px;
+  min-width: 205px;
+  font-size: 0.76rem;
+}
+
+.flow-d1 .deck-node .node-title {
+  font-size: 0.82rem;
+}
+
+.flow-d1 .deck-node .node-bar {
+  height: 5px;
+  margin: -8px -11px 7px;
+}
+
+.flow-mr1 .deck-node {
+  padding: 9px 12px;
+  min-width: 165px;
+  font-size: 0.78rem;
+  border-radius: 11px;
+}
+
+.flow-mr1 .deck-node .node-title {
+  font-size: 0.84rem;
+  margin-bottom: 3px;
+}
+
+.flow-mr1 .deck-node .node-bar {
+  height: 5px;
+  margin: -9px -12px 7px;
+  border-radius: 10px 10px 0 0;
+}
+
+.flow-mr1 .deck-label {
+  font-size: 0.64rem;
+}
+
+.flow-mr1 .deck-label.is-theta {
+  font-size: 0.8rem;
+}
+
+.flow-mr1 .deck-label.is-badge {
+  font-size: 0.62rem;
+  padding: 3px 9px;
+}
+
+.flow-mr3 .deck-node {
+  padding: 9px 12px;
+  min-width: 165px;
+  font-size: 0.78rem;
+  border-radius: 11px;
+}
+
+.flow-mr3 .deck-node .node-title {
+  font-size: 0.84rem;
+  margin-bottom: 3px;
+}
+
+.flow-mr3 .deck-node .node-bar {
+  height: 5px;
+  margin: -9px -12px 7px;
+  border-radius: 10px 10px 0 0;
+}
+
+.flow-mr3 .deck-neuron {
+  width: 52px;
+  height: 52px;
+  font-size: 0.66rem;
+}
+
+.flow-mr3 .deck-label {
+  font-size: 0.64rem;
+}
+
+.flow-mr3 .deck-label.is-theta {
+  font-size: 0.8rem;
+}
+
+.flow-mr3 .deck-label.is-badge {
+  font-size: 0.62rem;
+  padding: 3px 9px;
+}
+
 .deck-structurebox {
   border: 2.5px dashed;
   border-radius: 14px;

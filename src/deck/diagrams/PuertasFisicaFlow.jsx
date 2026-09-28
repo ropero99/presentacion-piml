@@ -15,7 +15,7 @@ const nodes = [
       lines: ['EDO/EDP · leyes · restricciones de forma'],
       sourceHandles: FIS_SOURCES.map((yPct, j) => ({ id: `s${j}`, yPct })),
     },
-    position: { x: 0, y: 140 },
+    position: { x: 0, y: 200 },
   },
   {
     id: 'p1',
@@ -35,7 +35,7 @@ const nodes = [
       title: '② Arquitectura (fuerte)',
       lines: ['invariancias · monotonías', 'se cumple SIEMPRE'],
     },
-    position: { x: 320, y: 110 },
+    position: { x: 320, y: 140 },
   },
   {
     id: 'p3',
@@ -45,7 +45,7 @@ const nodes = [
       title: '③ Datos / features',
       lines: ['features de leyes físicas', 'multi-fidelity · bottleneck'],
     },
-    position: { x: 320, y: 220 },
+    position: { x: 320, y: 280 },
   },
   {
     id: 'p4',
@@ -55,7 +55,7 @@ const nodes = [
       title: '④ Híbrido',
       lines: ['f_fisica(x) + g_θ(x)', 'residual learning'],
     },
-    position: { x: 320, y: 330 },
+    position: { x: 320, y: 420 },
   },
   {
     id: 'ml',
@@ -66,7 +66,7 @@ const nodes = [
       lines: ['ŷ = f_θ(x)'],
       targetHandles: ML_TARGETS.map((yPct, j) => ({ id: `t${j}`, yPct })),
     },
-    position: { x: 660, y: 150 },
+    position: { x: 700, y: 230 },
   },
 ];
 
@@ -83,5 +83,13 @@ const edges = [
 ];
 
 export default function PuertasFisicaFlow({ active, title }) {
-  return <DeckFlowPanel flow="lr" nodes={nodes} edges={edges} title={title} active={active} />;
+  return <DeckFlowPanel
+      flow="lr"
+      nodes={nodes}
+      edges={edges}
+      title={title}
+      active={active}
+      className="flow-d1"
+      fitViewPadding={0.05}
+    />;
 }

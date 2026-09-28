@@ -20,12 +20,12 @@ Chain strategy: pending
 
 ## Phase 1: R14 sizing (03/06/11 + 09 micro)
 
-- [ ] 1.1 (R14/D2) `src/deck/diagrams/mrPipeline.js`: local per-variant geometry — ad gap 40; datos gap 34 + 52px neurons, pitch 86; modelo 132/46/22 untouched; thetaY 332→386 (old baseline 332, not 330).
-- [ ] 1.2 (R14) `src/deck/diagrams/PuertasFisicaFlow.jsx`: p1–p4 rows y 0/140/280/420 (step 110→140); ml →(700,230); fis y 140→200; column x 320 unchanged.
-- [ ] 1.3 (R14/D3) ψ_fis 52px exact in datos data AND `.flow-mr3 .deck-neuron` CSS — DOM 52 = layout 52, else mesh anchors stale.
-- [ ] 1.4 (R14) `src/deck/deck.css`: append `.flow-d1`/`.flow-mr1`/`.flow-mr3` blocks after line 964; `.flow-hnn` untouched.
-- [ ] 1.5 (R14/D1) Props: `PuertasFisicaFlow.jsx` flow-d1+0.05; `MRPuerta1Flow.jsx` flow-mr1+0.04; `MRPuerta3Flow.jsx` flow-mr3+0.04; `MRPuerta2Flow.jsx` 0.03→0.02 ONLY; others keep 0.12.
-- [ ] 1.6 (RV) `npm run build && npm run lint && node src/scripts/capture-slides.mjs`; review 03/06/09/11 vs REF-1..6: vertical fill, no overlaps/cut labels, ψ_fis inside, 09 = 7b + micro, other captures unchanged; ≤2 tuning passes/slide; commit, NO push.
+- [x] 1.1 (R14/D2) `src/deck/diagrams/mrPipeline.js`: local per-variant geometry — ad gap 40; datos gap 34 + 52px neurons, pitch 86; modelo 132/46/22 untouched; thetaY 332→386 (old baseline 332, not 330).
+- [x] 1.2 (R14) `src/deck/diagrams/PuertasFisicaFlow.jsx`: p1–p4 rows y 0/140/280/420 (step 110→140); ml →(700,230); fis y 140→200; column x 320 unchanged.
+- [x] 1.3 (R14/D3) ψ_fis 52px exact in datos data AND `.flow-mr3 .deck-neuron` CSS — DOM 52 = layout 52, else mesh anchors stale.
+- [x] 1.4 (R14) `src/deck/deck.css`: append `.flow-d1`/`.flow-mr1`/`.flow-mr3` blocks after line 964; `.flow-hnn` untouched.
+- [x] 1.5 (R14/D1) Props: `PuertasFisicaFlow.jsx` flow-d1+0.05; `MRPuerta1Flow.jsx` flow-mr1+0.04; `MRPuerta3Flow.jsx` flow-mr3+0.04; `MRPuerta2Flow.jsx` 0.03→0.02 ONLY; others keep 0.12.
+- [x] 1.6 (RV) `npm run build && npm run lint && node src/scripts/capture-slides.mjs`; review 03/06/09/11 vs REF-1..6: vertical fill, no overlaps/cut labels, ψ_fis inside, 09 = 7b + micro, other captures unchanged; ≤2 tuning passes/slide; commit, NO push. (0 tuning passes used — first capture run passed review.)
 
 ## Phase 2: R15 scoped LaTeX (after P1 verified)
 
