@@ -74,3 +74,9 @@ Runtime harness (build required first): `npm run build && node src/scripts/captu
 - [x] 7.8 (R20) Notation audit q, p, H_θ, θ, θ*, J, L_HNN(θ) — consistent across slides 7–9 and diagram.
 - [x] 7.9 (R21) Bigger diagram boxes/text scoped to the HNN flow via `className="flow-hnn"` (DeckFlowPanel className prop; CSS bumps: node 0.72→0.78rem, title 0.84rem, neuron 52px, min-width 165) + compressed x layout (1830→1729 bounding width → fitView zoom ≈ +15%).
 - [x] 7.10 (RV) build clean, lint clean, 33 captures, vision review slides 07/08/09 PASS (refs unclipped, no overflow), PDF regenerated in place (33 pages, pdfinfo), commit a85a5e0. NO push.
+
+## Phase 8: Round-7b vertical fill (post-round-7 feedback)
+
+- [x] 8.1 (R22) `buildHnnDiagram` vertical spread: mesh neuron gap HG 24→64 (rows y 132/248/364), main row re-centered on the taller mesh, cap label raised (y 96→66), divider/chip-pred lowered (398→500/516), prediction row pushed down (bottom ≈618) — bounding box 410→552px tall, structure unchanged.
+- [x] 8.2 (R23) `DeckFlowPanel` gains `fitViewPadding` prop (default 0.12, other diagrams untouched); flow-hnn passes 0.03 → fitView zoom ≈ +20% vs round 7a.
+- [x] 8.3 (RV) build + lint clean, 33 captures, vision review slide 09 PASS (taller net, halved blank bands, all labels legible), PDF in place (33 pages), local commits. NO push.

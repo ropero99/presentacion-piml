@@ -17,6 +17,7 @@ export default function MRPuerta2Flow({ active, title }) {
       title={title}
       active={active}
       className="flow-hnn"
+      fitViewPadding={0.03}
       extraNodeTypes={{ neuron: NeuronNode, label: LabelNode, structure: StructureNode, lossline: LossLineNode }}
     />;
 }

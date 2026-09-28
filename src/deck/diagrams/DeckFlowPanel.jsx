@@ -27,6 +27,7 @@ export default function DeckFlowPanel({
   extraNodeTypes,
   extraEdgeTypes,
   className,
+  fitViewPadding = 0.12,
 }) {
   return (
     <ReactFlowProvider>
@@ -39,6 +40,7 @@ export default function DeckFlowPanel({
         extraNodeTypes={extraNodeTypes}
         extraEdgeTypes={extraEdgeTypes}
         className={className}
+        fitViewPadding={fitViewPadding}
       />
     </ReactFlowProvider>
   );
@@ -215,7 +217,17 @@ const LABEL_BG = {
   borderRadius: 6,
 };
 
-function FlowCanvas({ flow, nodes, edges, title, active, extraNodeTypes, extraEdgeTypes, className }) {
+function FlowCanvas({
+  flow,
+  nodes,
+  edges,
+  title,
+  active,
+  extraNodeTypes,
+  extraEdgeTypes,
+  className,
+  fitViewPadding,
+}) {
   const nodeType = useMemo(() => buildNodeType(flow), [flow]);
   const nodeTypes = useMemo(
     () => ({ deck: nodeType, ...(extraNodeTypes || {}) }),
@@ -232,10 +244,10 @@ function FlowCanvas({ flow, nodes, edges, title, active, extraNodeTypes, extraEd
 
   useEffect(() => {
     const id = requestAnimationFrame(() => {
-      fitView({ padding: 0.12, duration: 240 });
+      fitView({ padding: fitViewPadding, duration: 240 });
     });
     return () => cancelAnimationFrame(id);
-  }, [active, fitView]);
+  }, [active, fitView, fitViewPadding]);
 
   return (
     <ReactFlow
@@ -245,7 +257,7 @@ function FlowCanvas({ flow, nodes, edges, title, active, extraNodeTypes, extraEd
       edgeTypes={edgeTypes}
       className={className}
       fitView
-      fitViewOptions={{ padding: 0.12 }}
+      fitViewOptions={{ padding: fitViewPadding }}
       minZoom={0.35}
       maxZoom={1.6}
       nodesDraggable={false}

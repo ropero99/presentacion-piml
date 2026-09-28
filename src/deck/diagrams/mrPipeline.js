@@ -426,9 +426,11 @@ const NARANJA = '#E67E22'; // L_HNN (loss, rojo suave/naranja)
 export function buildHnnDiagram() {
   // Tamaño de neurona propio del diagrama HNN (el compartido es 46/22):
   // cajas y texto más grandes (ronda 7) con la malla recalculada.
+  // Ronda 7b: malla más alta (HG 24→64) y filas más separadas para
+  // aprovechar el lienzo vertical (el fitView es limitado por ancho).
   const HN = 52; // lado del círculo
-  const HG = 24; // separación vertical entre neuronas
-  const NET_Y0 = 140;
+  const HG = 64; // separación vertical entre neuronas
+  const NET_Y0 = 132;
 
   const nodes = [];
   const edges = [];
@@ -437,13 +439,13 @@ export function buildHnnDiagram() {
   nodes.push({
     id: 'hnn-panel-fisica',
     type: 'label',
-    position: { x: 914, y: 176 },
+    position: { x: 914, y: 216 },
     data: {
       label: '',
       variant: 'panel',
       style: {
         width: 412,
-        height: 152,
+        height: 147,
         background: 'rgba(125, 60, 152, 0.07)',
         border: '2px solid rgba(125, 60, 152, 0.30)',
       },
@@ -454,7 +456,7 @@ export function buildHnnDiagram() {
   nodes.push({
     id: 'hnn-chip-train',
     type: 'label',
-    position: { x: 0, y: 168 },
+    position: { x: 0, y: 195 },
     data: { label: 'ENTRENAMIENTO · ajuste de θ con L_HNN(θ)', variant: 'chip', color: NAVY },
   });
 
@@ -462,7 +464,7 @@ export function buildHnnDiagram() {
   nodes.push({
     id: 'hnn-mr',
     type: 'deck',
-    position: { x: 0, y: 200 },
+    position: { x: 0, y: 229 },
     data: {
       color: NAVY,
       title: 'Sistema físico',
@@ -474,7 +476,7 @@ export function buildHnnDiagram() {
   nodes.push({
     id: 'hnn-datos',
     type: 'deck',
-    position: { x: 215, y: 218 },
+    position: { x: 215, y: 247 },
     data: { color: TEAL, title: 'Datos medidos', lines: ['(t_n, x_n, ẋ_n)'] },
   });
 
@@ -482,7 +484,7 @@ export function buildHnnDiagram() {
   nodes.push({
     id: 'hnn-conv',
     type: 'deck',
-    position: { x: 408, y: 195 },
+    position: { x: 408, y: 232 },
     data: {
       color: NAVY,
       title: 'Conversión canónica',
@@ -511,15 +513,15 @@ export function buildHnnDiagram() {
   edges.push(...neuronMesh(hnnInputIds, hnnHiddenIds[0]));
   edges.push(...neuronMesh(hnnHiddenIds[0], hnnHiddenIds[1]));
   edges.push(...neuronMesh(hnnHiddenIds[1], ['hnn-out']));
-  nodes.push(layerLabel('hnn-cap', 'La red aprende el Hamiltoniano', 600, 112));
-  nodes.push(layerLabel('hnn-sal', 'salida única: H_θ(q, p)', 820, 288));
-  nodes.push(layerLabel('hnn-theta', 'θ = {W_ℓ, b_ℓ}_{ℓ=1}^L', 680, 356, 'theta'));
+  nodes.push(layerLabel('hnn-cap', 'La red aprende el Hamiltoniano', 600, 66));
+  nodes.push(layerLabel('hnn-sal', 'salida única: H_θ(q, p)', 770, 308));
+  nodes.push(layerLabel('hnn-theta', 'θ = {W_ℓ, b_ℓ}_{ℓ=1}^L', 680, 428, 'theta'));
 
   // 6 · Autodiff (dentro del panel de la física)
   nodes.push({
     id: 'hnn-autodiff',
     type: 'deck',
-    position: { x: 934, y: 205 },
+    position: { x: 934, y: 240 },
     data: { color: MORADO, dashed: true, title: 'Autodiff', lines: ['∂H_θ/∂q', '∂H_θ/∂p'] },
   });
 
@@ -527,7 +529,7 @@ export function buildHnnDiagram() {
   nodes.push({
     id: 'hnn-estructura',
     type: 'deck',
-    position: { x: 1128, y: 198 },
+    position: { x: 1128, y: 231 },
     data: {
       color: MORADO,
       heavy: true,
@@ -538,7 +540,7 @@ export function buildHnnDiagram() {
   nodes.push({
     id: 'hnn-badge',
     type: 'label',
-    position: { x: 1148, y: 292 },
+    position: { x: 1148, y: 327 },
     data: { label: '★ LA FÍSICA ENTRA AQUÍ', variant: 'badge', color: MORADO },
   });
 
@@ -546,7 +548,7 @@ export function buildHnnDiagram() {
   nodes.push({
     id: 'hnn-cmp',
     type: 'deck',
-    position: { x: 1330, y: 200 },
+    position: { x: 1330, y: 240 },
     data: {
       color: NARANJA,
       dashed: true,
@@ -559,7 +561,7 @@ export function buildHnnDiagram() {
   nodes.push({
     id: 'hnn-opt',
     type: 'deck',
-    position: { x: 1564, y: 215 },
+    position: { x: 1564, y: 247 },
     data: { color: ROJO, title: 'Optimización', lines: ['θ → θ*'] },
   });
 
@@ -567,24 +569,24 @@ export function buildHnnDiagram() {
   nodes.push({
     id: 'hnn-divider',
     type: 'label',
-    position: { x: 0, y: 398 },
+    position: { x: 0, y: 500 },
     data: { label: '', variant: 'divider', style: { width: 1740 } },
   });
   nodes.push({
     id: 'hnn-chip-pred',
     type: 'label',
-    position: { x: 0, y: 414 },
+    position: { x: 0, y: 516 },
     data: { label: 'PREDICCIÓN · después del entrenamiento · usando θ*', variant: 'chip', color: TEAL },
   });
   const predChain = [
-    { id: 'hnn-p1', x: 0, y: 458, color: NAVY, title: '(q₀, p₀)', lines: ['estado inicial'] },
-    { id: 'hnn-p2', x: 200, y: 460, color: MORADO, title: 'H_θ*', lines: [] },
-    { id: 'hnn-p3', x: 400, y: 460, color: MORADO, title: 'grad(H_θ*)', lines: [] },
-    { id: 'hnn-p4', x: 600, y: 448, color: MORADO, heavy: true, title: 'ecuaciones de Hamilton', lines: ['J ∇H_θ*'] },
-    { id: 'hnn-p5', x: 812, y: 460, color: NAVY, title: '(q̇, ṗ)', lines: [] },
-    { id: 'hnn-p6', x: 1010, y: 452, color: GRIS, title: 'integrador numérico', lines: ['preferiblemente simpléctico'] },
-    { id: 'hnn-p7', x: 1250, y: 458, color: NAVY, title: '(q(t), p(t))', lines: [] },
-    { id: 'hnn-p8', x: 1445, y: 458, color: NAVY, title: 'x(t) = q(t)', lines: [] },
+    { id: 'hnn-p1', x: 0, y: 558, color: NAVY, title: '(q₀, p₀)', lines: ['estado inicial'] },
+    { id: 'hnn-p2', x: 200, y: 560, color: MORADO, title: 'H_θ*', lines: [] },
+    { id: 'hnn-p3', x: 400, y: 560, color: MORADO, title: 'grad(H_θ*)', lines: [] },
+    { id: 'hnn-p4', x: 600, y: 548, color: MORADO, heavy: true, title: 'ecuaciones de Hamilton', lines: ['J ∇H_θ*'] },
+    { id: 'hnn-p5', x: 812, y: 560, color: NAVY, title: '(q̇, ṗ)', lines: [] },
+    { id: 'hnn-p6', x: 1010, y: 552, color: GRIS, title: 'integrador numérico', lines: ['preferiblemente simpléctico'] },
+    { id: 'hnn-p7', x: 1250, y: 558, color: NAVY, title: '(q(t), p(t))', lines: [] },
+    { id: 'hnn-p8', x: 1445, y: 558, color: NAVY, title: 'x(t) = q(t)', lines: [] },
   ];
   predChain.forEach((p) => {
     nodes.push({
