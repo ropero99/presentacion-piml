@@ -54,3 +54,23 @@ Runtime harness (build required first): `npm run build && node src/scripts/captu
 - [x] 5.2 (new R11) Door-1 diagram: Diff. automática box BESIDE Comparar con datos (row cmp→ad→opt at y=92/172; cmp→ad edge explicit; fis→ad bezier under the row; loss line under ad row). Commit 346798e.
 - [x] 5.3 (new R12) Door-3 diagram: Features box UNDER Datos/entrenamiento (185,430); fis horizontal edge (t-fis anchor); feat→ψ_fis near-vertical bezier; redundant datos→feat edge removed (datos keeps its direct short hook to ψ_fis). Commit 346798e.
 - [x] 5.4 (RV) build + 33 captures + vision review slides 03/06/11 PASS + PDF in place (33 pages).
+
+## Phase 6: Round-6 HNN door-② rewrite (user spec)
+
+- [x] 6.1 `d1-puerta2` → lema "por construcción"; derivation strip 5 chips; 4 eq blocks: canonical state + H, f_θ ↦ H_θ, autodiff + Hamilton eqs (★ physics entry), L_HNN(θ) + argmin θ*; notes = mensaje clave.
+- [x] 6.2 `d1-puerta2-deriv` → "Del Hamiltoniano a la dinámica del masa-resorte": T+V → Hamilton eqs → recovery m·ẍ + k·x = 0 → dH/dt = 0; LNN as note.
+- [x] 6.3 `buildHnnDiagram()` (mrPipeline, appended): 10-stage flow + prediction branch chain; colors navy/teal/purple/orange/red; `MRPuerta2Flow` consumes it.
+- [x] 6.4 SlideBody door branch renders `slide.notes`; scoped `[data-id='d1-puerta2']` compaction (eq clamp 0.95–1.12rem, strip/notes margins).
+
+## Phase 7: Round-7 final adjustments (slides 7–9, structure preserved)
+
+- [x] 7.1 (R13) Data targets clarified in `d1-puerta2` cost block: q̇_n = ẋ_n, ṗ_n = m·ẍ_n; ṗ_n estimated by finite differences when no acceleration is measured.
+- [x] 7.2 (R14) H_θ(q,p) not necessarily compared with energy labels — learned because its gradient must reproduce the observed dynamics (block 2 conn).
+- [x] 7.3 (R15) Energy conservation explicitly scoped: conservative case c = 0 and no external force; in the HNN it holds for all θ (deriv slide).
+- [x] 7.4 (R16) L_HNN(θ) as the loss name everywhere (slides 7/9 + legend).
+- [x] 7.5 (R17) Physics-entry block highlighted in `buildHnnDiagram`: purple translucent panel behind Autodiff + Estructura Hamiltoniana + ★ badge.
+- [x] 7.6 (R18) Training vs prediction visually separated: navy ENTRENAMIENTO chip, dashed divider, teal PREDICCIÓN chip (LabelNode variants chip/panel/divider + data.style).
+- [x] 7.7 (R19) "integrador numérico (preferiblemente simpléctico)" in the prediction chain.
+- [x] 7.8 (R20) Notation audit q, p, H_θ, θ, θ*, J, L_HNN(θ) — consistent across slides 7–9 and diagram.
+- [x] 7.9 (R21) Bigger diagram boxes/text scoped to the HNN flow via `className="flow-hnn"` (DeckFlowPanel className prop; CSS bumps: node 0.72→0.78rem, title 0.84rem, neuron 52px, min-width 165) + compressed x layout (1830→1729 bounding width → fitView zoom ≈ +15%).
+- [x] 7.10 (RV) build clean, lint clean, 33 captures, vision review slides 07/08/09 PASS (refs unclipped, no overflow), PDF regenerated in place (33 pages, pdfinfo), commit a85a5e0. NO push.
