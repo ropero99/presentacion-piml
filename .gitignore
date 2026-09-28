@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 src/scripts/captures/
 presentacion_piml_v*.pdf
+
+# codegraph local index
+.codegraph/
