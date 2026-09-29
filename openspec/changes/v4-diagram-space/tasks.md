@@ -29,16 +29,16 @@ Chain strategy: pending
 
 ## Phase 2: R15 scoped LaTeX (after P1 verified)
 
-- [ ] 2.1 (R15/D4) Create `src/deck/diagrams/NodeEquation.jsx` (~15 LOC): `<MathJax inline dynamic onTypeset className="deck-eqline">`; `$…$` passed through as-is, NOT stripped (config `inlineMath [['$','$']]` consumes them); `dynamic` mandatory in prod.
-- [ ] 2.2 (R15/D5) `src/deck/diagrams/DeckFlowPanel.jsx`: FlowCanvas provides RefitContext — rAF-debounced `fitView({padding: fitViewPadding, duration: 0})` — reaching DeckNode and `mrNodeTypes.jsx` types (loss/theta bypass `buildNodeType`); NOT bare `useReactFlow().fitView()` (no-arg padding defaults 0.1).
-- [ ] 2.3 (R15) `src/deck/diagrams/mrNodeTypes.jsx`: LossLineNode + theta LabelNode route `$…$` strings via NodeEquation; detector: starts AND ends `$` (no `includes`); audit `rg '\$' src/deck/diagrams/*.jsx`: 0 dollars in DataDriven/FamiliasPiml/Interseccion/Problemas/Opciones.
-- [ ] 2.4 (R15) Mark R15 lines only, per design table: slide-03 p1/p4/ml; AD loss; theta label (shared node → slide 11/mr3 typesets it too); 3 hnn-estructura lines; 2 autodiff lines; hnn-p4. Datos loss, neurons/badges/chips stay unicode.
-- [ ] 2.5 (R15) `src/deck/deck.css`: `.deck-eqline` — font-size inherit, no width constraints.
-- [ ] 2.6 (R15/D6) `src/scripts/capture-slides.mjs:86`: settle 700→1000 ms; mjx-stable wait only if still stale.
-- [ ] 2.7 (RV) `npm run build && npm run lint && node src/scripts/capture-slides.mjs`; review 03/06/09/11: eq nodes show `mjx-container`, refit clears clipped nodes/stale bands, non-eq nodes stay unicode; commit, NO push.
+- [x] 2.1 (R15/D4) Create `src/deck/diagrams/NodeEquation.jsx` (~15 LOC): `<MathJax inline dynamic onTypeset className="deck-eqline">`; `$…$` passed through as-is, NOT stripped (config `inlineMath [['$','$']]` consumes them); `dynamic` mandatory in prod.
+- [x] 2.2 (R15/D5) `src/deck/diagrams/DeckFlowPanel.jsx`: FlowCanvas provides RefitContext — rAF-debounced `fitView({padding: fitViewPadding, duration: 0})` — reaching DeckNode and `mrNodeTypes.jsx` types (loss/theta bypass `buildNodeType`); NOT bare `useReactFlow().fitView()` (no-arg padding defaults 0.1).
+- [x] 2.3 (R15) `src/deck/diagrams/mrNodeTypes.jsx`: LossLineNode + theta LabelNode route `$…$` strings via NodeEquation; detector: starts AND ends `$` (no `includes`); audit `rg '\$' src/deck/diagrams/*.jsx`: 0 dollars in DataDriven/FamiliasPiml/Interseccion/Problemas/Opciones.
+- [x] 2.4 (R15) Mark R15 lines only, per design table: slide-03 p1/p4/ml; AD loss; theta label (shared node → slide 11/mr3 typesets it too); 3 hnn-estructura lines; 2 autodiff lines; hnn-p4. Datos loss, neurons/badges/chips stay unicode.
+- [x] 2.5 (R15) `src/deck/deck.css`: `.deck-eqline` — font-size inherit, no width constraints.
+- [x] 2.6 (R15/D6) `src/scripts/capture-slides.mjs:86`: settle 700→1000 ms; mjx-stable wait only if still stale.
+- [x] 2.7 (RV) `npm run build && npm run lint && node src/scripts/capture-slides.mjs`; review 03/06/09/11: eq nodes show `mjx-container`, refit clears clipped nodes/stale bands, non-eq nodes stay unicode; commit, NO push. (build 383ms ✓; oxlint ✓; 33 PNGs; 04/12 spot-check byte-identical to 7b baseline; 0 corrective passes)
 
 ## Phase 3: RV verification
 
-- [ ] 3.1 (RV) `node src/scripts/export-pdf.mjs presentacion_piml_v4_puertas_2026-09.pdf` (argv explicit — engram #34) → 33 pages, same path; ids unique.
-- [ ] 3.2 (RV) Regression: non-target captures pixel-identical to 7b baseline; PDF 03/06/09/11 pages match PNGs.
-- [ ] 3.3 (RV) Final `npm run lint` + `npm run build`; conventional commits, NO push; files == design File Changes table.
+- [x] 3.1 (RV) `node src/scripts/export-pdf.mjs presentacion_piml_v4_puertas_2026-09.pdf` (argv explicit — engram #34) → 33 pages, same path; ids unique. (pdfinfo: Pages 33, 1280x720, same path)
+- [x] 3.2 (RV) Regression: non-target captures pixel-identical to 7b baseline; PDF 03/06/09/11 pages match PNGs. (31/33 byte-identical vs /tmp/opencode/v4-p1-baseline; only 03/06/09/11 differ + slide-17 subpixel antialiasing w/ identical layout; pdftoppm pages 03/11 verified)
+- [x] 3.3 (RV) Final `npm run lint` + `npm run build`; conventional commits, NO push; files == design File Changes table.

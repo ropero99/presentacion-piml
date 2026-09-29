@@ -1108,6 +1108,14 @@ p {
   display: block;
 }
 
+/* Cambio v4 (R15): línea de nodo con math tipografado (NodeEquation).
+   Hereda la fuente del nodo contenedor y NO impone anchos ni padding:
+   MathJax debe medir naturalmente para que el refit de fitView calcule
+   con la caja real ya crecida. */
+.deck-eqline {
+  font-size: inherit;
+}
+
 /* ---------- Tabla del mapa de lectura ---------- */
 .reading-table {
   width: 100%;

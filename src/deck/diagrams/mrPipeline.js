@@ -250,12 +250,14 @@ export function buildMrDiagram({ entry }) {
   }
 
   // Llave θ bajo las ocultas (etiqueta con línea superior).
+  // R15: string marcado `$…$` — se tipografía vía LabelNode/NodeEquation
+  // (nodo compartido por las puertas ① ad y ③ datos).
   const thetaX = NET_X0 + ((N_HIDDEN - 1) * HIDDEN_STEP) / 2;
   nodes.push({
     id: 'theta',
     type: 'label',
     position: { x: thetaX - 52, y: thetaY },
-    data: { label: 'θ = {W_ℓ, b_ℓ}_{ℓ=1}^L', variant: 'theta', color: 'var(--fg)' },
+    data: { label: '$\\theta = \\{W_\\ell, b_\\ell\\}_{\\ell=1}^{L}$', variant: 'theta', color: 'var(--fg)' },
   });
 
   // ── Cajas punteadas de rol (columna derecha) ──
@@ -323,9 +325,14 @@ export function buildMrDiagram({ entry }) {
   });
 
   // ── Línea de composición de la pérdida (bajo la zona de cajas) ──
+  // R15: solo la variante 'ad' (puerta ①) lleva la fórmula marcada `$…$`;
+  // 'modelo' y 'datos' quedan en prosa unicode.
   const lossLines =
     entry === 'ad'
-      ? ['L_MSE(θ) + λ_phys·L_physics(θ) = L_total(θ)']
+      ? [
+          // R15: \mathcal igual que las pérdidas del resto del deck.
+          '$\\mathcal{L}_{MSE}(\\theta) + \\lambda_{phys}\\,\\mathcal{L}_{physics}(\\theta) = \\mathcal{L}_{total}(\\theta)$',
+        ]
       : entry === 'modelo'
         ? ['L_MSE(θ) — no existe L_physics: la física está en la estructura']
         : ['L_MSE(θ) sobre x̃ aumentado — la física entró antes, en los datos'];
@@ -533,14 +540,16 @@ export function buildHnnDiagram() {
   nodes.push(layerLabel('hnn-theta', 'θ = {W_ℓ, b_ℓ}_{ℓ=1}^L', 680, 428, 'theta'));
 
   // 6 · Autodiff (dentro del panel de la física)
+  // R15: derivadas parciales marcadas `$…$` (tipografado en DeckNode).
   nodes.push({
     id: 'hnn-autodiff',
     type: 'deck',
     position: { x: 934, y: 240 },
-    data: { color: MORADO, dashed: true, title: 'Autodiff', lines: ['∂H_θ/∂q', '∂H_θ/∂p'] },
+    data: { color: MORADO, dashed: true, title: 'Autodiff', lines: ['$\\partial H_\\theta/\\partial q$', '$\\partial H_\\theta/\\partial p$'] },
   });
 
   // 7 · Estructura Hamiltoniana (punto de entrada de la física)
+  // R15: las tres ecuaciones de Hamilton marcadas `$…$`.
   nodes.push({
     id: 'hnn-estructura',
     type: 'deck',
@@ -549,7 +558,11 @@ export function buildHnnDiagram() {
       color: MORADO,
       heavy: true,
       title: 'Estructura Hamiltoniana',
-      lines: ['q̇_θ = ∂H_θ/∂p', 'ṗ_θ = −∂H_θ/∂q', 'ż_θ = J ∇H_θ'],
+      lines: [
+        '$\\dot{q}_\\theta = \\partial H_\\theta/\\partial p$',
+        '$\\dot{p}_\\theta = -\\partial H_\\theta/\\partial q$',
+        '$\\dot{z}_\\theta = J\\,\\nabla H_\\theta$',
+      ],
     },
   });
   nodes.push({
@@ -597,7 +610,7 @@ export function buildHnnDiagram() {
     { id: 'hnn-p1', x: 0, y: 558, color: NAVY, title: '(q₀, p₀)', lines: ['estado inicial'] },
     { id: 'hnn-p2', x: 200, y: 560, color: MORADO, title: 'H_θ*', lines: [] },
     { id: 'hnn-p3', x: 400, y: 560, color: MORADO, title: 'grad(H_θ*)', lines: [] },
-    { id: 'hnn-p4', x: 600, y: 548, color: MORADO, heavy: true, title: 'ecuaciones de Hamilton', lines: ['J ∇H_θ*'] },
+    { id: 'hnn-p4', x: 600, y: 548, color: MORADO, heavy: true, title: 'ecuaciones de Hamilton', lines: ['$J\\,\\nabla H_\\theta^*$'] },
     { id: 'hnn-p5', x: 812, y: 560, color: NAVY, title: '(q̇, ṗ)', lines: [] },
     { id: 'hnn-p6', x: 1010, y: 552, color: GRIS, title: 'integrador numérico', lines: ['preferiblemente simpléctico'] },
     { id: 'hnn-p7', x: 1250, y: 558, color: NAVY, title: '(q(t), p(t))', lines: [] },

@@ -23,7 +23,12 @@ const nodes = [
     data: {
       color: '#2E86AB',
       title: '① Función de pérdida (débil)',
-      lines: ['L = L_MSE + λ_phys·L_physics', 'se penaliza, no se garantiza'],
+      // R15: fórmula marcada `$…$` — \mathcal igual que las pérdidas del
+      // resto del deck (deckContent $\mathcal{L} = \mathcal{L}_{MSE} + ...$).
+      lines: [
+        '$\\mathcal{L} = \\mathcal{L}_{MSE} + \\lambda_{phys}\\,\\mathcal{L}_{physics}$',
+        'se penaliza, no se garantiza',
+      ],
     },
     position: { x: 320, y: 0 },
   },
@@ -53,7 +58,8 @@ const nodes = [
     data: {
       color: '#E67E22',
       title: '④ Híbrido',
-      lines: ['f_fisica(x) + g_θ(x)', 'residual learning'],
+      // R15: fórmula marcada `$…$`.
+      lines: ['$f_{fisica}(x) + g_\\theta(x)$', 'residual learning'],
     },
     position: { x: 320, y: 420 },
   },
@@ -63,7 +69,8 @@ const nodes = [
     data: {
       color: '#34495E',
       title: 'Modelo ML/DL',
-      lines: ['ŷ = f_θ(x)'],
+      // R15: fórmula marcada `$…$`.
+      lines: ['$\\hat{y} = f_\\theta(x)$'],
       targetHandles: ML_TARGETS.map((yPct, j) => ({ id: `t${j}`, yPct })),
     },
     position: { x: 700, y: 230 },

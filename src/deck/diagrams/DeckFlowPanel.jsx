@@ -1,4 +1,11 @@
-import React, { useEffect, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
+import NodeEquation from './NodeEquation.jsx';
 import {
   ReactFlow,
   ReactFlowProvider,
@@ -46,6 +53,23 @@ export default function DeckFlowPanel({
   );
 }
 
+// Cambio v4 (R15/D5): fitView de refit compartido. FlowCanvas crea un
+// fitView con rAF-debounce usando el fitViewPadding del propio flujo y lo
+// publica por contexto; DeckNode y los tipos extra (loss/theta, que no
+// pasan por buildNodeType) lo consumen. El one-shot del useEffect ya
+// existente dispara con la altura pre-typeset; el refit re-cuadra tras el
+// crecimiento de MathJax. Idempotente: el mutex de MathJax evita dobles
+// typeset y repetir fitView es monótono (sin estado).
+// eslint-disable-next-line react/only-export-components -- contexto compartido por diseño (patrón makeEdge)
+export const RefitContext = createContext(null);
+
+/** Línea de nodo marcada para typeset: empieza Y termina en `$` (nunca
+ * `includes` — un `$` suelto en texto de nodo no debe tipografiar nada). */
+// eslint-disable-next-line react/only-export-components -- helper compartido por diseño (patrón makeEdge)
+export function isEquationLine(line) {
+  return typeof line === 'string' && line.startsWith('$') && line.endsWith('$');
+}
+
 // Anclajes declarados por el nodo (data.sourceHandles / data.targetHandles)
 // se reparten a lo largo del canto: en 'lr' en vertical (top %), en 'tb' en
 // horizontal (left %). Sin declaración se conserva el anclaje único de siempre.
@@ -53,9 +77,13 @@ function anchorStyle(yPct, vertical) {
   return vertical ? { left: `${yPct}%` } : { top: `${yPct}%` };
 }
 
+// Fábrica del nodo 'deck': el closure mantiene flow ('lr'/'tb') para los
+// anclajes (nodeTypes se recrea por useMemo cuando cambia flow) y las
+// líneas marcadas `$…$` se tipografían vía NodeEquation (R15).
 function buildNodeType(flow) {
   return function DeckNode({ data }) {
     const vertical = flow === 'tb';
+    const refit = useContext(RefitContext);
     return (
       <div className={`deck-node${data.heavy ? ' is-heavy' : ''}${data.dashed ? ' is-dashed' : ''}`}>
         <div
@@ -79,7 +107,11 @@ function buildNodeType(flow) {
         {data.title ? <div className="node-title">{data.title}</div> : null}
         {(data.lines || []).map((line, i) => (
           <div className="node-line" key={i}>
-            {line}
+            {isEquationLine(line) ? (
+              <NodeEquation code={line} onTypeset={refit} />
+            ) : (
+              line
+            )}
           </div>
         ))}
         {(data.sourceHandles || []).map((h) => (
@@ -249,26 +281,45 @@ function FlowCanvas({
     return () => cancelAnimationFrame(id);
   }, [active, fitView, fitViewPadding]);
 
+  // Refit (R15/D5): los callbacks onTypeset llegan agregados en un solo
+  // fitView por frame, con el padding propio del flujo. Sin debounce, cada
+  // línea de ecuación dispararía su propio fitView y la malla vibraría.
+  // El frame pendente vive en un ref (patrón compilable); rAF siempre
+  // existe donde corre React Flow (deck client-only, sin SSR).
+  const refitFrame = useRef(null);
+  const refit = useMemo(
+    () => () => {
+      if (refitFrame.current !== null) return;
+      refitFrame.current = requestAnimationFrame(() => {
+        refitFrame.current = null;
+        fitView({ padding: fitViewPadding, duration: 0 });
+      });
+    },
+    [fitView, fitViewPadding],
+  );
+
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      nodeTypes={nodeTypes}
-      edgeTypes={edgeTypes}
-      className={className}
-      fitView
-      fitViewOptions={{ padding: fitViewPadding }}
-      minZoom={0.35}
-      maxZoom={1.6}
-      nodesDraggable={false}
-      nodesConnectable={false}
-      elementsSelectable={false}
-      zoomOnDoubleClick={false}
-    >
-      {title ? <div className="rf-title">{title}</div> : null}
-      <Background color="#8394a3" gap={22} size={1.4} />
-      <Controls position="bottom-right" showInteractive={false} />
-    </ReactFlow>
+    <RefitContext.Provider value={refit}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        className={className}
+        fitView
+        fitViewOptions={{ padding: fitViewPadding }}
+        minZoom={0.35}
+        maxZoom={1.6}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        elementsSelectable={false}
+        zoomOnDoubleClick={false}
+      >
+        {title ? <div className="rf-title">{title}</div> : null}
+        <Background color="#8394a3" gap={22} size={1.4} />
+        <Controls position="bottom-right" showInteractive={false} />
+      </ReactFlow>
+    </RefitContext.Provider>
   );
 }
 

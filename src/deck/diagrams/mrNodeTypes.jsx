@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Handle, Position } from '@xyflow/react';
+import { RefitContext, isEquationLine } from './DeckFlowPanel.jsx';
+import NodeEquation from './NodeEquation.jsx';
 
 /**
  * Tipos de nodo extra del esquema MR (lenguaje del esquema TikZ de
@@ -32,8 +34,11 @@ export function NeuronNode({ data }) {
   );
 }
 
-/** Etiqueta de capa, chip, panel de zona o divisor (texto plano o caja). */
+/** Etiqueta de capa, chip, panel de zona o divisor (texto plano o caja).
+ * La llave theta (variant 'theta') puede llevar `$…$` y se tipografía
+ * vía NodeEquation (R15: nodo compartido por las puertas ① y ③). */
 export function LabelNode({ data }) {
+  const refit = useContext(RefitContext);
   const style =
     data.variant === 'badge' || data.variant === 'chip'
       ? { background: data.color, color: '#fff' }
@@ -43,7 +48,11 @@ export function LabelNode({ data }) {
       className={`deck-label${data.variant ? ` is-${data.variant}` : ''}`}
       style={{ ...style, ...(data.style || {}) }}
     >
-      {data.label}
+      {isEquationLine(data.label) ? (
+        <NodeEquation code={data.label} onTypeset={refit} />
+      ) : (
+        data.label
+      )}
     </div>
   );
 }
@@ -62,16 +71,22 @@ export function StructureNode({ data }) {
   );
 }
 
-/** Línea de composición de la pérdida (texto plano, sin caja). */
+/** Línea de composición de la pérdida (texto plano, sin caja). Las
+ * líneas marcadas `$…$` se tipografían vía NodeEquation (R15, puerta ①). */
 export function LossLineNode({ data }) {
+  const refit = useContext(RefitContext);
   return (
     <div className="deck-lossline" style={{ color: data.color }}>
       <Handle type="target" position={Position.Top} isConnectable={false} />
-      {data.lines.map((line, i) => (
-        <span key={i} className="deck-lossline-part">
-          {line}
-        </span>
-      ))}
+      {data.lines.map((line, i) =>
+        isEquationLine(line) ? (
+          <NodeEquation key={i} code={line} onTypeset={refit} />
+        ) : (
+          <span key={i} className="deck-lossline-part">
+            {line}
+          </span>
+        ),
+      )}
     </div>
   );
 }
