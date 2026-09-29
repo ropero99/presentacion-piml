@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Handle, Position } from '@xyflow/react';
-import { RefitContext, isEquationLine } from './DeckFlowPanel.jsx';
+import { RefitContext, hasMathLine } from './DeckFlowPanel.jsx';
 import NodeEquation from './NodeEquation.jsx';
 
 /**
@@ -16,8 +16,11 @@ import NodeEquation from './NodeEquation.jsx';
  * handleBounds y la arista no se dibuja.
  */
 
-/** Neurona circular: borde del color de capa, relleno claro, texto centrado. */
+/** Neurona circular: borde del color de capa, relleno claro, texto centrado.
+ * El rótulo puede llevar math `$…$` (p. ej. `$H_\theta$`, `$\hat{x}_\theta(t)$`)
+ * y se tipografía vía NodeEquation. */
 export function NeuronNode({ data }) {
+  const refit = useContext(RefitContext);
   return (
     <div
       className={`deck-neuron${data.heavy ? ' is-heavy' : ''}`}
@@ -28,7 +31,11 @@ export function NeuronNode({ data }) {
       }}
     >
       <Handle type="target" position={Position.Left} isConnectable={false} />
-      {data.label}
+      {hasMathLine(data.label) ? (
+        <NodeEquation code={data.label} onTypeset={refit} />
+      ) : (
+        data.label
+      )}
       <Handle type="source" position={Position.Right} isConnectable={false} />
     </div>
   );
@@ -48,7 +55,7 @@ export function LabelNode({ data }) {
       className={`deck-label${data.variant ? ` is-${data.variant}` : ''}`}
       style={{ ...style, ...(data.style || {}) }}
     >
-      {isEquationLine(data.label) ? (
+      {hasMathLine(data.label) ? (
         <NodeEquation code={data.label} onTypeset={refit} />
       ) : (
         data.label
@@ -59,13 +66,18 @@ export function LabelNode({ data }) {
 
 /** Caja punteada de estructura física (puerta ②): envuelve las ocultas. */
 export function StructureNode({ data }) {
+  const refit = useContext(RefitContext);
   return (
     <div className="deck-structurebox" style={{ borderColor: data.color, ...(data.style || {}) }}>
       <Handle type="target" position={Position.Left} isConnectable={false} />
       <span className="deck-structure-title" style={{ color: data.color }}>
-        {data.label}
+        {hasMathLine(data.label) ? <NodeEquation code={data.label} onTypeset={refit} /> : data.label}
       </span>
-      {data.eq ? <span className="deck-structure-eq">{data.eq}</span> : null}
+      {data.eq ? (
+        <span className="deck-structure-eq">
+          {hasMathLine(data.eq) ? <NodeEquation code={data.eq} onTypeset={refit} /> : data.eq}
+        </span>
+      ) : null}
       {data.badge ? <span className="deck-structure-badge">★ PUNTO DE ENTRADA DE LA FÍSICA</span> : null}
     </div>
   );
@@ -79,7 +91,7 @@ export function LossLineNode({ data }) {
     <div className="deck-lossline" style={{ color: data.color }}>
       <Handle type="target" position={Position.Top} isConnectable={false} />
       {data.lines.map((line, i) =>
-        isEquationLine(line) ? (
+        hasMathLine(line) ? (
           <NodeEquation key={i} code={line} onTypeset={refit} />
         ) : (
           <span key={i} className="deck-lossline-part">

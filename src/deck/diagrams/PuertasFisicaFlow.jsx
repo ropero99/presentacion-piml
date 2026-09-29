@@ -15,7 +15,7 @@ const nodes = [
       lines: ['EDO/EDP · leyes · restricciones de forma'],
       sourceHandles: FIS_SOURCES.map((yPct, j) => ({ id: `s${j}`, yPct })),
     },
-    position: { x: 0, y: 200 },
+    position: { x: 0, y: 150 },
   },
   {
     id: 'p1',
@@ -40,7 +40,7 @@ const nodes = [
       title: '② Arquitectura (fuerte)',
       lines: ['invariancias · monotonías', 'se cumple SIEMPRE'],
     },
-    position: { x: 320, y: 140 },
+    position: { x: 320, y: 100 },
   },
   {
     id: 'p3',
@@ -50,7 +50,7 @@ const nodes = [
       title: '③ Datos / features',
       lines: ['features de leyes físicas', 'multi-fidelity · bottleneck'],
     },
-    position: { x: 320, y: 280 },
+    position: { x: 320, y: 200 },
   },
   {
     id: 'p4',
@@ -61,7 +61,7 @@ const nodes = [
       // R15: fórmula marcada `$…$`.
       lines: ['$f_{fisica}(x) + g_\\theta(x)$', 'residual learning'],
     },
-    position: { x: 320, y: 420 },
+    position: { x: 320, y: 300 },
   },
   {
     id: 'ml',
@@ -73,7 +73,7 @@ const nodes = [
       lines: ['$\\hat{y} = f_\\theta(x)$'],
       targetHandles: ML_TARGETS.map((yPct, j) => ({ id: `t${j}`, yPct })),
     },
-    position: { x: 700, y: 230 },
+    position: { x: 700, y: 150 },
   },
 ];
 

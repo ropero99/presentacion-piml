@@ -27,3 +27,5 @@ presentacion_piml_v*.pdf
 
 # codegraph local index
 .codegraph/
+# Local Pi runtime state
+.atl/

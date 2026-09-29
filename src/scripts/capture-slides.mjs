@@ -84,7 +84,7 @@ async function captureDeck(page, capturesDir) {
     await waitForMathSettled(page);
     // settle: transiciones de layout/fitView de ReactFlow, typeset MathJax
     // de nodos de diagrama y refit final (v4/R15: 700→1000 ms).
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2600);
     const file = path.join(capturesDir, `slide-${String(i + 1).padStart(2, '0')}.png`);
     await page.screenshot({ path: file });
     files.push(file);

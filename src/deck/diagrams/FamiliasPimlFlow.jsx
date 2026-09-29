@@ -24,7 +24,7 @@ const nodes = [
       title: 'F1 · PINN sobre EDO/EDP',
       lines: ['loss = residuo de la ecuación', 'en puntos de colocación'],
     },
-    position: { x: 0, y: 170 },
+    position: { x: 0, y: 200 },
   },
   {
     id: 'f2',
@@ -34,7 +34,7 @@ const nodes = [
       title: 'F2 · Physics-guided RNN (PGML)',
       lines: ['recurrencia + loss física', 'nicho: lagos, hidrología'],
     },
-    position: { x: 300, y: 170 },
+    position: { x: 300, y: 200 },
   },
   {
     id: 'f3',
@@ -44,7 +44,7 @@ const nodes = [
       title: 'F3 · Neural ODE / SDE',
       lines: ['Hamiltonian / Lagrangian NN', 'dinámica continua estructurada'],
     },
-    position: { x: 600, y: 170 },
+    position: { x: 600, y: 200 },
   },
   {
     id: 'f4',
@@ -54,7 +54,7 @@ const nodes = [
       title: 'F4 · Física en el espacio latente',
       lines: ['encoder + física + decoder', 'PhyDNet (CVPR 2020)'],
     },
-    position: { x: 0, y: 340 },
+    position: { x: 0, y: 475 },
   },
   {
     id: 'f5',
@@ -64,7 +64,7 @@ const nodes = [
       title: 'F5 · Forecasting restringido',
       lines: ['kernel/GPR con forma', 'bounds · rampas · parabolicidad'],
     },
-    position: { x: 300, y: 340 },
+    position: { x: 300, y: 475 },
   },
   {
     id: 'f6',
@@ -74,7 +74,7 @@ const nodes = [
       title: 'F6 · TS extremo-a-extremo',
       lines: ['prior físico embebido, sin EDP', 'PINT (2025) — emergente'],
     },
-    position: { x: 600, y: 340 },
+    position: { x: 600, y: 475 },
   },
 ];
 
@@ -90,5 +90,5 @@ const edges = [
 ];
 
 export default function FamiliasPimlFlow({ active, title }) {
-  return <DeckFlowPanel flow="tb" nodes={nodes} edges={edges} title={title} active={active} />;
+  return <DeckFlowPanel flow="tb" fitViewPadding={0.05} nodes={nodes} edges={edges} title={title} active={active} />;
 }

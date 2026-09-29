@@ -172,7 +172,7 @@ export const SLIDES = [
     legend: [
       { color: '#1E3A5F', label: 'Sistema MR / física' },
       { color: '#2E86AB', label: '① Pérdida (débil)' },
-      { color: '#34495E', label: 'Modelo ML f_θ' },
+      { color: '#34495E', label: 'Modelo ML $f_\\theta$' },
       { color: '#C0392B', label: 'Minimización → θ*' },
     ],
   },
@@ -205,7 +205,16 @@ export const SLIDES = [
       {
         heading: 'Autodiff y ecuaciones de Hamilton — ★ PUNTO DONDE ENTRA LA FÍSICA',
         tex: '\\dot{\\mathbf{q}}_\\theta = \\frac{\\partial H_\\theta}{\\partial \\mathbf{p}}, \\qquad \\dot{\\mathbf{p}}_\\theta = -\\frac{\\partial H_\\theta}{\\partial \\mathbf{q}}, \\qquad \\frac{d}{dt}\\begin{bmatrix} \\mathbf{q} \\\\ \\mathbf{p} \\end{bmatrix} = \\mathbb{J}\\,\\nabla H_\\theta',
-        conn: '**La física NO entra como penalización: entra en la estructura.** Autodiff calcula $\\partial H_\\theta/\\partial \\mathbf{q}$ y $\\partial H_\\theta/\\partial \\mathbf{p}$, y la estructura Hamiltoniana (con $\\mathbb{J} = \\begin{bmatrix} 0 & 1 \\\\ -1 & 0 \\end{bmatrix}$) convierte ese gradiente en la dinámica del sistema.',
+        bridge: {
+          chain: [
+            { tex: 'H_\\theta(\\mathbf{q},\\,\\mathbf{p})' },
+            { step: 'Autodiff' },
+            { tex: '\\left( \\partial H_\\theta / \\partial \\mathbf{q},\\; \\partial H_\\theta / \\partial \\mathbf{p} \\right)' },
+            { step: 'Ecs. de Hamilton' },
+            { tex: '\\left( \\dot{\\mathbf{q}}_\\theta,\\; \\dot{\\mathbf{p}}_\\theta \\right)' },
+          ],
+        },
+        conn: '**La física NO entra como penalización: entra en la estructura.** Las ecs. de Hamilton (con $\\mathbb{J} = \\begin{bmatrix} 0 & 1 \\\\ -1 & 0 \\end{bmatrix}$) no «transforman» mágicamente una derivada en otra: son la regla física que convierte las pendientes de $H_\\theta$ respecto al estado $(\\mathbf{q}, \\mathbf{p})$ en tasas de cambio temporal $(\\dot{\\mathbf{q}}_\\theta, \\dot{\\mathbf{p}}_\\theta)$ de $q = q(t)$ y $p = p(t)$.',
       },
       {
         heading: 'Función de costo (dinámica) y optimización',
@@ -252,10 +261,102 @@ export const SLIDES = [
       },
     ],
     notes:
-      'Nota: existe una formulación alternativa basada en Euler–Lagrange, la Lagrangian Neural Network (§F3 del documento).',
+      'Nota: la formulación alternativa basada en Euler–Lagrange, la Lagrangian Neural Network (§F3 del documento), se desarrolla en las dos diapositivas siguientes.',
     refs: [
       'Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks. NeurIPS 2019.',
       'Cranmer et al. Lagrangian Neural Networks. arXiv:2003.04630, 2020.',
+      'Chen et al. Neural Ordinary Differential Equations. NeurIPS 2018.',
+    ],
+  },
+  {
+    id: 'd1-puerta2-lagrange',
+    module: 'd1',
+    tone: 'purple',
+    kind: 'door',
+    kicker: '3 · Puerta ② · Forma fuerte (Lagrangian NN)',
+    title: 'Puerta ② — Arquitectura (Lagrangian NN)',
+    lema: 'La física entra en la **estructura del modelo**: se cumple **por construcción** para todo $\\theta$, ahora a través del principio de acción.',
+    derivation: [
+      '$(\\mathbf{q}, \\dot{\\mathbf{q}})$',
+      '$f_\\theta$ — red neuronal',
+      '$L_\\theta(\\mathbf{q},\\dot{\\mathbf{q}})$',
+      '$\\partial L_\\theta$ (autodiff)',
+      'Euler–Lagrange → dinámica',
+    ],
+    equations: [
+      {
+        heading: 'Estado generalizado y Lagrangiano físico',
+        tex: '\\mathbf{q} = x, \\qquad \\dot{\\mathbf{q}} = \\dot{x}, \\qquad L(\\mathbf{q}, \\dot{\\mathbf{q}}) = T - V = \\frac{m\\dot{q}^2}{2} - \\frac{kq^2}{2} \\quad (c = 0)',
+        conn: '**Conexión:** para el sistema masa-resorte conservativo, el Lagrangiano es energía cinética menos energía potencial — misma notación $\\mathbf{q}$, $\\dot{\\mathbf{q}}$ y los mismos $m$, $k$ del bloque hamiltoniano ($H = T + V$, $L = T - V$). $L$: función escalar.',
+      },
+      {
+        heading: 'La red aprende el Lagrangiano (función escalar)',
+        tex: 'f_\\theta:\\ (\\mathbf{q}, \\dot{\\mathbf{q}}) \\;\\longmapsto\\; L_\\theta(\\mathbf{q}, \\dot{\\mathbf{q}}) \\approx L(\\mathbf{q}, \\dot{\\mathbf{q}})',
+        conn: '**Conexión:** igual que la HNN, la LNN **no predice directamente** $q(t)$: aprende una función escalar. $L_\\theta$ **no se compara con etiquetas de energía**: se aprende porque sus derivadas deben reproducir la dinámica observada. Entrada de la red $= (\\mathbf{q}, \\dot{\\mathbf{q}})$ · salida $= L_\\theta(\\mathbf{q}, \\dot{\\mathbf{q}})$.',
+      },
+      {
+        heading: 'Autodiff y ecuación de Euler–Lagrange — ★ PUNTO DONDE ENTRA LA FÍSICA',
+        tex: '\\frac{d}{dt}\\,\\frac{\\partial L_\\theta}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L_\\theta}{\\partial \\mathbf{q}} = 0',
+        bridge: {
+          chain: [
+            { tex: 'L_\\theta(\\mathbf{q},\\,\\dot{\\mathbf{q}})' },
+            { step: 'Autodiff' },
+            { tex: '\\left( \\partial L_\\theta / \\partial \\mathbf{q},\\; \\partial L_\\theta / \\partial \\dot{\\mathbf{q}} \\right)' },
+            { step: 'Ecs. de Euler–Lagrange' },
+            { tex: '\\ddot{\\mathbf{q}}_\\theta \\Rightarrow \\text{dinámica}' },
+          ],
+        },
+        conn: '**La física NO entra como penalización: entra en la estructura.** La ec. de Euler–Lagrange (principio de acción) es la regla física que convierte las derivadas parciales de $L_\\theta$ respecto al estado $(\\mathbf{q}, \\dot{\\mathbf{q}})$ en la aceleración $\\ddot{\\mathbf{q}}_\\theta$ de $q = q(t)$: el análogo lagrangiano de $\\mathbb{J}\\,\\nabla H_\\theta$, con $\\partial L_\\theta$ en lugar de $\\nabla H_\\theta$.',
+      },
+      {
+        heading: 'Función de costo (dinámica) y optimización',
+        tex: '\\mathcal{L}_{LNN}(\\theta) = \\frac{1}{N}\\sum_{n=1}^{N}\\left| \\ddot{\\mathbf{q}}_\\theta - \\ddot{\\mathbf{q}}_n \\right|^2, \\qquad \\theta^* = \\arg\\min_{\\theta}\\, \\mathcal{L}_{LNN}(\\theta)',
+        conn: '**Conexión:** los objetivos salen de los datos: $\\ddot{\\mathbf{q}}_n = \\ddot{x}_n$ (diferencias finitas si solo hay posición medida); $\\ddot{\\mathbf{q}}_\\theta$ se obtiene resolviendo la ec. de Euler–Lagrange para $L_\\theta$. No existe $\\mathcal{L}_{physics}$ separado: la física ya está incorporada en la arquitectura, igual que en la HNN.',
+      },
+    ],
+    notes:
+      'Mensaje clave: la LNN tampoco aprende directamente la trayectoria — aprende $L_\\theta(\\mathbf{q}, \\dot{\\mathbf{q}})$; la ecuación de Euler–Lagrange convierte sus derivadas en la aceleración y un integrador recupera $(q(t), \\dot{q}(t))$.',
+    refs: [
+      'Cranmer et al. Lagrangian Neural Networks. arXiv:2003.04630, 2020.',
+      'Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks. NeurIPS 2019.',
+      'Chen et al. Neural Ordinary Differential Equations. NeurIPS 2018.',
+    ],
+  },
+  {
+    id: 'd1-puerta2-lagrange-deriv',
+    module: 'd1',
+    tone: 'purple',
+    kind: 'door',
+    kicker: '3 · Puerta ② · Desglose matemático (Lagrangian NN)',
+    title: 'Puerta ② — Del Lagrangiano a la dinámica del masa-resorte',
+    lema: 'De dónde sale la regla de evolución que la LNN impone como estructura: tres pasos desde $L = T - V$ hasta la EDO del MR ($c = 0$), y su equivalencia con la formulación hamiltoniana.',
+    equations: [
+      {
+        heading: 'Paso 1 · Construcción del Lagrangiano',
+        tex: '\\mathbf{q} = x, \\quad \\dot{\\mathbf{q}} = \\dot{x}, \\quad T = \\frac{m\\dot{q}^2}{2}, \\quad V = \\frac{kq^2}{2} \\;\\Rightarrow\\; L = T - V = \\frac{m\\dot{q}^2}{2} - \\frac{kq^2}{2}',
+        conn: '**Conexión:** el Lagrangiano usa las mismas $m$, $k$ y la misma trayectoria $x(t)$ que el Hamiltoniano: energía cinética menos potencial en lugar de más.',
+      },
+      {
+        heading: 'Paso 2 · Ecuación de Euler–Lagrange',
+        tex: '\\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} = m\\,\\dot{\\mathbf{q}}, \\qquad \\frac{\\partial L}{\\partial \\mathbf{q}} = -k\\,\\mathbf{q} \\;\\Rightarrow\\; \\frac{d}{dt}\\,\\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L}{\\partial \\mathbf{q}} = m\\,\\ddot{\\mathbf{q}} + k\\,\\mathbf{q} = 0',
+        conn: '**Conexión:** las derivadas del Lagrangiano determinan cómo cambia el estado del sistema. $L$ no entrega directamente la trayectoria: entrega la regla de evolución (principio de acción), igual que $H$ en la formulación anterior.',
+      },
+      {
+        heading: 'Paso 3 · Recuperación de la ecuación física',
+        tex: 'm\\,\\ddot{\\mathbf{q}} + k\\,\\mathbf{q} = 0 \\;\\Rightarrow\\; m\\,\\ddot{q} + k\\,q = 0 \\;\\Rightarrow\\; m\\,\\ddot{x} + k\\,x = 0',
+        conn: '**Conexión:** la ecuación de Euler–Lagrange recupera exactamente la ecuación original del masa-resorte: la dinámica sale de $L$ por derivación, no se aprende.',
+      },
+      {
+        heading: 'Equivalencia con la formulación hamiltoniana (transformada de Legendre)',
+        tex: '\\mathbf{p} = \\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} = m\\,\\dot{\\mathbf{q}} \\;\\Rightarrow\\; H = \\mathbf{p}^{\\top}\\dot{\\mathbf{q}} - L = \\frac{p^2}{2m} + \\frac{kq^2}{2} = T + V',
+        conn: '**Destacado:** para el MR conservativo ($c = 0$) las dos puertas ② son equivalentes: la transformada de Legendre lleva de $L$ a $H$ y recupera exactamente el Hamiltoniano del bloque anterior, con su conservación de energía incluida.',
+      },
+    ],
+    notes:
+      'Nota: misma estructura de tres pasos que el desglose hamiltoniano — cambia la variable de partida ($L = T - V$ en lugar de $H = T + V$) y la regla de evolución (Euler–Lagrange en lugar de las ecs. de Hamilton).',
+    refs: [
+      'Cranmer et al. Lagrangian Neural Networks. arXiv:2003.04630, 2020.',
+      'Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks. NeurIPS 2019.',
       'Chen et al. Neural Ordinary Differential Equations. NeurIPS 2018.',
     ],
   },
@@ -270,8 +371,8 @@ export const SLIDES = [
     legend: [
       { color: '#1E3A5F', label: 'Sistema físico / variables (q, p)' },
       { color: '#16A085', label: 'Datos y medición' },
-      { color: '#7D3C98', label: 'Red HNN · H_θ · autodiff · estructura' },
-      { color: '#E67E22', label: 'Comparación → L_HNN(θ)' },
+      { color: '#7D3C98', label: 'Red HNN · $H_\\theta$ · autodiff · estructura' },
+      { color: '#E67E22', label: 'Comparación $\\to \\mathcal{L}_{HNN}(\\theta)$' },
       { color: '#C0392B', label: 'Optimización → θ*' },
     ],
   },
@@ -323,7 +424,7 @@ export const SLIDES = [
     legend: [
       { color: '#1E3A5F', label: 'Sistema MR / física' },
       { color: '#16A085', label: '③ Datos / features' },
-      { color: '#34495E', label: 'Modelo ML f_θ' },
+      { color: '#34495E', label: 'Modelo ML $f_\\theta$' },
       { color: '#C0392B', label: 'Minimización → θ*' },
     ],
   },

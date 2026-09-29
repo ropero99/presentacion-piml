@@ -70,6 +70,16 @@ export function isEquationLine(line) {
   return typeof line === 'string' && line.startsWith('$') && line.endsWith('$');
 }
 
+/** Línea CON math tipografiable: contiene al menos un par `$…$` completo, ya
+ * sea toda la línea (ecuación pura) o mezclado con prosa (rótulos tipo
+ * "ajuste de $\theta$ con $\mathcal{L}_{HNN}(\theta)$"). MathJax con
+ * inlineMath [['$','$']] compone los segmentos math y deja el resto intacto;
+ * un `$` suelto o desparejado no dispara typeset. */
+// eslint-disable-next-line react/only-export-components -- helper compartido por diseño (patrón makeEdge)
+export function hasMathLine(line) {
+  return typeof line === 'string' && /\$[^$\n]+\$/.test(line);
+}
+
 // Anclajes declarados por el nodo (data.sourceHandles / data.targetHandles)
 // se reparten a lo largo del canto: en 'lr' en vertical (top %), en 'tb' en
 // horizontal (left %). Sin declaración se conserva el anclaje único de siempre.
@@ -104,14 +114,18 @@ function buildNodeType(flow) {
         {!data.targetHandles ? (
           <Handle type="target" position={vertical ? Position.Top : Position.Left} isConnectable={false} />
         ) : null}
-        {data.title ? <div className="node-title">{data.title}</div> : null}
+        {data.title ? (
+          <div className="node-title">
+            {hasMathLine(data.title) ? (
+              <NodeEquation code={data.title} onTypeset={refit} />
+            ) : (
+              data.title
+            )}
+          </div>
+        ) : null}
         {(data.lines || []).map((line, i) => (
           <div className="node-line" key={i}>
-            {isEquationLine(line) ? (
-              <NodeEquation code={line} onTypeset={refit} />
-            ) : (
-              line
-            )}
+            {hasMathLine(line) ? <NodeEquation code={line} onTypeset={refit} /> : line}
           </div>
         ))}
         {(data.sourceHandles || []).map((h) => (
@@ -278,7 +292,22 @@ function FlowCanvas({
     const id = requestAnimationFrame(() => {
       fitView({ padding: fitViewPadding, duration: 240 });
     });
-    return () => cancelAnimationFrame(id);
+    // Consolidación (r5): el fitView inicial puede ejecutarse con medidas
+    // previas a fuentes/MathJax y dejar el viewport descentrado o con zoom
+    // por debajo del óptimo. Estos refits tardíos (sin duración) re-encajan
+    // con los bounds ya asentados: centrado y zoom máximos del layout final.
+    const refitNow = () => fitView({ padding: fitViewPadding, duration: 0 });
+    // Serie de refits: el typeset de MathJax + la re-medida de ReactFlow
+    // (ResizeObserver) puede ocurrir DESPUÉS de un refit puntual y dejar el
+    // viewport pegado arriba con zoom bajo. Una serie cubre cualquier orden;
+    // fitView(duration 0) es idempotente cuando ya no hay cambios.
+    const late = [600, 1400, 2200, 3000, 3800, 4600].map((ms) => setTimeout(refitNow, ms));
+    const fonts = document.fonts?.ready?.then(refitNow) || null;
+    return () => {
+      cancelAnimationFrame(id);
+      late.forEach(clearTimeout);
+      if (fonts && typeof fonts.catch === 'function') fonts.catch(() => {});
+    };
   }, [active, fitView, fitViewPadding]);
 
   // Refit (R15/D5): los callbacks onTypeset llegan agregados en un solo
@@ -300,25 +329,27 @@ function FlowCanvas({
 
   return (
     <RefitContext.Provider value={refit}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        className={className}
-        fitView
-        fitViewOptions={{ padding: fitViewPadding }}
-        minZoom={0.35}
-        maxZoom={1.6}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        elementsSelectable={false}
-        zoomOnDoubleClick={false}
-      >
+      <div className="rf-frame">
         {title ? <div className="rf-title">{title}</div> : null}
-        <Background color="#8394a3" gap={22} size={1.4} />
-        <Controls position="bottom-right" showInteractive={false} />
-      </ReactFlow>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          className={className}
+          fitView
+          fitViewOptions={{ padding: fitViewPadding }}
+          minZoom={0.35}
+          maxZoom={1.9}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          elementsSelectable={false}
+          zoomOnDoubleClick={false}
+        >
+          <Background color="#8394a3" gap={22} size={1.4} />
+          <Controls position="bottom-right" showInteractive={false} />
+        </ReactFlow>
+      </div>
     </RefitContext.Provider>
   );
 }

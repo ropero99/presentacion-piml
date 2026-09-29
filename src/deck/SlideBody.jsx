@@ -3,6 +3,8 @@ import { MathJax } from 'better-react-mathjax';
 import RichText from './RichText.jsx';
 import EquationBox from './EquationBox.jsx';
 import { DIAGRAM_COMPONENTS } from './diagrams/index.js';
+import NodeEquation from './diagrams/NodeEquation.jsx';
+import { hasMathLine } from './diagrams/DeckFlowPanel.jsx';
 
 function pad(value) {
   return String(value).padStart(2, '0');
@@ -111,7 +113,7 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
               {(slide.legend || []).map((chip, i) => (
                 <span className="legend-chip" key={i}>
                   <span className="legend-dot" style={{ background: chip.color }} />
-                  {chip.label}
+                  {hasMathLine(chip.label) ? <NodeEquation code={chip.label} /> : chip.label}
                 </span>
               ))}
             </figcaption>
@@ -155,7 +157,13 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
                 {slide.equations ? (
                   <div className="math-stack">
                     {slide.equations.map((eq, i) => (
-                      <EquationBox key={i} heading={eq.heading} tex={eq.tex} conn={eq.conn} />
+                      <EquationBox
+                        key={i}
+                        heading={eq.heading}
+                        tex={eq.tex}
+                        conn={eq.conn}
+                        bridge={eq.bridge}
+                      />
                     ))}
                   </div>
                 ) : null}
@@ -169,7 +177,7 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
                     {(slide.legend || []).map((chip, i) => (
                       <span className="legend-chip" key={i}>
                         <span className="legend-dot" style={{ background: chip.color }} />
-                        {chip.label}
+                        {hasMathLine(chip.label) ? <NodeEquation code={chip.label} /> : chip.label}
                       </span>
                     ))}
                   </figcaption>
@@ -247,7 +255,13 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
           {slide.equations ? (
             <div className="math-stack">
               {slide.equations.map((eq, i) => (
-                <EquationBox key={i} heading={eq.heading} tex={eq.tex} conn={eq.conn} />
+                <EquationBox
+                  key={i}
+                  heading={eq.heading}
+                  tex={eq.tex}
+                  conn={eq.conn}
+                  bridge={eq.bridge}
+                />
               ))}
             </div>
           ) : null}
@@ -277,7 +291,7 @@ export default function SlideBody({ slide, index, total, phaseClass }) {
             {(slide.legend || []).map((chip, i) => (
               <span className="legend-chip" key={i}>
                 <span className="legend-dot" style={{ background: chip.color }} />
-                {chip.label}
+                {hasMathLine(chip.label) ? <NodeEquation code={chip.label} /> : chip.label}
               </span>
             ))}
           </figcaption>

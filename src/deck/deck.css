@@ -240,7 +240,7 @@ body {
   min-width: 0;
   padding: clamp(10px, 1.6vw, 18px);
   display: grid;
-  grid-template-columns: minmax(280px, 36%) minmax(0, 1fr);
+  grid-template-columns: minmax(280px, 31%) minmax(0, 1fr);
   gap: clamp(10px, 1.4vw, 16px);
   align-items: stretch;
   opacity: 0;
@@ -383,10 +383,27 @@ body {
   margin: 0 0 4px;
 }
 
+.rf-frame {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.rf-frame > .react-flow {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+}
+
+/* Título en banda propia SOBRE el lienzo: ningún nodo puede quedar debajo. */
+.rf-frame .rf-title {
+  position: static;
+  align-self: flex-start;
+  margin: 0 0 6px 2px;
+}
+
 .rf-title {
-  position: absolute;
-  top: 10px;
-  left: 12px;
   z-index: 10;
   background: rgba(255, 255, 255, 0.94);
   border: 1px solid var(--line);
@@ -694,25 +711,52 @@ p {
 
 /* Door 2 (round 6) carries 4 eq boxes + strip + notes + refs: compact the
    boxes slightly so the whole stack fits 1080p without clipping refs. */
-.slide[data-id='d1-puerta2'] .eq-box {
-  padding: 5px clamp(10px, 1.2vw, 14px);
+.slide[data-id='d1-puerta2'] .eq-box, .slide[data-id='d1-puerta2-lagrange'] .eq-box {
+  padding: 4px clamp(10px, 1.2vw, 14px);
 }
 
-.slide[data-id='d1-puerta2'] .eq-box .eq-conn {
+/* Round 7 (puente visual): compensa el alto del bridge para que la pila
+   completa (4 cajas + notas + 3 refs) siga entrando en 1080p sin cortes. */
+.slide[data-id='d1-puerta2'] .math-stack, .slide[data-id='d1-puerta2-lagrange'] .math-stack {
+  gap: 5px;
+}
+
+.slide[data-id='d1-puerta2'] .eq-box .eq-display, .slide[data-id='d1-puerta2-lagrange'] .eq-box .eq-display {
+  line-height: 1.4;
+}
+
+.slide[data-id='d1-puerta2'] .eq-box .eq-heading, .slide[data-id='d1-puerta2-lagrange'] .eq-box .eq-heading {
+  margin: 3px 0 1px;
+}
+
+.slide[data-id='d1-puerta2'] .door-lema, .slide[data-id='d1-puerta2-lagrange'] .door-lema {
+  padding: 4px 2px;
+}
+
+.slide[data-id='d1-puerta2'] .slide-notes, .slide[data-id='d1-puerta2-lagrange'] .slide-notes {
+  margin: 4px 0 0;
+}
+
+.slide[data-id='d1-puerta2'] .eq-bridge, .slide[data-id='d1-puerta2-lagrange'] .eq-bridge {
+  margin: 2px 0 1px;
+}
+
+.slide[data-id='d1-puerta2'] .eq-box .eq-conn, .slide[data-id='d1-puerta2-lagrange'] .eq-box .eq-conn {
   font-size: 0.82rem;
   line-height: 1.35;
+  margin-top: 1px;
 }
 
-.slide[data-id='d1-puerta2'] .eq-box .eq-display {
+.slide[data-id='d1-puerta2'] h2, .slide[data-id='d1-puerta2-lagrange'] h2 {
+  margin-bottom: 8px;
+}
+
+.slide[data-id='d1-puerta2'] .eq-box .eq-display, .slide[data-id='d1-puerta2-lagrange'] .eq-box .eq-display {
   font-size: clamp(0.95rem, 1.25vw, 1.12rem);
 }
 
-.slide[data-id='d1-puerta2'] .derivation-strip {
-  margin: 0 0 6px;
-}
-
-.slide[data-id='d1-puerta2'] .slide-notes {
-  margin: 8px 0 0;
+.slide[data-id='d1-puerta2'] .derivation-strip, .slide[data-id='d1-puerta2-lagrange'] .derivation-strip {
+  margin: 0 0 2px;
 }
 
 /* ---------- Derivation strip (door 2, AD-5) ---------- */
@@ -737,6 +781,65 @@ p {
   margin-left: 8px;
   color: var(--accent);
   font-weight: 700;
+}
+
+/* ---------- Equation bridge (door 2) ---------- */
+/* Puente visual dentro del bloque Autodiff/Hamilton: cadena de tres nodos
+   con flechas rotuladas, en el color de texto del deck. Clases usadas
+   solo aquí. */
+.eq-bridge {
+  display: flex;
+  justify-content: center;
+  margin: 2px 0 1px;
+}
+
+.eq-bridge-chain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(10px, 1.2vw, 20px);
+}
+
+.eq-bridge-node {
+  color: var(--fg);
+  font-size: 0.98rem;
+  white-space: nowrap;
+}
+
+.eq-bridge-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: clamp(56px, 5vw, 96px);
+}
+
+.eq-bridge-step-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--subtext);
+  white-space: nowrap;
+}
+
+.eq-bridge-step-arrow {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: var(--line-strong);
+  border-radius: 1px;
+}
+
+.eq-bridge-step-arrow::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid var(--line-strong);
+  border-right: 2px solid var(--line-strong);
+  transform: translateY(-50%) rotate(45deg);
 }
 
 /* ---------- Página completa de puerta (pantallas angostas) ---------- */

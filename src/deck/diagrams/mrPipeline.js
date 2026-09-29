@@ -122,7 +122,7 @@ export function buildMrDiagram({ entry }) {
     data: {
       color: NAVY,
       title: 'Sistema MR',
-      lines: ['■ masa · ∿ k · ⌇ c', 'm·ẍ + c·ẋ + k·x = 0', 'estado: (x, ẋ)'],
+      lines: ['$m$ masa · $k$ rigidez', '$c$ amortiguamiento', '$m\\,\\ddot{x} + c\\,\\dot{x} + k\\,x = 0$', 'estado: $(x, \\dot{x})$'],
     },
   });
   nodes.push({
@@ -132,7 +132,7 @@ export function buildMrDiagram({ entry }) {
     data: {
       color: TEAL,
       title: 'Datos / entrenamiento',
-      lines: [entry === 'modelo' ? '(t, x, ẋ) medidos' : '(t, x) medidos'],
+      lines: [entry === 'modelo' ? '$(t, x, \\dot{x})$ medidos' : '$(t, x)$ medidos'],
     },
   });
 
@@ -143,7 +143,7 @@ export function buildMrDiagram({ entry }) {
           { id: 'in-x', label: 'x', color: TEAL, row: 0 },
           {
             id: 'in-psi',
-            label: 'ψ_fis(x)',
+            label: '$\\psi_{fis}(x)$',
             color: TEAL,
             row: 2,
             heavy: true,
@@ -185,7 +185,7 @@ export function buildMrDiagram({ entry }) {
     }),
   );
 
-  const outLabel = entry === 'modelo' ? '(q̂, p̂)' : 'x̂_θ(t)';
+  const outLabel = entry === 'modelo' ? '$(\\hat{q}, \\hat{p})$' : '$\\hat{x}_\\theta(t)$';
   nodes.push(
     neuron(
       'out',
@@ -230,8 +230,8 @@ export function buildMrDiagram({ entry }) {
       zIndex: 0,
       data: {
         color: MORADO,
-        label: 'estructura física (conserva H_θ)',
-        eq: 'd/dt [q, p] = J ∇H_θ',
+        label: 'estructura física (conserva $H_\\theta$)',
+        eq: '$\\frac{d}{dt}\\,[\\mathbf{q}, \\mathbf{p}] = \\mathbb{J}\\,\\nabla H_\\theta$',
         badge: false,
           style: {
             width: last.x - first.x + geo.size + 32,
@@ -262,7 +262,7 @@ export function buildMrDiagram({ entry }) {
 
   // ── Cajas punteadas de rol (columna derecha) ──
   const BOX_X = 830;
-  const cmpData = entry === 'modelo' ? '(t, x, ẋ)' : '(t, x)';
+  const cmpData = entry === 'modelo' ? '$(t, x, \\dot{x})$' : '$(t, x)$';
   nodes.push({
     id: 'cmp',
     type: 'deck',
@@ -271,7 +271,7 @@ export function buildMrDiagram({ entry }) {
       color: AZUL,
       dashed: true,
       title: 'Comparar con datos',
-      lines: [`${cmpData} → L_MSE`],
+      lines: [`${cmpData} $\\to \\mathcal{L}_{MSE}$`],
     },
   });
 
@@ -282,13 +282,13 @@ export function buildMrDiagram({ entry }) {
     nodes.push({
       id: 'ad',
       type: 'deck',
-      position: { x: BOX_X + 260, y: 132 },
+      position: { x: BOX_X + 230, y: 132 },
       data: {
         color: AZUL,
         dashed: true,
         heavy: true,
         title: 'Diff. automática',
-        lines: ['ẋ̂_θ, ẍ̂_θ → r_θ', BADGE],
+        lines: ['$\\dot{\\hat{x}}_\\theta,\\, \\ddot{\\hat{x}}_\\theta \\to r_\\theta$', BADGE],
         targetHandles: [
           { id: 't-cmp', yPct: 30 },
           { id: 't-fis', yPct: 80 },
@@ -304,7 +304,7 @@ export function buildMrDiagram({ entry }) {
   // ── Física (esqueleto aprobado) + su flecha al punto de entrada ──
   const fisPos =
     entry === 'ad'
-      ? { x: 640, y: 460 } // bajo la salida: flecha corta a la caja autodiff
+      ? { x: 640, y: 440 } // bajo la salida: flecha corta a la caja autodiff
       : entry === 'modelo'
         ? { x: 240, y: 415 } // bajo la red: flecha corta a la estructura
         : { x: 0, y: 500 }; // a la izquierda de feat: arista horizontal a t-fis
@@ -313,15 +313,15 @@ export function buildMrDiagram({ entry }) {
     type: 'deck',
     position: fisPos,
     sourcePosition: 'right',
-    data: { color: NAVY, title: 'Física N[u] = 0', lines: ['m·ẍ + c·ẋ + k·x = 0'] },
+    data: { color: NAVY, title: 'Física $\\mathcal{N}[u] = 0$', lines: ['$m\\,\\ddot{x} + c\\,\\dot{x} + k\\,x = 0$'] },
   });
 
   // ── Optimización (derecha de las cajas de rol) ──
   nodes.push({
     id: 'opt',
     type: 'deck',
-    position: { x: BOX_X + (entry === 'ad' ? 520 : 240), y: entry === 'ad' ? 232 : 176 },
-    data: { color: ROJO, title: 'Minimización', lines: ['→ θ*'] },
+    position: { x: BOX_X + (entry === 'ad' ? 480 : 240), y: entry === 'ad' ? 232 : 176 },
+    data: { color: ROJO, title: 'Minimización', lines: ['$\\theta \\to \\theta^{*}$'] },
   });
 
   // ── Línea de composición de la pérdida (bajo la zona de cajas) ──
@@ -334,12 +334,12 @@ export function buildMrDiagram({ entry }) {
           '$\\mathcal{L}_{MSE}(\\theta) + \\lambda_{phys}\\,\\mathcal{L}_{physics}(\\theta) = \\mathcal{L}_{total}(\\theta)$',
         ]
       : entry === 'modelo'
-        ? ['L_MSE(θ) — no existe L_physics: la física está en la estructura']
-        : ['L_MSE(θ) sobre x̃ aumentado — la física entró antes, en los datos'];
+        ? ['$\\mathcal{L}_{MSE}(\\theta)$ — no existe $\\mathcal{L}_{physics}$: la física está en la estructura']
+        : ['$\\mathcal{L}_{MSE}(\\theta)$ sobre $\\tilde{x}$ aumentado — la física entró antes, en los datos'];
   nodes.push({
     id: 'loss',
     type: 'lossline',
-    position: { x: entry === 'ad' ? BOX_X + 260 : BOX_X - 30, y: entry === 'ad' ? 500 : 650 },
+    position: { x: entry === 'ad' ? BOX_X + 100 : BOX_X - 30, y: entry === 'ad' ? 510 : 650 },
     data: { lines: lossLines, color: 'var(--fg)' },
   });
 
@@ -393,8 +393,8 @@ export function buildMrDiagram({ entry }) {
         color: TEAL,
         dashed: true,
         heavy: true,
-        title: 'Features ψ_fis·f_LF',
-        lines: ['→ x̃ aumentada', BADGE],
+        title: 'Features $\\psi_{fis} \\cdot f_{LF}$',
+        lines: ['$\\to \\tilde{x}$ aumentada', BADGE],
         targetHandles: [{ id: 't-fis', yPct: 50 }],
       },
     });
@@ -479,7 +479,7 @@ export function buildHnnDiagram() {
     id: 'hnn-chip-train',
     type: 'label',
     position: { x: 0, y: 195 },
-    data: { label: 'ENTRENAMIENTO · ajuste de θ con L_HNN(θ)', variant: 'chip', color: NAVY },
+    data: { label: 'ENTRENAMIENTO · ajuste de $\\theta$ con $\\mathcal{L}_{HNN}(\\theta)$', variant: 'chip', color: NAVY },
   });
 
   // 1 · Sistema físico (conservativo)
@@ -490,7 +490,7 @@ export function buildHnnDiagram() {
     data: {
       color: NAVY,
       title: 'Sistema físico',
-      lines: ['m·ẍ + k·x = 0', 'masa-resorte conservativo', 'c = 0 · estado: (x, ẋ)'],
+      lines: ['$m\\,\\ddot{x} + k\\,x = 0$', 'masa-resorte conservativo', '$c = 0$ · estado: $(x, \\dot{x})$'],
     },
   });
 
@@ -499,7 +499,7 @@ export function buildHnnDiagram() {
     id: 'hnn-datos',
     type: 'deck',
     position: { x: 215, y: 247 },
-    data: { color: TEAL, title: 'Datos medidos', lines: ['(t_n, x_n, ẋ_n)'] },
+    data: { color: TEAL, title: 'Datos medidos', lines: ['$(t_n, x_n, \\dot{x}_n)$'] },
   });
 
   // 3 · Conversión a variables canónicas
@@ -510,7 +510,7 @@ export function buildHnnDiagram() {
     data: {
       color: NAVY,
       title: 'Conversión canónica',
-      lines: ['q_n = x_n', 'p_n = m·ẋ_n', '→ (q_n, p_n)'],
+      lines: ['$q_n = x_n$', '$p_n = m\\,\\dot{x}_n$', '$\\to (q_n, p_n)$'],
     },
   });
 
@@ -530,14 +530,14 @@ export function buildHnnDiagram() {
     }),
   );
   nodes.push(
-    neuron('hnn-out', 'H_θ', MORADO, { x: 848, y: NET_Y0 + HN + HG }, { fill: '#f6eff9', heavy: true }),
+    neuron('hnn-out', '$H_\\theta$', MORADO, { x: 848, y: NET_Y0 + HN + HG }, { fill: '#f6eff9', heavy: true }),
   );
   edges.push(...neuronMesh(hnnInputIds, hnnHiddenIds[0]));
   edges.push(...neuronMesh(hnnHiddenIds[0], hnnHiddenIds[1]));
   edges.push(...neuronMesh(hnnHiddenIds[1], ['hnn-out']));
   nodes.push(layerLabel('hnn-cap', 'La red aprende el Hamiltoniano', 600, 66));
-  nodes.push(layerLabel('hnn-sal', 'salida única: H_θ(q, p)', 770, 308));
-  nodes.push(layerLabel('hnn-theta', 'θ = {W_ℓ, b_ℓ}_{ℓ=1}^L', 680, 428, 'theta'));
+  nodes.push(layerLabel('hnn-sal', 'salida única: $H_\\theta(q, p)$', 770, 308));
+  nodes.push(layerLabel('hnn-theta', '$\\theta = \\{W_\\ell, b_\\ell\\}_{\\ell=1}^{L}$', 680, 428, 'theta'));
 
   // 6 · Autodiff (dentro del panel de la física)
   // R15: derivadas parciales marcadas `$…$` (tipografado en DeckNode).
@@ -581,7 +581,7 @@ export function buildHnnDiagram() {
       color: NARANJA,
       dashed: true,
       title: 'Comparar dinámicas',
-      lines: ['(q̇_θ, ṗ_θ) vs (q̇_n, ṗ_n)', '→ L_HNN(θ)'],
+      lines: ['$(\\dot{q}_\\theta, \\dot{p}_\\theta)$ vs $(\\dot{q}_n, \\dot{p}_n)$', '$\\to \\mathcal{L}_{HNN}(\\theta)$'],
     },
   });
 
@@ -590,31 +590,31 @@ export function buildHnnDiagram() {
     id: 'hnn-opt',
     type: 'deck',
     position: { x: 1564, y: 247 },
-    data: { color: ROJO, title: 'Optimización', lines: ['θ → θ*'] },
+    data: { color: ROJO, title: 'Optimización', lines: ['$\\theta \\to \\theta^{*}$'] },
   });
 
   // 10 · Rama de predicción (después del entrenamiento, con θ*)
   nodes.push({
     id: 'hnn-divider',
     type: 'label',
-    position: { x: 0, y: 500 },
+    position: { x: 0, y: 640 },
     data: { label: '', variant: 'divider', style: { width: 1740 } },
   });
   nodes.push({
     id: 'hnn-chip-pred',
     type: 'label',
-    position: { x: 0, y: 516 },
-    data: { label: 'PREDICCIÓN · después del entrenamiento · usando θ*', variant: 'chip', color: TEAL },
+    position: { x: 0, y: 656 },
+    data: { label: 'PREDICCIÓN · después del entrenamiento · usando $\\theta^{*}$', variant: 'chip', color: TEAL },
   });
   const predChain = [
-    { id: 'hnn-p1', x: 0, y: 558, color: NAVY, title: '(q₀, p₀)', lines: ['estado inicial'] },
-    { id: 'hnn-p2', x: 200, y: 560, color: MORADO, title: 'H_θ*', lines: [] },
-    { id: 'hnn-p3', x: 400, y: 560, color: MORADO, title: 'grad(H_θ*)', lines: [] },
-    { id: 'hnn-p4', x: 600, y: 548, color: MORADO, heavy: true, title: 'ecuaciones de Hamilton', lines: ['$J\\,\\nabla H_\\theta^*$'] },
-    { id: 'hnn-p5', x: 812, y: 560, color: NAVY, title: '(q̇, ṗ)', lines: [] },
-    { id: 'hnn-p6', x: 1010, y: 552, color: GRIS, title: 'integrador numérico', lines: ['preferiblemente simpléctico'] },
-    { id: 'hnn-p7', x: 1250, y: 558, color: NAVY, title: '(q(t), p(t))', lines: [] },
-    { id: 'hnn-p8', x: 1445, y: 558, color: NAVY, title: 'x(t) = q(t)', lines: [] },
+    { id: 'hnn-p1', x: 0, y: 698, color: NAVY, title: '$(q_0, p_0)$', lines: ['estado inicial'] },
+    { id: 'hnn-p2', x: 200, y: 700, color: MORADO, title: '$H_\\theta^{*}$', lines: [] },
+    { id: 'hnn-p3', x: 400, y: 700, color: MORADO, title: '$\\mathrm{grad}(H_\\theta^{*})$', lines: [] },
+    { id: 'hnn-p4', x: 600, y: 688, color: MORADO, heavy: true, title: 'ecuaciones de Hamilton', lines: ['$\\mathbb{J}\\,\\nabla H_\\theta^{*}$'] },
+    { id: 'hnn-p5', x: 812, y: 700, color: NAVY, title: '$(\\dot{q}, \\dot{p})$', lines: [] },
+    { id: 'hnn-p6', x: 1010, y: 692, color: GRIS, title: 'integrador numérico', lines: ['preferiblemente simpléctico'] },
+    { id: 'hnn-p7', x: 1250, y: 698, color: NAVY, title: '$(q(t), p(t))$', lines: [] },
+    { id: 'hnn-p8', x: 1445, y: 698, color: NAVY, title: '$x(t) = q(t)$', lines: [] },
   ];
   predChain.forEach((p) => {
     nodes.push({

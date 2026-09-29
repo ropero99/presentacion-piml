@@ -25,7 +25,7 @@ const nodes = [
       title: 'A · Escasez de datos',
       lines: ['edificio/campus real', 'Loffa 2025 · Misyris 2020', 'límite: argumento clásico'],
     },
-    position: { x: 0, y: 180 },
+    position: { x: 0, y: 240 },
   },
   {
     id: 'b',
@@ -35,7 +35,7 @@ const nodes = [
       title: 'B · Interpretabilidad',
       lines: ['rama física/espectral explícita', 'sin precedentes en demanda', 'con armónicos etiquetados'],
     },
-    position: { x: 260, y: 180 },
+    position: { x: 260, y: 240 },
   },
   {
     id: 'c',
@@ -45,7 +45,7 @@ const nodes = [
       title: 'C · Cuantificación de incertidumbre',
       lines: ['solo B-PINN (caro)', 'conformal: barato y riguroso', 'relevancia: despacho / DR'],
     },
-    position: { x: 520, y: 180 },
+    position: { x: 520, y: 240 },
   },
   {
     id: 'd',
@@ -55,7 +55,7 @@ const nodes = [
       title: 'D · Robustez / extrapolación',
       lines: ['eventos extremos y OOD', 'abierta por ERCOT 2026', 'protocolos no estandarizados'],
     },
-    position: { x: 780, y: 180 },
+    position: { x: 780, y: 240 },
   },
   {
     id: 'nota',
@@ -66,7 +66,7 @@ const nodes = [
       lines: ['no excluyentes — las combinaciones', 'se refuerzan. La decisión formal', 'es posterior a este documento.'],
       targetHandles: NOTA_TARGETS.map((yPct, j) => ({ id: `t${j}`, yPct })),
     },
-    position: { x: 370, y: 420 },
+    position: { x: 370, y: 580 },
   },
 ];
 
@@ -84,5 +84,5 @@ const edges = [
 ];
 
 export default function OpcionesFlow({ active, title }) {
-  return <DeckFlowPanel flow="tb" nodes={nodes} edges={edges} title={title} active={active} />;
+  return <DeckFlowPanel flow="tb" fitViewPadding={0.05} nodes={nodes} edges={edges} title={title} active={active} />;
 }

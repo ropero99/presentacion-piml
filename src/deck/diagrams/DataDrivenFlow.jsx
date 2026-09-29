@@ -15,7 +15,7 @@ const nodes = [
     id: 'e2',
     type: 'deck',
     data: { color: '#95A5A6', title: 'E2 · ML clásico', lines: ['SVR · RF · XGBoost · ANFIS'] },
-    position: { x: 0, y: 120 },
+    position: { x: 0, y: 170 },
   },
   {
     id: 'e3',
@@ -27,7 +27,7 @@ const nodes = [
     id: 'e4',
     type: 'deck',
     data: { color: '#2E86AB', title: 'E4 · Convolucionales', lines: ['CNN · TCN · CNN-LSTM'] },
-    position: { x: 330, y: 120 },
+    position: { x: 330, y: 170 },
   },
   {
     id: 'e5',
@@ -45,7 +45,7 @@ const nodes = [
     id: 'e7',
     type: 'deck',
     data: { color: '#7D3C98', title: 'E7 · Fundacionales', lines: ['Chronos · TimesFM · Moirai'] },
-    position: { x: 660, y: 240 },
+    position: { x: 660, y: 375 },
   },
   {
     id: 'e8',
@@ -56,7 +56,7 @@ const nodes = [
       lines: ['VMD/EMD/CEEMDAN + red profunda', 'combina E3–E5 · patrón dominante en carga'],
       sourceHandles: E8_SOURCES.map((yPct, j) => ({ id: `s${j}`, yPct })),
     },
-    position: { x: 280, y: 280 },
+    position: { x: 280, y: 480 },
   },
 ];
 
@@ -71,7 +71,7 @@ const edges = [
 ];
 
 export default function DataDrivenFlow({ active, title }) {
-  return <DeckFlowPanel flow="lr" nodes={nodes} edges={edges} title={title} active={active} />;
+  return <DeckFlowPanel flow="lr" fitViewPadding={0.05} nodes={nodes} edges={edges} title={title} active={active} />;
 }
 
 export { LABEL_STYLE, LABEL_BG };

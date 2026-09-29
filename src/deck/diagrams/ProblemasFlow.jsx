@@ -44,7 +44,7 @@ const nodes = [
       lines: d.lines,
       sourceHandles: doorSources[d.id].map((yPct, j) => ({ id: `s${j}`, yPct })),
     },
-    position: { x: 0, y: i * 115 },
+    position: { x: 0, y: i * 160 },
   })),
   ...problems.map((p, i) => ({
     id: p.id,
@@ -55,7 +55,7 @@ const nodes = [
       lines: p.lines,
       targetHandles: problemTargets[p.id].map((yPct, j) => ({ id: `t${j}`, yPct })),
     },
-    position: { x: 560, y: i * 115 },
+    position: { x: 560, y: i * 160 },
   })),
 ];
 
@@ -93,7 +93,7 @@ const edges = EDGE_TABLE.map(([id, src, tgt, sIdx, tIdx, label], i) =>
 );
 
 export default function ProblemasFlow({ active, title }) {
-  return <DeckFlowPanel flow="lr" nodes={nodes} edges={edges} title={title} active={active} />;
+  return <DeckFlowPanel flow="lr" fitViewPadding={0.05} nodes={nodes} edges={edges} title={title} active={active} />;
 }
 
 export { LABEL_STYLE, LABEL_BG };

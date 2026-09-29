@@ -31,7 +31,7 @@ const nodes = [
       title: 'C · Forecasting de demanda/carga',
       lines: ['física como restricción de FORMA', 'puerta ① soft — ERCOT 2026 · chillers OOD'],
     },
-    position: { x: 0, y: 190 },
+    position: { x: 0, y: 230 },
   },
   {
     id: 'd',
@@ -41,7 +41,7 @@ const nodes = [
       title: 'D · Edificios / HVAC',
       lines: ['física de SUSTANCIA (ODE térmica, RC)', 'pero: horizontes cortos · sin UQ'],
     },
-    position: { x: 340, y: 190 },
+    position: { x: 340, y: 230 },
   },
   {
     id: 'e',
@@ -51,7 +51,7 @@ const nodes = [
       title: 'E · Renovables / EV',
       lines: ['rama física + rama residual', 'PhysEmbedFormer 2026'],
     },
-    position: { x: 680, y: 190 },
+    position: { x: 680, y: 230 },
   },
   {
     id: 'vac',
@@ -67,7 +67,7 @@ const nodes = [
         { id: 't1', yPct: 65 },
       ],
     },
-    position: { x: 160, y: 400 },
+    position: { x: 160, y: 490 },
   },
 ];
 
@@ -79,7 +79,7 @@ const edges = [
 ];
 
 export default function InterseccionFlow({ active, title }) {
-  return <DeckFlowPanel flow="tb" nodes={nodes} edges={edges} title={title} active={active} />;
+  return <DeckFlowPanel flow="tb" fitViewPadding={0.05} nodes={nodes} edges={edges} title={title} active={active} />;
 }
 
 export { LABEL_STYLE, LABEL_BG };
