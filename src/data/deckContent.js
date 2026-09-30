@@ -113,8 +113,8 @@ export const SLIDES = [
       },
       {
         heading: 'Estado canónico y energía',
-        tex: '\\mathbf{q} = x(t), \\quad \\mathbf{p} = m\\,\\dot{x}(t), \\quad H(q, p) = \\frac{p^2}{2m} + \\frac{kq^2}{2} \\quad (c = 0)',
-        conn: '**Conexión:** el caso conservativo ($c=0$) es hamiltoniano puro; es la forma que exige la puerta ②.',
+        tex: '\\mathbf{q}(t) = x(t), \\quad \\mathbf{p}(t) = m\\,\\dot{x}(t), \\quad H(\\mathbf{q}(t), \\mathbf{p}(t)) = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2} \\quad (c = 0)',
+        conn: '**Conexión:** el caso conservativo ($c=0$) es hamiltoniano puro; es la forma que exige la puerta ②. $q(t)$ y $p(t)$ son los estados (posición y momento) en cada instante; $H$ se evalúa sobre esa trayectoria.',
       },
       {
         heading: 'Datos disponibles',
@@ -185,45 +185,45 @@ export const SLIDES = [
     title: 'Puerta ② — Arquitectura (Hamiltonian NN)',
     lema: 'La física entra en la **estructura del modelo**: se cumple **por construcción** para todo $\\theta$.',
     derivation: [
-      '$(\\mathbf{q}, \\mathbf{p})$',
+      '$(\\mathbf{q}(t), \\mathbf{p}(t))$',
       '$f_\\theta$ — red neuronal',
-      '$H_\\theta(\\mathbf{q},\\mathbf{p})$',
+      '$H_\\theta(\\mathbf{q}(t),\\mathbf{p}(t))$',
       '$\\nabla H_\\theta$ (autodiff)',
       '$\\mathbb{J}\\,\\nabla H_\\theta$ → dinámica',
     ],
     equations: [
       {
         heading: 'Estado canónico y Hamiltoniano físico',
-        tex: '\\mathbf{q} = x, \\qquad \\mathbf{p} = m\\,\\dot{x}, \\qquad H(\\mathbf{q}, \\mathbf{p}) = \\frac{p^2}{2m} + \\frac{kq^2}{2} \\quad (c = 0)',
-        conn: '**Conexión:** para el sistema masa-resorte conservativo, el Hamiltoniano representa la energía mecánica total. $\\mathbf{q}$: posición generalizada · $\\mathbf{p}$: momento · $H$: energía total.',
+        tex: '\\mathbf{q}(t) = x(t), \\qquad \\mathbf{p}(t) = m\\,\\dot{x}(t), \\qquad H(\\mathbf{q}(t), \\mathbf{p}(t)) = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2} \\quad (c = 0)',
+        conn: '**Conexión:** para el sistema masa-resorte conservativo, el Hamiltoniano representa la energía mecánica total. $\\mathbf{q}(t)$: posición generalizada · $\\mathbf{p}(t)$: momento — estados en cada instante $t$ · $H$: energía total instantánea.',
       },
       {
         heading: 'La red aprende el Hamiltoniano (función escalar)',
-        tex: 'f_\\theta:\\ (\\mathbf{q}, \\mathbf{p}) \\;\\longmapsto\\; H_\\theta(\\mathbf{q}, \\mathbf{p}) \\approx H(\\mathbf{q}, \\mathbf{p})',
-        conn: '**Conexión:** la red **no predice directamente** $q(t)$ ni $p(t)$: aprende una función escalar. $H_\\theta$ **no se compara necesariamente con etiquetas de energía**: se aprende porque su gradiente debe reproducir la dinámica observada. Entrada de la red $= (\\mathbf{q}, \\mathbf{p})$ · salida $= H_\\theta(\\mathbf{q}, \\mathbf{p})$.',
+        tex: 'f_\\theta:\\ (\\mathbf{q}(t), \\mathbf{p}(t)) \\;\\longmapsto\\; H_\\theta(\\mathbf{q}(t), \\mathbf{p}(t)) \\approx H(\\mathbf{q}(t), \\mathbf{p}(t))',
+        conn: '**Conexión:** la red **no predice directamente** $q(t)$ ni $p(t)$: aprende una función escalar. $H_\\theta$ **no se compara necesariamente con etiquetas de energía**: se aprende porque su gradiente debe reproducir la dinámica observada. Entrada de la red $= (\\mathbf{q}(t), \\mathbf{p}(t))$ · salida $= H_\\theta(\\mathbf{q}(t), \\mathbf{p}(t))$.',
       },
       {
         heading: 'Autodiff y ecuaciones de Hamilton — ★ PUNTO DONDE ENTRA LA FÍSICA',
-        tex: '\\dot{\\mathbf{q}}_\\theta = \\frac{\\partial H_\\theta}{\\partial \\mathbf{p}}, \\qquad \\dot{\\mathbf{p}}_\\theta = -\\frac{\\partial H_\\theta}{\\partial \\mathbf{q}}, \\qquad \\frac{d}{dt}\\begin{bmatrix} \\mathbf{q} \\\\ \\mathbf{p} \\end{bmatrix} = \\mathbb{J}\\,\\nabla H_\\theta',
+        tex: '\\dot{\\mathbf{q}}_\\theta(t) = \\frac{\\partial H_\\theta}{\\partial \\mathbf{p}}, \\qquad \\dot{\\mathbf{p}}_\\theta(t) = -\\frac{\\partial H_\\theta}{\\partial \\mathbf{q}}, \\qquad \\frac{d}{dt}\\begin{bmatrix} \\mathbf{q}(t) \\\\ \\mathbf{p}(t) \\end{bmatrix} = \\mathbb{J}\\,\\nabla H_\\theta',
         bridge: {
           chain: [
-            { tex: 'H_\\theta(\\mathbf{q},\\,\\mathbf{p})' },
+            { tex: 'H_\\theta(\\mathbf{q}(t),\\,\\mathbf{p}(t))' },
             { step: 'Autodiff' },
             { tex: '\\left( \\partial H_\\theta / \\partial \\mathbf{q},\\; \\partial H_\\theta / \\partial \\mathbf{p} \\right)' },
             { step: 'Ecs. de Hamilton' },
-            { tex: '\\left( \\dot{\\mathbf{q}}_\\theta,\\; \\dot{\\mathbf{p}}_\\theta \\right)' },
+            { tex: '\\left( \\dot{\\mathbf{q}}_\\theta(t),\\; \\dot{\\mathbf{p}}_\\theta(t) \\right)' },
           ],
         },
-        conn: '**La física NO entra como penalización: entra en la estructura.** Las ecs. de Hamilton (con $\\mathbb{J} = \\begin{bmatrix} 0 & 1 \\\\ -1 & 0 \\end{bmatrix}$) no «transforman» mágicamente una derivada en otra: son la regla física que convierte las pendientes de $H_\\theta$ respecto al estado $(\\mathbf{q}, \\mathbf{p})$ en tasas de cambio temporal $(\\dot{\\mathbf{q}}_\\theta, \\dot{\\mathbf{p}}_\\theta)$ de $q = q(t)$ y $p = p(t)$.',
+        conn: '**La física NO entra como penalización: entra en la estructura.** Las ecs. de Hamilton (con $\\mathbb{J} = \\begin{bmatrix} 0 & 1 \\\\ -1 & 0 \\end{bmatrix}$) no «transforman» mágicamente una derivada en otra: son la regla física que convierte las pendientes de $H_\\theta$ respecto al estado $(\\mathbf{q}(t), \\mathbf{p}(t))$ en las tasas de cambio temporal $(\\dot{\\mathbf{q}}_\\theta(t), \\dot{\\mathbf{p}}_\\theta(t))$.',
       },
       {
         heading: 'Función de costo (dinámica) y optimización',
-        tex: '\\mathcal{L}_{HNN}(\\theta) = \\frac{1}{N}\\sum_{n=1}^{N}\\left[ \\left| \\dot{\\mathbf{q}}_\\theta - \\dot{\\mathbf{q}}_n \\right|^2 + \\left| \\dot{\\mathbf{p}}_\\theta - \\dot{\\mathbf{p}}_n \\right|^2 \\right], \\qquad \\theta^* = \\arg\\min_{\\theta}\\, \\mathcal{L}_{HNN}(\\theta)',
-        conn: '**Conexión:** los objetivos salen de los datos: $\\dot{\\mathbf{q}}_n = \\dot{x}_n$ y $\\dot{\\mathbf{p}}_n = m\\,\\ddot{x}_n$; si no hay aceleración medida, $\\dot{\\mathbf{p}}_n$ se estima por diferencias finitas. Con $\\dot{\\mathbf{q}}_\\theta = \\partial H_\\theta/\\partial \\mathbf{p}$ y $\\dot{\\mathbf{p}}_\\theta = -\\partial H_\\theta/\\partial \\mathbf{q}$, no existe $\\mathcal{L}_{physics}$ separado: la física ya está incorporada en la arquitectura.',
+        tex: '\\mathcal{L}_{HNN}(\\theta) = \\frac{1}{N}\\sum_{n=1}^{N}\\left[ \\left| \\dot{\\mathbf{q}}_\\theta(t_n) - \\dot{\\mathbf{q}}(t_n) \\right|^2 + \\left| \\dot{\\mathbf{p}}_\\theta(t_n) - \\dot{\\mathbf{p}}(t_n) \\right|^2 \\right], \\qquad \\theta^* = \\arg\\min_{\\theta}\\, \\mathcal{L}_{HNN}(\\theta)',
+        conn: '**Conexión:** los objetivos salen de los datos: $\\dot{\\mathbf{q}}(t_n) = \\dot{x}_n$ y $\\dot{\\mathbf{p}}(t_n) = m\\,\\ddot{x}_n$; si no hay aceleración medida, $\\dot{\\mathbf{p}}(t_n)$ se estima por diferencias finitas. Con $\\dot{\\mathbf{q}}_\\theta(t) = \\partial H_\\theta/\\partial \\mathbf{p}$ y $\\dot{\\mathbf{p}}_\\theta(t) = -\\partial H_\\theta/\\partial \\mathbf{q}$, no existe $\\mathcal{L}_{physics}$ separado: la física ya está incorporada en la arquitectura.',
       },
     ],
     notes:
-      'Mensaje clave: la HNN no aprende directamente la trayectoria — aprende $H_\\theta(\\mathbf{q}, \\mathbf{p})$; las ecuaciones de Hamilton convierten su gradiente en la dinámica y un integrador recupera $(q(t), p(t))$.',
+      'Mensaje clave: la HNN no aprende directamente la trayectoria — aprende $H_\\theta(\\mathbf{q}(t), \\mathbf{p}(t))$; las ecuaciones de Hamilton convierten su gradiente en la dinámica y un integrador recupera $(q(t), p(t))$.',
     refs: [
       'Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks. NeurIPS 2019.',
       'Cranmer et al. Lagrangian Neural Networks. arXiv:2003.04630, 2020.',
@@ -241,22 +241,22 @@ export const SLIDES = [
     equations: [
       {
         heading: 'Paso 1 · Construcción del Hamiltoniano',
-        tex: '\\mathbf{q} = x, \\quad \\mathbf{p} = m\\,\\dot{x}, \\quad T = \\frac{p^2}{2m}, \\quad V = \\frac{kq^2}{2} \\;\\Rightarrow\\; H = T + V = \\frac{p^2}{2m} + \\frac{kq^2}{2}',
+        tex: '\\mathbf{q}(t) = x(t), \\quad \\mathbf{p}(t) = m\\,\\dot{x}(t), \\quad T = \\frac{p(t)^2}{2m}, \\quad V = \\frac{k\\,q(t)^2}{2} \\;\\Rightarrow\\; H = T + V = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2}',
         conn: '**Conexión:** el Hamiltoniano representa la energía total del sistema conservativo: energía cinética más energía potencial del resorte.',
       },
       {
         heading: 'Paso 2 · Ecuaciones de Hamilton',
-        tex: '\\dot{\\mathbf{q}} = \\frac{\\partial H}{\\partial \\mathbf{p}} = \\frac{\\mathbf{p}}{m}, \\qquad \\dot{\\mathbf{p}} = -\\frac{\\partial H}{\\partial \\mathbf{q}} = -k\\,\\mathbf{q}',
+        tex: '\\dot{\\mathbf{q}}(t) = \\frac{\\partial H}{\\partial \\mathbf{p}} = \\frac{\\mathbf{p}(t)}{m}, \\qquad \\dot{\\mathbf{p}}(t) = -\\frac{\\partial H}{\\partial \\mathbf{q}} = -k\\,\\mathbf{q}(t)',
         conn: '**Conexión:** las derivadas del Hamiltoniano determinan cómo cambia el estado del sistema. $H$ no entrega directamente la trayectoria: entrega la regla de evolución del sistema.',
       },
       {
         heading: 'Paso 3 · Recuperación de la ecuación física',
-        tex: '\\mathbf{p} = m\\,\\dot{\\mathbf{q}} \\;\\Rightarrow\\; \\dot{\\mathbf{p}} = m\\,\\ddot{\\mathbf{q}} \\;\\Rightarrow\\; m\\,\\ddot{q} = -k\\,q \\;\\Rightarrow\\; m\\,\\ddot{x} + k\\,x = 0',
+        tex: '\\mathbf{p}(t) = m\\,\\dot{\\mathbf{q}}(t) \\;\\Rightarrow\\; \\dot{\\mathbf{p}}(t) = m\\,\\ddot{\\mathbf{q}}(t) \\;\\Rightarrow\\; m\\,\\ddot{q}(t) = -k\\,q(t) \\;\\Rightarrow\\; m\\,\\ddot{x}(t) + k\\,x(t) = 0',
         conn: '**Conexión:** las ecuaciones de Hamilton recuperan exactamente la ecuación original del masa-resorte: la dinámica sale de $H$ por derivación, no se aprende.',
       },
       {
         heading: 'Conservación de energía (por construcción)',
-        tex: '\\frac{dH}{dt} = \\nabla H^{\\top}\\, \\mathbb{J}\\, \\nabla H = 0 \\quad\\Rightarrow\\quad H = \\text{constante a lo largo de la trayectoria}',
+        tex: '\\frac{dH}{dt} = \\nabla H^{\\top}\\, \\mathbb{J}\\, \\nabla H = 0 \\quad\\Rightarrow\\quad H(t) = \\text{constante a lo largo de la trayectoria}',
         conn: '**Destacado:** la conservación de energía aparece por construcción debido a la estructura Hamiltoniana — aplica al caso conservativo $c = 0$ y sin fuerza externa; en la HNN, vale para todo $\\theta$.',
       },
     ],
@@ -277,45 +277,45 @@ export const SLIDES = [
     title: 'Puerta ② — Arquitectura (Lagrangian NN)',
     lema: 'La física entra en la **estructura del modelo**: se cumple **por construcción** para todo $\\theta$, ahora a través del principio de acción.',
     derivation: [
-      '$(\\mathbf{q}, \\dot{\\mathbf{q}})$',
+      '$(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$',
       '$f_\\theta$ — red neuronal',
-      '$L_\\theta(\\mathbf{q},\\dot{\\mathbf{q}})$',
+      '$L_\\theta(\\mathbf{q}(t),\\dot{\\mathbf{q}}(t))$',
       '$\\partial L_\\theta$ (autodiff)',
       'Euler–Lagrange → dinámica',
     ],
     equations: [
       {
         heading: 'Estado generalizado y Lagrangiano físico',
-        tex: '\\mathbf{q} = x, \\qquad \\dot{\\mathbf{q}} = \\dot{x}, \\qquad L(\\mathbf{q}, \\dot{\\mathbf{q}}) = T - V = \\frac{m\\dot{q}^2}{2} - \\frac{kq^2}{2} \\quad (c = 0)',
-        conn: '**Conexión:** para el sistema masa-resorte conservativo, el Lagrangiano es energía cinética menos energía potencial — misma notación $\\mathbf{q}$, $\\dot{\\mathbf{q}}$ y los mismos $m$, $k$ del bloque hamiltoniano ($H = T + V$, $L = T - V$). $L$: función escalar.',
+        tex: '\\mathbf{q}(t) = x(t), \\qquad \\dot{\\mathbf{q}}(t) = \\dot{x}(t), \\qquad L(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t)) = T - V = \\frac{m\\dot{q}(t)^2}{2} - \\frac{k\\,q(t)^2}{2} \\quad (c = 0)',
+        conn: '**Conexión:** para el sistema masa-resorte conservativo, el Lagrangiano es energía cinética menos energía potencial — misma notación $\\mathbf{q}(t)$, $\\dot{\\mathbf{q}}(t)$ y los mismos $m$, $k$ del bloque hamiltoniano ($H = T + V$, $L = T - V$). $L$: función escalar.',
       },
       {
         heading: 'La red aprende el Lagrangiano (función escalar)',
-        tex: 'f_\\theta:\\ (\\mathbf{q}, \\dot{\\mathbf{q}}) \\;\\longmapsto\\; L_\\theta(\\mathbf{q}, \\dot{\\mathbf{q}}) \\approx L(\\mathbf{q}, \\dot{\\mathbf{q}})',
-        conn: '**Conexión:** igual que la HNN, la LNN **no predice directamente** $q(t)$: aprende una función escalar. $L_\\theta$ **no se compara con etiquetas de energía**: se aprende porque sus derivadas deben reproducir la dinámica observada. Entrada de la red $= (\\mathbf{q}, \\dot{\\mathbf{q}})$ · salida $= L_\\theta(\\mathbf{q}, \\dot{\\mathbf{q}})$.',
+        tex: 'f_\\theta:\\ (\\mathbf{q}(t), \\dot{\\mathbf{q}}(t)) \\;\\longmapsto\\; L_\\theta(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t)) \\approx L(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))',
+        conn: '**Conexión:** igual que la HNN, la LNN **no predice directamente** $q(t)$: aprende una función escalar. $L_\\theta$ **no se compara con etiquetas de energía**: se aprende porque sus derivadas deben reproducir la dinámica observada. Entrada de la red $= (\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$ · salida $= L_\\theta(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$.',
       },
       {
         heading: 'Autodiff y ecuación de Euler–Lagrange — ★ PUNTO DONDE ENTRA LA FÍSICA',
         tex: '\\frac{d}{dt}\\,\\frac{\\partial L_\\theta}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L_\\theta}{\\partial \\mathbf{q}} = 0',
         bridge: {
           chain: [
-            { tex: 'L_\\theta(\\mathbf{q},\\,\\dot{\\mathbf{q}})' },
+            { tex: 'L_\\theta(\\mathbf{q}(t),\\,\\dot{\\mathbf{q}}(t))' },
             { step: 'Autodiff' },
             { tex: '\\left( \\partial L_\\theta / \\partial \\mathbf{q},\\; \\partial L_\\theta / \\partial \\dot{\\mathbf{q}} \\right)' },
             { step: 'Ecs. de Euler–Lagrange' },
-            { tex: '\\ddot{\\mathbf{q}}_\\theta \\Rightarrow \\text{dinámica}' },
+            { tex: '\\ddot{\\mathbf{q}}_\\theta(t) \\Rightarrow \\text{dinámica}' },
           ],
         },
-        conn: '**La física NO entra como penalización: entra en la estructura.** La ec. de Euler–Lagrange (principio de acción) es la regla física que convierte las derivadas parciales de $L_\\theta$ respecto al estado $(\\mathbf{q}, \\dot{\\mathbf{q}})$ en la aceleración $\\ddot{\\mathbf{q}}_\\theta$ de $q = q(t)$: el análogo lagrangiano de $\\mathbb{J}\\,\\nabla H_\\theta$, con $\\partial L_\\theta$ en lugar de $\\nabla H_\\theta$.',
+        conn: '**La física NO entra como penalización: entra en la estructura.** La ec. de Euler–Lagrange (principio de acción) es la regla física que convierte las derivadas parciales de $L_\\theta$ respecto al estado $(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$ en la aceleración $\\ddot{\\mathbf{q}}_\\theta(t)$: el análogo lagrangiano de $\\mathbb{J}\\,\\nabla H_\\theta$, con $\\partial L_\\theta$ en lugar de $\\nabla H_\\theta$.',
       },
       {
         heading: 'Función de costo (dinámica) y optimización',
-        tex: '\\mathcal{L}_{LNN}(\\theta) = \\frac{1}{N}\\sum_{n=1}^{N}\\left| \\ddot{\\mathbf{q}}_\\theta - \\ddot{\\mathbf{q}}_n \\right|^2, \\qquad \\theta^* = \\arg\\min_{\\theta}\\, \\mathcal{L}_{LNN}(\\theta)',
-        conn: '**Conexión:** los objetivos salen de los datos: $\\ddot{\\mathbf{q}}_n = \\ddot{x}_n$ (diferencias finitas si solo hay posición medida); $\\ddot{\\mathbf{q}}_\\theta$ se obtiene resolviendo la ec. de Euler–Lagrange para $L_\\theta$. No existe $\\mathcal{L}_{physics}$ separado: la física ya está incorporada en la arquitectura, igual que en la HNN.',
+        tex: '\\mathcal{L}_{LNN}(\\theta) = \\frac{1}{N}\\sum_{n=1}^{N}\\left| \\ddot{\\mathbf{q}}_\\theta(t_n) - \\ddot{\\mathbf{q}}(t_n) \\right|^2, \\qquad \\theta^* = \\arg\\min_{\\theta}\\, \\mathcal{L}_{LNN}(\\theta)',
+        conn: '**Conexión:** los objetivos salen de los datos: $\\ddot{\\mathbf{q}}(t_n) = \\ddot{x}_n$ (diferencias finitas si solo hay posición medida); $\\ddot{\\mathbf{q}}_\\theta(t_n)$ se obtiene resolviendo la ec. de Euler–Lagrange para $L_\\theta$. No existe $\\mathcal{L}_{physics}$ separado: la física ya está incorporada en la arquitectura, igual que en la HNN.',
       },
     ],
     notes:
-      'Mensaje clave: la LNN tampoco aprende directamente la trayectoria — aprende $L_\\theta(\\mathbf{q}, \\dot{\\mathbf{q}})$; la ecuación de Euler–Lagrange convierte sus derivadas en la aceleración y un integrador recupera $(q(t), \\dot{q}(t))$.',
+      'Mensaje clave: la LNN tampoco aprende directamente la trayectoria — aprende $L_\\theta(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$; la ecuación de Euler–Lagrange convierte sus derivadas en la aceleración y un integrador recupera $(q(t), \\dot{q}(t))$.',
     refs: [
       'Cranmer et al. Lagrangian Neural Networks. arXiv:2003.04630, 2020.',
       'Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks. NeurIPS 2019.',
@@ -333,22 +333,22 @@ export const SLIDES = [
     equations: [
       {
         heading: 'Paso 1 · Construcción del Lagrangiano',
-        tex: '\\mathbf{q} = x, \\quad \\dot{\\mathbf{q}} = \\dot{x}, \\quad T = \\frac{m\\dot{q}^2}{2}, \\quad V = \\frac{kq^2}{2} \\;\\Rightarrow\\; L = T - V = \\frac{m\\dot{q}^2}{2} - \\frac{kq^2}{2}',
+        tex: '\\mathbf{q}(t) = x(t), \\quad \\dot{\\mathbf{q}}(t) = \\dot{x}(t), \\quad T = \\frac{m\\dot{q}(t)^2}{2}, \\quad V = \\frac{k\\,q(t)^2}{2} \\;\\Rightarrow\\; L = T - V = \\frac{m\\dot{q}(t)^2}{2} - \\frac{k\\,q(t)^2}{2}',
         conn: '**Conexión:** el Lagrangiano usa las mismas $m$, $k$ y la misma trayectoria $x(t)$ que el Hamiltoniano: energía cinética menos potencial en lugar de más.',
       },
       {
         heading: 'Paso 2 · Ecuación de Euler–Lagrange',
-        tex: '\\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} = m\\,\\dot{\\mathbf{q}}, \\qquad \\frac{\\partial L}{\\partial \\mathbf{q}} = -k\\,\\mathbf{q} \\;\\Rightarrow\\; \\frac{d}{dt}\\,\\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L}{\\partial \\mathbf{q}} = m\\,\\ddot{\\mathbf{q}} + k\\,\\mathbf{q} = 0',
+        tex: '\\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} = m\\,\\dot{\\mathbf{q}}(t), \\qquad \\frac{\\partial L}{\\partial \\mathbf{q}} = -k\\,\\mathbf{q}(t) \\;\\Rightarrow\\; \\frac{d}{dt}\\,\\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L}{\\partial \\mathbf{q}} = m\\,\\ddot{\\mathbf{q}}(t) + k\\,\\mathbf{q}(t) = 0',
         conn: '**Conexión:** las derivadas del Lagrangiano determinan cómo cambia el estado del sistema. $L$ no entrega directamente la trayectoria: entrega la regla de evolución (principio de acción), igual que $H$ en la formulación anterior.',
       },
       {
         heading: 'Paso 3 · Recuperación de la ecuación física',
-        tex: 'm\\,\\ddot{\\mathbf{q}} + k\\,\\mathbf{q} = 0 \\;\\Rightarrow\\; m\\,\\ddot{q} + k\\,q = 0 \\;\\Rightarrow\\; m\\,\\ddot{x} + k\\,x = 0',
+        tex: 'm\\,\\ddot{\\mathbf{q}}(t) + k\\,\\mathbf{q}(t) = 0 \\;\\Rightarrow\\; m\\,\\ddot{q}(t) + k\\,q(t) = 0 \\;\\Rightarrow\\; m\\,\\ddot{x}(t) + k\\,x(t) = 0',
         conn: '**Conexión:** la ecuación de Euler–Lagrange recupera exactamente la ecuación original del masa-resorte: la dinámica sale de $L$ por derivación, no se aprende.',
       },
       {
         heading: 'Equivalencia con la formulación hamiltoniana (transformada de Legendre)',
-        tex: '\\mathbf{p} = \\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} = m\\,\\dot{\\mathbf{q}} \\;\\Rightarrow\\; H = \\mathbf{p}^{\\top}\\dot{\\mathbf{q}} - L = \\frac{p^2}{2m} + \\frac{kq^2}{2} = T + V',
+        tex: '\\mathbf{p}(t) = \\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} = m\\,\\dot{\\mathbf{q}}(t) \\;\\Rightarrow\\; H = \\mathbf{p}(t)^{\\top}\\dot{\\mathbf{q}}(t) - L = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2} = T + V',
         conn: '**Destacado:** para el MR conservativo ($c = 0$) las dos puertas ② son equivalentes: la transformada de Legendre lleva de $L$ a $H$ y recupera exactamente el Hamiltoniano del bloque anterior, con su conservación de energía incluida.',
       },
     ],
@@ -358,6 +358,68 @@ export const SLIDES = [
       'Cranmer et al. Lagrangian Neural Networks. arXiv:2003.04630, 2020.',
       'Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks. NeurIPS 2019.',
       'Chen et al. Neural Ordinary Differential Equations. NeurIPS 2018.',
+    ],
+  },
+  {
+    id: 'd1-puerta2-vs',
+    module: 'd1',
+    tone: 'purple',
+    kind: 'wide',
+    kicker: '3 · Puerta ② · Comparativa',
+    title: 'Hamiltoniano vs Lagrangiano: cuándo usar una u otra',
+    table: [
+      ['Criterio', 'Hamiltoniano $H(\\mathbf{q}, \\mathbf{p})$', 'Lagrangiano $L(\\mathbf{q}, \\dot{\\mathbf{q}})$'],
+      [
+        'Variables de estado',
+        'Coordenadas canónicas $(\\mathbf{q}(t), \\mathbf{p}(t))$: el momento $\\mathbf{p} = m\\,\\dot{\\mathbf{q}}(t)$ hay que construirlo.',
+        'Coordenadas generalizadas $(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$ directas de los datos; el momento se deriva después: $\\mathbf{p} = \\partial L / \\partial \\dot{\\mathbf{q}}$.',
+      ],
+      [
+        'Función escalar',
+        '$H = T + V$ — energía total (cinética + potencial).',
+        '$L = T - V$ — densidad de acción (cinética − potencial).',
+      ],
+      [
+        'Regla de evolución',
+        'Dos ecuaciones de primer orden: $\\dot{\\mathbf{q}}(t) = \\partial H / \\partial \\mathbf{p}$, $\\dot{\\mathbf{p}}(t) = -\\partial H / \\partial \\mathbf{q}$ (forma matricial $\\mathbb{J}\\,\\nabla H$).',
+        'Una ecuación de Euler–Lagrange de segundo orden: $\\frac{d}{dt}\\,\\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L}{\\partial \\mathbf{q}} = 0$.',
+      ],
+      [
+        'Marco y conservación',
+        'Espacio de fases simpléctico; $H(t) =$ constante por construcción (integradores simplécticos).',
+        'Principio de acción (extremizar la acción); la conservación se hereda de la simetría temporal.',
+      ],
+      [
+        'Red equivalente (puerta ②)',
+        'HNN: $f_\\theta(\\mathbf{q}(t), \\mathbf{p}(t)) \\mapsto H_\\theta$; pérdida sobre $(\\dot{\\mathbf{q}}, \\dot{\\mathbf{p}})$ en $t_n$.',
+        'LNN: $f_\\theta(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t)) \\mapsto L_\\theta$; pérdida sobre las aceleraciones $\\ddot{\\mathbf{q}}(t_n)$.',
+      ],
+      [
+        'Paso de una a otra (Legendre)',
+        '$H(\\mathbf{q}, \\mathbf{p}) = \\mathbf{p}^{\\top}\\dot{\\mathbf{q}} - L(\\mathbf{q}, \\dot{\\mathbf{q}})$ con $\\mathbf{p} = \\partial L / \\partial \\dot{\\mathbf{q}}$ (inversa: $\\dot{\\mathbf{q}} = \\partial H / \\partial \\mathbf{p}$).',
+        'Para el MR ($c = 0$): $\\mathbf{p} = m\\,\\dot{\\mathbf{q}}(t) \\Rightarrow L = T - V \\Leftrightarrow H = T + V$ — misma trayectoria.',
+      ],
+      [
+        'Cuándo recomendarla',
+        'Sistema conservativo con $(\\mathbf{q}, \\mathbf{p})$ a mano o construibles; predicción a largo plazo donde importa la energía exacta (órbitas, osciladores, estructura simpléctica).',
+        'Datos en $(\\mathbf{q}, \\dot{\\mathbf{q}})$ o coordenadas generalizadas con restricciones/vínculos; cuando los momentos deben derivarse y no se miden.',
+      ],
+    ],
+    bullets: [
+      '**Regla práctica:** si necesitas momento y espacio de fases explícitos → **hamiltoniano**; si trabajas con posiciones y velocidades (o coordenadas con vínculos) → **lagrangiano**.',
+      '**Advertencia:** las dos formas estándar asumen $c = 0$ (sin disipación); con amortiguamiento hay que añadir fuerzas generalizadas o disipación de Rayleigh — fuera del alcance de la puerta ② en este deck.',
+    ],
+    equations: [
+      {
+        heading: 'Paso de una a otra: transformada de Legendre',
+        tex: '\\mathbf{p} = \\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} \\;\\Longleftrightarrow\\; \\dot{\\mathbf{q}} = \\frac{\\partial H}{\\partial \\mathbf{p}}, \\qquad H(\\mathbf{q}, \\mathbf{p}) = \\mathbf{p}^{\\top}\\dot{\\mathbf{q}} - L(\\mathbf{q}, \\dot{\\mathbf{q}})',
+        conn: '**Conexión:** puente exacto entre las dos columnas — para el MR ($c = 0$), $\\mathbf{p} = m\\,\\dot{\\mathbf{q}}(t)$ lleva de $L = T - V$ a $H = T + V$ y ambas producen la misma trayectoria $x(t)$.',
+      },
+    ],
+    refs: [
+      'Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks. NeurIPS 2019.',
+      'Cranmer et al. Lagrangian Neural Networks. arXiv:2003.04630, 2020.',
+      'Goldstein, Poole, Safko. Classical Mechanics — coordenadas canónicas y transformada de Legendre.',
     ],
   },
   {
@@ -523,6 +585,8 @@ export const SLIDES = [
       {
         heading: 'F3 · Lagrangian NN (Euler–Lagrange)',
         tex: '\\frac{d}{dt}\\,\\frac{\\partial L_\\theta}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L_\\theta}{\\partial \\mathbf{q}} = 0',
+        conn:
+          '**Conexión:** $\\mathbf{q} = \\mathbf{q}(t)$ y $\\dot{\\mathbf{q}} = \\dot{\\mathbf{q}}(t)$ dependen del tiempo; las derivadas parciales son respecto a esas variables (puerta ②, formulación lagrangiana).',
       },
       {
         heading: 'F4 · PhyDNet: latente descompuesta física + residual',

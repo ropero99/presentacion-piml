@@ -490,7 +490,7 @@ export function buildHnnDiagram() {
     data: {
       color: NAVY,
       title: 'Sistema físico',
-      lines: ['$m\\,\\ddot{x} + k\\,x = 0$', 'masa-resorte conservativo', '$c = 0$ · estado: $(x, \\dot{x})$'],
+      lines: ['$m\\,\\ddot{x}(t) + k\\,x(t) = 0$', 'masa-resorte conservativo', '$c = 0$ · estado: $(x(t), \\dot{x}(t))$'],
     },
   });
 
@@ -510,7 +510,7 @@ export function buildHnnDiagram() {
     data: {
       color: NAVY,
       title: 'Conversión canónica',
-      lines: ['$q_n = x_n$', '$p_n = m\\,\\dot{x}_n$', '$\\to (q_n, p_n)$'],
+      lines: ['$q(t_n) = x_n$', '$p(t_n) = m\\,\\dot{x}_n$', '$\\to (q(t_n), p(t_n))$'],
     },
   });
 
@@ -536,7 +536,7 @@ export function buildHnnDiagram() {
   edges.push(...neuronMesh(hnnHiddenIds[0], hnnHiddenIds[1]));
   edges.push(...neuronMesh(hnnHiddenIds[1], ['hnn-out']));
   nodes.push(layerLabel('hnn-cap', 'La red aprende el Hamiltoniano', 600, 66));
-  nodes.push(layerLabel('hnn-sal', 'salida única: $H_\\theta(q, p)$', 770, 308));
+  nodes.push(layerLabel('hnn-sal', 'salida única: $H_\\theta(q(t), p(t))$', 770, 308));
   nodes.push(layerLabel('hnn-theta', '$\\theta = \\{W_\\ell, b_\\ell\\}_{\\ell=1}^{L}$', 680, 428, 'theta'));
 
   // 6 · Autodiff (dentro del panel de la física)
@@ -559,9 +559,9 @@ export function buildHnnDiagram() {
       heavy: true,
       title: 'Estructura Hamiltoniana',
       lines: [
-        '$\\dot{q}_\\theta = \\partial H_\\theta/\\partial p$',
-        '$\\dot{p}_\\theta = -\\partial H_\\theta/\\partial q$',
-        '$\\dot{z}_\\theta = J\\,\\nabla H_\\theta$',
+        '$\\dot{q}_\\theta(t) = \\partial H_\\theta/\\partial p$',
+        '$\\dot{p}_\\theta(t) = -\\partial H_\\theta/\\partial q$',
+        '$\\dot{z}_\\theta(t) = J\\,\\nabla H_\\theta$',
       ],
     },
   });
@@ -581,7 +581,11 @@ export function buildHnnDiagram() {
       color: NARANJA,
       dashed: true,
       title: 'Comparar dinámicas',
-      lines: ['$(\\dot{q}_\\theta, \\dot{p}_\\theta)$ vs $(\\dot{q}_n, \\dot{p}_n)$', '$\\to \\mathcal{L}_{HNN}(\\theta)$'],
+      lines: [
+          '$(\\dot{q}_\\theta(t), \\dot{p}_\\theta(t))$',
+          'vs $(\\dot{q}(t_n), \\dot{p}(t_n))$',
+          '$\\to \\mathcal{L}_{HNN}(\\theta)$',
+        ],
     },
   });
 
@@ -607,11 +611,11 @@ export function buildHnnDiagram() {
     data: { label: 'PREDICCIÓN · después del entrenamiento · usando $\\theta^{*}$', variant: 'chip', color: TEAL },
   });
   const predChain = [
-    { id: 'hnn-p1', x: 0, y: 698, color: NAVY, title: '$(q_0, p_0)$', lines: ['estado inicial'] },
+    { id: 'hnn-p1', x: 0, y: 698, color: NAVY, title: '$(q(t_0), p(t_0))$', lines: ['estado inicial en $t_0$'] },
     { id: 'hnn-p2', x: 200, y: 700, color: MORADO, title: '$H_\\theta^{*}$', lines: [] },
     { id: 'hnn-p3', x: 400, y: 700, color: MORADO, title: '$\\mathrm{grad}(H_\\theta^{*})$', lines: [] },
     { id: 'hnn-p4', x: 600, y: 688, color: MORADO, heavy: true, title: 'ecuaciones de Hamilton', lines: ['$\\mathbb{J}\\,\\nabla H_\\theta^{*}$'] },
-    { id: 'hnn-p5', x: 812, y: 700, color: NAVY, title: '$(\\dot{q}, \\dot{p})$', lines: [] },
+    { id: 'hnn-p5', x: 812, y: 700, color: NAVY, title: '$(\\dot{q}(t), \\dot{p}(t))$', lines: [] },
     { id: 'hnn-p6', x: 1010, y: 692, color: GRIS, title: 'integrador numérico', lines: ['preferiblemente simpléctico'] },
     { id: 'hnn-p7', x: 1250, y: 698, color: NAVY, title: '$(q(t), p(t))$', lines: [] },
     { id: 'hnn-p8', x: 1445, y: 698, color: NAVY, title: '$x(t) = q(t)$', lines: [] },
