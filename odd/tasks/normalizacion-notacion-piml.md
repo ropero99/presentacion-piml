@@ -1,6 +1,6 @@
 # Feature: Normalización notacional — tiempo continuo/discreto y homogeneidad (PIML deck)
 
-**Estado:** en progreso
+**Estado:** cerrado y verificado (rama `feat/presentacion-notacion-regresores`)
 **Razón:** revisor de la tesis exige (a) que toda magnitud dependiente del tiempo lo muestre de forma
 explícita en todo el documento, (b) `()` para tiempo continuo y `[]` para tiempo discreto, de forma
 consistente, sin que las funciones de costo queden ambiguas, y (c) simbología homogénea.
@@ -81,7 +81,7 @@ label subscript are untouched. `\sum_t` becomes `\sum_t` with discrete `[t]` obj
 
 ## 2. Work items
 
-- [ ] **T1 — Slide 2 "Notación": declare the temporal convention.**
+- [x] **T1 — Slide 2 "Notación": declare the temporal convention.**
   Add a first data row (before "Series y marco general") with the `()`/`[]` rule (N1–N6) in Spanish.
   Update the existing rows: `$y_t$` → `$y[t]$`, `$\mathbf{z}_t$` → `$\mathbf{z}[t]$`,
   `$\breve{\mathbf{h}}_t$` → `$\breve{\mathbf{h}}[t]$`, `$\mathbf{u}_t$`/`$z_t$` → `$\mathbf{u}[t]$`/`$\mathbf{z}[t]$`,
@@ -90,7 +90,7 @@ label subscript are untouched. `\sum_t` becomes `\sum_t` with discrete `[t]` obj
   convolución E4 `f[i]`, `s[t]`, y la nota de que `\mathcal{N}[u]` y los corchetes de vector/intervalo
   no son tiempo discreto.
 
-- [ ] **T2 — Normalize `src/data/deckContent.js`.**
+- [x] **T2 — Normalize `src/data/deckContent.js`.**
   1. `d1-mr` (línea ~121): `\mathbf{x}_i = (t_i, x_i, \dot{x}_i)` → `(t_i, x(t_i), \dot{x}(t_i))`.
   2. `d1-puerta1` (línea ~149): `\mathcal{L}_{total}(\Theta)` → `(\theta)`; `f_\theta(t_i) - x_i` →
      `f_\theta(t_i) - x(t_i)`; heading/lema "Función de costo" → "Función de pérdida".
@@ -122,7 +122,7 @@ label subscript are untouched. `\sum_t` becomes `\sum_t` with discrete `[t]` obj
   19. All remaining `\mathcal{L}_{physics}` (8×), `f_{fisica}` (6×), `\mathbf{q}` (123×),
       `\mathbf{p}` (54×) in this file.
 
-- [ ] **T3 — Normalize the diagrams.**
+- [x] **T3 — Normalize the diagrams.**
   `mrPipeline.js`: `125` and `316` `m\ddot{x} + c\dot{x} + k\,x = 0` → `m\,\ddot{x}(t) + c\,\dot{x}(t) + k\,x(t) = 0`;
   `135`/`265` `(t, x, \dot{x})` → `(t, x(t), \dot{x}(t))` (in `cmpData`, wrap the whole line in `$…$`
   so it typesets: `$(t, x(t), \dot{x}(t))\ \to\ \mathcal{L}_{MSE}$`);
@@ -134,7 +134,7 @@ label subscript are untouched. `\sum_t` becomes `\sum_t` with discrete `[t]` obj
   `73` `$\hat{y} = f_\theta(x)$` → `$\hat{y} = f_\theta(\mathbf{x})$`.
   Sweep every other diagram file for `$…$` math and apply N1–N10.
 
-- [ ] **T4 — Normalize `GUION.md` with exactly the same rules.**
+- [x] **T4 — Normalize `GUION.md` with exactly the same rules.**
   Rewrite the notation paragraph (línea ~46) so it *states* the `()`/`[]` convention aloud and uses
   `y[t]`, `\mathbf{z}[t]`, `\mathbf{u}[t]`, `\mathcal{L}_{phys}`, `f_{fis}`.
   Line ~62 (puerta 1): `$L_{total}$`, `$L_{MSE}$` → `$\mathcal{L}_{total}$`, `$\mathcal{L}_{MSE}$`;
@@ -149,10 +149,19 @@ label subscript are untouched. `\sum_t` becomes `\sum_t` with discrete `[t]` obj
   N3 for `x(t_i)`/`u(t_i,\mathbf{x}_i)`, N9 plain `q`/`p` (5×/3×), and every
   `\mathcal{L}_{physics}` (6×) / `f_{fisica}` (3×).
 
-- [ ] **T5 — Verification (evidence required).**
+- [x] **T5 — Verification (evidence required).**
   `npm run lint`, `npm run build` must pass; residual greps in §3 must return 0; then
   `node src/scripts/capture-slides.mjs` and visually check slides 2, 4, 7, 9, 10, 24 (new numbering:
   2=Notación, 4=Datos disponibles, 7=Puerta ②, 24=E6/E7/E8) for rendering regressions.
+
+  **Evidence (2026-10-06, rama `feat/presentacion-notacion-regresores`):**
+  - `npm run lint` → PASS (oxlint, sin errores).
+  - `npm run build` → PASS (vite 376 ms).
+  - Greps residuales §3 → 0 en todos, salvo la excepción documentada más abajo.
+  - `node src/scripts/capture-slides.mjs` → 36/36 PNG frescos, sin error.
+  - Inspección visual `slide-02.png`: la fila nueva "Convención temporal" entra completa, la tabla no
+    desborda el marco. `slide-07.png`: `q(t)`, `p(t)` planos, `H(q(t),p(t))`, `\mathcal{L}_{HNN}(\theta)`
+    y `\theta^{*}` renderizan correctamente.
 
 ---
 
@@ -169,6 +178,13 @@ grep -rnE '\$x_i\$|[^\\mathbf]x_i' src/data/deckContent.js   # scalar x_i must b
 ```
 Allowed exceptions (documented in N2/N4): `dW_t`, `\Omega_T`, `\mathcal{L}_{total}`,
 `\mathcal{L}_{EC}`, `t_i`/`t_j`/`t_n`, `z_{bot}`, `\sum_t`, label subscripts.
+
+**Known false positive of the last grep (verified, not a residual).** The pattern
+`[^\\mathbf]x_i` is deliberately over-inclusive and matches exactly one site:
+`src/data/deckContent.js:614`, inside the F5 kernel-ridge formula
+`\hat{f}(x) = \sum_{i=1}^{N} a_i\, \kappa(x, x_i)`. N4 explicitly keeps `x_i`/`y_i` inside SVR,
+kernel-ridge and conformal formulas, so this line is policy-compliant and must not be changed.
+An N4-compliant run therefore expects exactly **1** match on that grep and 0 on all the others.
 
 ## 4. Pending (out of scope, reported to the user)
 - `GUION.md` still describes a 24-slide structure while the deck has 36: slide numbering and titles in

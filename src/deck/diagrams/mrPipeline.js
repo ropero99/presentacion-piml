@@ -122,7 +122,7 @@ export function buildMrDiagram({ entry }) {
     data: {
       color: NAVY,
       title: 'Sistema MR',
-      lines: ['$m$ masa · $k$ rigidez', '$c$ amortiguamiento', '$m\\,\\ddot{x} + c\\,\\dot{x} + k\\,x = 0$', 'estado: $(x, \\dot{x})$'],
+      lines: ['$m$ masa · $k$ rigidez', '$c$ amortiguamiento', '$m\\,\\ddot{x}(t) + c\\,\\dot{x}(t) + k\\,x(t) = 0$', 'estado: $(x(t), \\dot{x}(t))$'],
     },
   });
   nodes.push({
@@ -132,7 +132,7 @@ export function buildMrDiagram({ entry }) {
     data: {
       color: TEAL,
       title: 'Datos / entrenamiento',
-      lines: [entry === 'modelo' ? '$(t, x, \\dot{x})$ medidos' : '$(t, x)$ medidos'],
+      lines: [entry === 'modelo' ? '$(t, x(t), \\dot{x}(t))$ medidos' : '$(t, x(t))$ medidos'],
     },
   });
 
@@ -143,7 +143,7 @@ export function buildMrDiagram({ entry }) {
           { id: 'in-x', label: 'x', color: TEAL, row: 0 },
           {
             id: 'in-psi',
-            label: '$\\psi_{fis}(x)$',
+            label: '$\\psi_{fis}(\\mathbf{x})$',
             color: TEAL,
             row: 2,
             heavy: true,
@@ -231,7 +231,7 @@ export function buildMrDiagram({ entry }) {
       data: {
         color: MORADO,
         label: 'estructura física (conserva $H_\\theta$)',
-        eq: '$\\frac{d}{dt}\\,[\\mathbf{q}, \\mathbf{p}] = \\mathbb{J}\\,\\nabla H_\\theta$',
+        eq: '$\\frac{d}{dt}\\,[q,\\ p] = \\mathbb{J}\\,\\nabla H_\\theta$',
         badge: false,
           style: {
             width: last.x - first.x + geo.size + 32,
@@ -262,7 +262,7 @@ export function buildMrDiagram({ entry }) {
 
   // ── Cajas punteadas de rol (columna derecha) ──
   const BOX_X = 830;
-  const cmpData = entry === 'modelo' ? '$(t, x, \\dot{x})$' : '$(t, x)$';
+  const cmpData = entry === 'modelo' ? '(t, x(t), \\dot{x}(t))' : '(t, x(t))';
   nodes.push({
     id: 'cmp',
     type: 'deck',
@@ -271,7 +271,7 @@ export function buildMrDiagram({ entry }) {
       color: AZUL,
       dashed: true,
       title: 'Comparar con datos',
-      lines: [`${cmpData} $\\to \\mathcal{L}_{MSE}$`],
+      lines: [`$${cmpData}\\ \\to\\ \\mathcal{L}_{MSE}$`],
     },
   });
 
@@ -288,7 +288,7 @@ export function buildMrDiagram({ entry }) {
         dashed: true,
         heavy: true,
         title: 'Diff. automática',
-        lines: ['$\\dot{\\hat{x}}_\\theta,\\, \\ddot{\\hat{x}}_\\theta \\to r_\\theta$', BADGE],
+        lines: ['$\\dot{\\hat{x}}_\\theta(t),\\, \\ddot{\\hat{x}}_\\theta(t) \\to r_\\theta(t)$', BADGE],
         targetHandles: [
           { id: 't-cmp', yPct: 30 },
           { id: 't-fis', yPct: 80 },
@@ -313,7 +313,7 @@ export function buildMrDiagram({ entry }) {
     type: 'deck',
     position: fisPos,
     sourcePosition: 'right',
-    data: { color: NAVY, title: 'Física $\\mathcal{N}[u] = 0$', lines: ['$m\\,\\ddot{x} + c\\,\\dot{x} + k\\,x = 0$'] },
+    data: { color: NAVY, title: 'Física $\\mathcal{N}[u] = 0$', lines: ['$m\\,\\ddot{x}(t) + c\\,\\dot{x}(t) + k\\,x(t) = 0$'] },
   });
 
   // ── Optimización (derecha de las cajas de rol) ──
@@ -331,10 +331,10 @@ export function buildMrDiagram({ entry }) {
     entry === 'ad'
       ? [
           // R15: \mathcal igual que las pérdidas del resto del deck.
-          '$\\mathcal{L}_{MSE}(\\theta) + \\lambda_{phys}\\,\\mathcal{L}_{physics}(\\theta) = \\mathcal{L}_{total}(\\theta)$',
+          '$\\mathcal{L}_{MSE}(\\theta) + \\lambda_{phys}\\,\\mathcal{L}_{phys}(\\theta) = \\mathcal{L}_{total}(\\theta)$',
         ]
       : entry === 'modelo'
-        ? ['$\\mathcal{L}_{MSE}(\\theta)$ — no existe $\\mathcal{L}_{physics}$: la física está en la estructura']
+        ? ['$\\mathcal{L}_{MSE}(\\theta)$ — no existe $\\mathcal{L}_{phys}$: la física está en la estructura']
         : ['$\\mathcal{L}_{MSE}(\\theta)$ sobre $\\tilde{x}$ aumentado — la física entró antes, en los datos'];
   nodes.push({
     id: 'loss',
@@ -499,7 +499,7 @@ export function buildHnnDiagram() {
     id: 'hnn-datos',
     type: 'deck',
     position: { x: 215, y: 247 },
-    data: { color: TEAL, title: 'Datos medidos', lines: ['$(t_n, x_n, \\dot{x}_n)$'] },
+    data: { color: TEAL, title: 'Datos medidos', lines: ['$(t_n, x(t_n), \\dot{x}(t_n))$'] },
   });
 
   // 3 · Conversión a variables canónicas
@@ -510,7 +510,7 @@ export function buildHnnDiagram() {
     data: {
       color: NAVY,
       title: 'Conversión canónica',
-      lines: ['$q(t_n) = x_n$', '$p(t_n) = m\\,\\dot{x}_n$', '$\\to (q(t_n), p(t_n))$'],
+      lines: ['$q(t_n) = x(t_n)$', '$p(t_n) = m\\,\\dot{x}(t_n)$', '$\\to (q(t_n), p(t_n))$'],
     },
   });
 
@@ -561,7 +561,7 @@ export function buildHnnDiagram() {
       lines: [
         '$\\dot{q}_\\theta(t) = \\partial H_\\theta/\\partial p$',
         '$\\dot{p}_\\theta(t) = -\\partial H_\\theta/\\partial q$',
-        '$\\dot{z}_\\theta(t) = J\\,\\nabla H_\\theta$',
+        '$\\bigl(\\dot{q}_\\theta(t),\\,\\dot{p}_\\theta(t)\\bigr) = \\mathbb{J}\\,\\nabla H_\\theta$',
       ],
     },
   });

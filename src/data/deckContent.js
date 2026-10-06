@@ -31,19 +31,24 @@ export const SLIDES = [
     table: [
       ['Grupo', 'Símbolos', 'Uso'],
       [
+        'Convención temporal (continuo y discreto)',
+        'tiempo continuo con paréntesis $(\\,)$: $x(t)$, $\\dot{x}(t)$, $u(t,\\mathbf{x})$; tiempo discreto con corchetes $[\\,]$ e índice entero: $y[t]$, $\\mathbf{z}[t]$, $\\mathbf{h}[t-1]$, $\\hat{y}[j]$.',
+        'Regla transversal de toda la presentación: toda magnitud dependiente del tiempo lleva argumento explícito, paréntesis en tiempo continuo y corchetes con índice entero en tiempo discreto; los paréntesis con argumento no temporal (parámetros, features) conservan su sentido habitual, $\\mathcal{L}_{total}(\\theta)$, sin ambigüedad con el tiempo.',
+      ],
+      [
         'Series y marco general',
-        '$y_t$ observada, $\\hat{\\mathbf{y}} \\in \\mathbb{R}^h$ multi-paso directa, ventana $\\mathbf{X} \\in \\mathbb{R}^{\\tau \\times d}$, pérdidas $\\mathcal{L}_{MSE}$, $\\mathcal{L}_{physics}$, $\\mathcal{L}_{total}$, peso $\\lambda_{phys}$, residuo $\\mathcal{R}_{phys}$, ley $\\mathcal{N}[u] = 0$ en dominio $\\Omega_T$.',
-        'Marco común de toda la revisión: series, pérdidas y ley física. Decisiones de unificación: el peso físico es siempre $\\lambda_{phys}$ y $f_{fisica} \\equiv f_{fis}$ son sinónimos.',
+        '$y[t]$ observada, $\\hat{\\mathbf{y}} \\in \\mathbb{R}^h$ multi-paso directa, ventana $\\mathbf{X} \\in \\mathbb{R}^{\\tau \\times d}$, pérdidas $\\mathcal{L}_{MSE}$, $\\mathcal{L}_{phys}$, $\\mathcal{L}_{total}$, peso $\\lambda_{phys}$, residuo $\\mathcal{R}_{phys}$, ley $\\mathcal{N}[u] = 0$ en dominio $\\Omega_T$.',
+        'Marco común de toda la revisión: series, pérdidas y ley física. Decisiones de unificación: el peso físico es siempre $\\lambda_{phys}$ y la rama física se escribe $f_{fis}$.',
       ],
       [
         'Codificador RFF multibanda (artículo guía)',
-        'kernel $\\kappa$, bandas $K$ con ancho $\\mathrm{softplus}(\\rho_k)$, $N_f$ features por banda, mapeo $\\boldsymbol{\\phi}_k$ (Ecuación 24), embedding $\\mathbf{z}_t \\in \\mathbb{R}^{F}$ con $F = K N_f$, secuencia $\\mathbf{Z} = \\Phi_{MB}(\\mathbf{X})$; pre-set $B = (6, 24, 72)$ h.',
+        'kernel $\\kappa$, bandas $K$ con ancho $\\mathrm{softplus}(\\rho_k)$, $N_f$ features por banda, mapeo $\\boldsymbol{\\phi}_k$ (Ecuación 24), embedding $\\mathbf{z}[t] \\in \\mathbb{R}^{F}$ con $F = K N_f$, secuencia $\\mathbf{Z} = \\Phi_{MB}(\\mathbf{X})$; pre-set $B = (6, 24, 72)$ h.',
         'Codificador espectral del artículo guía (familia F6 — TS con física embebida, PINT como ejemplo canónico); el mapeo RFF canónico es la Ecuación (24) y la densidad espectral es $p(\\mathbf{w}) = \\mathcal{N}(\\mathbf{0}, \\rho^{-2}\\mathbf{I})$.',
       ],
       [
         'TSB y recurrencia',
-        'convolución con dilatación $\\breve{d}$ y kernel $\\breve{k}$, GELU $\\breve{\\sigma}$, LayerNorm $\\mathrm{LN}$, estado $\\breve{\\mathbf{h}}_t$, módulo $f_{RNN}$.',
-        'Backbone secuencial del artículo guía (bloque TCN: residual + GELU + LN); en GRU la compuerta de actualización es $\\mathbf{u}_t$ (**no** $z_t$, para no colisionar con el embedding espectral).',
+        'convolución con dilatación $\\breve{d}$ y kernel $\\breve{k}$, GELU $\\breve{\\sigma}$, LayerNorm $\\mathrm{LN}$, estado $\\breve{\\mathbf{h}}[t]$, módulo $f_{RNN}$.',
+        'Backbone secuencial del artículo guía (bloque TCN: residual + GELU + LN); en GRU la compuerta de actualización es $\\mathbf{u}[t]$ (**no** $\\mathbf{z}[t]$, para no colisionar con el embedding espectral).',
       ],
       [
         'Física térmica RC (PINN-RC)',
@@ -57,12 +62,12 @@ export const SLIDES = [
       ],
       [
         'Símbolos locales',
-        '$\\mathcal{B}$ (rezago en E1), $\\mathbf{A}, \\mathbf{B}, \\mathbf{C}$ (SSM en E6).',
-        'Leyenda semántica: existen solo dentro de su ecuación y no se reutilizan fuera de contexto.',
+        '$\\mathcal{B}$ (rezago en E1), $\\mathbf{A}, \\mathbf{B}, \\mathbf{C}$ (SSM en E6), instantes de muestreo $t_i$, $t_j$ y muestras $i$, secuencias de la convolución E4 $f[i]$, $s[t]$.',
+        'Leyenda semántica: existen solo dentro de su ecuación y no se reutilizan fuera de contexto. Los instantes $t_i$ son valores de $t$ continuo y se evalúan con paréntesis, $x(t_i)$; el índice $i$ numera muestras y no es tiempo. Los corchetes de $\\mathcal{N}[u]$ y los de vector o intervalo no denotan tiempo discreto.',
       ],
       [
         'Decisiones de unificación',
-        '$\\lambda_{phys}$ peso físico (único); $\\breve{k}, \\breve{d}$ extremos del bloque TSB; $\\mathbf{u}_t$ compuerta GRU (no $z_t$); $f_{fisica} \\equiv f_{fis}$.',
+        '$\\lambda_{phys}$ peso físico (único); $\\breve{k}, \\breve{d}$ extremos del bloque TSB; $\\mathbf{u}[t]$ compuerta GRU (no $\\mathbf{z}[t]$); $f_{fis}$ rama física.',
         'Reglas de escritura del documento verificable con esta tabla: cada decisión evita colisiones y ambigüedad entre familias E/F.',
       ],
     ],
@@ -113,12 +118,12 @@ export const SLIDES = [
       },
       {
         heading: 'Estado canónico y energía',
-        tex: '\\mathbf{q}(t) = x(t), \\quad \\mathbf{p}(t) = m\\,\\dot{x}(t), \\quad H(\\mathbf{q}(t), \\mathbf{p}(t)) = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2} \\quad (c = 0)',
+        tex: 'q(t) = x(t), \\quad p(t) = m\\,\\dot{x}(t), \\quad H(q(t), p(t)) = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2} \\quad (c = 0)',
         conn: '**Conexión:** el caso conservativo ($c=0$) es hamiltoniano puro; es la forma que exige la puerta ②. $q(t)$ y $p(t)$ son los estados (posición y momento) en cada instante; $H$ se evalúa sobre esa trayectoria.',
       },
       {
         heading: 'Datos disponibles',
-        tex: '\\mathbf{x}_i = (t_i, x_i, \\dot{x}_i), \\qquad i = 1, \\dots, N_d',
+        tex: '\\mathbf{x}_i = (t_i, x(t_i), \\dot{x}(t_i)), \\qquad i = 1, \\dots, N_d',
         conn: '**Conexión:** las tres puertas consumen el mismo dato básico: trayectoria medida del MR.',
       },
     ],
@@ -132,7 +137,7 @@ export const SLIDES = [
     kind: 'door',
     kicker: '3 · Puerta ① · Forma débil',
     title: 'Puerta ① — Función de pérdida (PINN)',
-    lema: 'La física entra en la **función de costo**: se penaliza, no se garantiza.',
+    lema: 'La física entra en la **función de pérdida (costo)**: se penaliza, no se garantiza.',
     equations: [
       {
         heading: 'Modelo',
@@ -145,8 +150,8 @@ export const SLIDES = [
         conn: '**Conexión:** la caja punteada "Diff. automática" produce $r_\\theta$ en los puntos de colocación $t_j$; es $\\mathcal{N}[\\hat{x}_\\theta]$ de la ley $\\mathcal{N}[u]=0$.',
       },
       {
-        heading: 'Función de costo',
-        tex: '\\mathcal{L}_{total}(\\Theta) = \\underbrace{\\frac{1}{N_d}\\sum_{i=1}^{N_d} \\left| f_\\theta(t_i) - x_i \\right|^2}_{\\mathcal{L}_{MSE}} \\;+\\; \\lambda_{phys}\\,\\underbrace{\\frac{1}{N_c}\\sum_{j=1}^{N_c} \\left\\| r_\\theta(t_j) \\right\\|^2}_{\\mathcal{L}_{physics}}',
+        heading: 'Función de pérdida',
+        tex: '\\mathcal{L}_{total}(\\theta) = \\underbrace{\\frac{1}{N_d}\\sum_{i=1}^{N_d} \\left| f_\\theta(t_i) - x(t_i) \\right|^2}_{\\mathcal{L}_{MSE}} \\;+\\; \\lambda_{phys}\\,\\underbrace{\\frac{1}{N_c}\\sum_{j=1}^{N_c} \\left\\| r_\\theta(t_j) \\right\\|^2}_{\\mathcal{L}_{phys}}',
         conn: '**Conexión:** la línea inferior del diagrama es exactamente esta suma: la física entra en el segundo término, no en la estructura.',
       },
       {
@@ -168,12 +173,12 @@ export const SLIDES = [
     kind: 'diagram',
     kicker: '3 · Puerta ① · Forma débil · diagrama',
     diagram: 'mr1',
-    diagramTitle: 'MR · Puerta ① — la física entra en la función de costo',
+    diagramTitle: 'MR · Puerta ① — la física entra en la función de pérdida',
     legend: [
       { color: '#1E3A5F', label: 'Sistema MR / física' },
       { color: '#2E86AB', label: '① Pérdida (débil)' },
       { color: '#34495E', label: 'Modelo ML $f_\\theta$' },
-      { color: '#C0392B', label: 'Minimización → θ*' },
+      { color: '#C0392B', label: 'Minimización → $\\theta^{*}$' },
     ],
   },
   {
@@ -185,45 +190,45 @@ export const SLIDES = [
     title: 'Puerta ② — Arquitectura (Hamiltonian NN)',
     lema: 'La física entra en la **estructura del modelo**: se cumple **por construcción** para todo $\\theta$.',
     derivation: [
-      '$(\\mathbf{q}(t), \\mathbf{p}(t))$',
+      '$(q(t), p(t))$',
       '$f_\\theta$ — red neuronal',
-      '$H_\\theta(\\mathbf{q}(t),\\mathbf{p}(t))$',
+      '$H_\\theta(q(t),p(t))$',
       '$\\nabla H_\\theta$ (autodiff)',
       '$\\mathbb{J}\\,\\nabla H_\\theta$ → dinámica',
     ],
     equations: [
       {
         heading: 'Estado canónico y Hamiltoniano físico',
-        tex: '\\mathbf{q}(t) = x(t), \\qquad \\mathbf{p}(t) = m\\,\\dot{x}(t), \\qquad H(\\mathbf{q}(t), \\mathbf{p}(t)) = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2} \\quad (c = 0)',
-        conn: '**Conexión:** para el sistema masa-resorte conservativo, el Hamiltoniano representa la energía mecánica total. $\\mathbf{q}(t)$: posición generalizada · $\\mathbf{p}(t)$: momento — estados en cada instante $t$ · $H$: energía total instantánea.',
+        tex: 'q(t) = x(t), \\qquad p(t) = m\\,\\dot{x}(t), \\qquad H(q(t), p(t)) = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2} \\quad (c = 0)',
+        conn: '**Conexión:** para el sistema masa-resorte conservativo, el Hamiltoniano representa la energía mecánica total. $q(t)$: posición generalizada · $p(t)$: momento — estados en cada instante $t$ · $H$: energía total instantánea.',
       },
       {
         heading: 'La red aprende el Hamiltoniano (función escalar)',
-        tex: 'f_\\theta:\\ (\\mathbf{q}(t), \\mathbf{p}(t)) \\;\\longmapsto\\; H_\\theta(\\mathbf{q}(t), \\mathbf{p}(t)) \\approx H(\\mathbf{q}(t), \\mathbf{p}(t))',
-        conn: '**Conexión:** la red **no predice directamente** $q(t)$ ni $p(t)$: aprende una función escalar. $H_\\theta$ **no se compara necesariamente con etiquetas de energía**: se aprende porque su gradiente debe reproducir la dinámica observada. Entrada de la red $= (\\mathbf{q}(t), \\mathbf{p}(t))$ · salida $= H_\\theta(\\mathbf{q}(t), \\mathbf{p}(t))$.',
+        tex: 'f_\\theta:\\ (q(t), p(t)) \\;\\longmapsto\\; H_\\theta(q(t), p(t)) \\approx H(q(t), p(t))',
+        conn: '**Conexión:** la red **no predice directamente** $q(t)$ ni $p(t)$: aprende una función escalar. $H_\\theta$ **no se compara necesariamente con etiquetas de energía**: se aprende porque su gradiente debe reproducir la dinámica observada. Entrada de la red $= (q(t), p(t))$ · salida $= H_\\theta(q(t), p(t))$.',
       },
       {
         heading: 'Autodiff y ecuaciones de Hamilton — ★ PUNTO DONDE ENTRA LA FÍSICA',
-        tex: '\\dot{\\mathbf{q}}_\\theta(t) = \\frac{\\partial H_\\theta}{\\partial \\mathbf{p}}, \\qquad \\dot{\\mathbf{p}}_\\theta(t) = -\\frac{\\partial H_\\theta}{\\partial \\mathbf{q}}, \\qquad \\frac{d}{dt}\\begin{bmatrix} \\mathbf{q}(t) \\\\ \\mathbf{p}(t) \\end{bmatrix} = \\mathbb{J}\\,\\nabla H_\\theta',
+        tex: '\\dot{q}_\\theta(t) = \\frac{\\partial H_\\theta}{\\partial p}, \\qquad \\dot{p}_\\theta(t) = -\\frac{\\partial H_\\theta}{\\partial q}, \\qquad \\frac{d}{dt}\\begin{bmatrix} q(t) \\\\ p(t) \\end{bmatrix} = \\mathbb{J}\\,\\nabla H_\\theta',
         bridge: {
           chain: [
-            { tex: 'H_\\theta(\\mathbf{q}(t),\\,\\mathbf{p}(t))' },
+            { tex: 'H_\\theta(q(t),\\,p(t))' },
             { step: 'Autodiff' },
-            { tex: '\\left( \\partial H_\\theta / \\partial \\mathbf{q},\\; \\partial H_\\theta / \\partial \\mathbf{p} \\right)' },
+            { tex: '\\left( \\partial H_\\theta / \\partial q,\\; \\partial H_\\theta / \\partial p \\right)' },
             { step: 'Ecs. de Hamilton' },
-            { tex: '\\left( \\dot{\\mathbf{q}}_\\theta(t),\\; \\dot{\\mathbf{p}}_\\theta(t) \\right)' },
+            { tex: '\\left( \\dot{q}_\\theta(t),\\; \\dot{p}_\\theta(t) \\right)' },
           ],
         },
-        conn: '**La física NO entra como penalización: entra en la estructura.** Las ecs. de Hamilton (con $\\mathbb{J} = \\begin{bmatrix} 0 & 1 \\\\ -1 & 0 \\end{bmatrix}$) no «transforman» mágicamente una derivada en otra: son la regla física que convierte las pendientes de $H_\\theta$ respecto al estado $(\\mathbf{q}(t), \\mathbf{p}(t))$ en las tasas de cambio temporal $(\\dot{\\mathbf{q}}_\\theta(t), \\dot{\\mathbf{p}}_\\theta(t))$.',
+        conn: '**La física NO entra como penalización: entra en la estructura.** Las ecs. de Hamilton (con $\\mathbb{J} = \\begin{bmatrix} 0 & 1 \\\\ -1 & 0 \\end{bmatrix}$) no «transforman» mágicamente una derivada en otra: son la regla física que convierte las pendientes de $H_\\theta$ respecto al estado $(q(t), p(t))$ en las tasas de cambio temporal $(\\dot{q}_\\theta(t), \\dot{p}_\\theta(t))$.',
       },
       {
-        heading: 'Función de costo (dinámica) y optimización',
-        tex: '\\mathcal{L}_{HNN}(\\theta) = \\frac{1}{N}\\sum_{n=1}^{N}\\left[ \\left| \\dot{\\mathbf{q}}_\\theta(t_n) - \\dot{\\mathbf{q}}(t_n) \\right|^2 + \\left| \\dot{\\mathbf{p}}_\\theta(t_n) - \\dot{\\mathbf{p}}(t_n) \\right|^2 \\right], \\qquad \\theta^* = \\arg\\min_{\\theta}\\, \\mathcal{L}_{HNN}(\\theta)',
-        conn: '**Conexión:** los objetivos salen de los datos: $\\dot{\\mathbf{q}}(t_n) = \\dot{x}_n$ y $\\dot{\\mathbf{p}}(t_n) = m\\,\\ddot{x}_n$; si no hay aceleración medida, $\\dot{\\mathbf{p}}(t_n)$ se estima por diferencias finitas. Con $\\dot{\\mathbf{q}}_\\theta(t) = \\partial H_\\theta/\\partial \\mathbf{p}$ y $\\dot{\\mathbf{p}}_\\theta(t) = -\\partial H_\\theta/\\partial \\mathbf{q}$, no existe $\\mathcal{L}_{physics}$ separado: la física ya está incorporada en la arquitectura.',
+        heading: 'Función de pérdida (dinámica) y optimización',
+        tex: '\\mathcal{L}_{HNN}(\\theta) = \\frac{1}{N}\\sum_{n=1}^{N}\\left[ \\left| \\dot{q}_\\theta(t_n) - \\dot{q}(t_n) \\right|^2 + \\left| \\dot{p}_\\theta(t_n) - \\dot{p}(t_n) \\right|^2 \\right], \\qquad \\theta^* = \\arg\\min_{\\theta}\\, \\mathcal{L}_{HNN}(\\theta)',
+        conn: '**Conexión:** los objetivos salen de los datos: $\\dot{q}(t_n) = \\dot{x}(t_n)$ y $\\dot{p}(t_n) = m\\,\\ddot{x}(t_n)$; si no hay aceleración medida, $\\dot{p}(t_n)$ se estima por diferencias finitas. Con $\\dot{q}_\\theta(t) = \\partial H_\\theta/\\partial p$ y $\\dot{p}_\\theta(t) = -\\partial H_\\theta/\\partial q$, no existe $\\mathcal{L}_{phys}$ separado: la física ya está incorporada en la arquitectura.',
       },
     ],
     notes:
-      'Mensaje clave: la HNN no aprende directamente la trayectoria — aprende $H_\\theta(\\mathbf{q}(t), \\mathbf{p}(t))$; las ecuaciones de Hamilton convierten su gradiente en la dinámica y un integrador recupera $(q(t), p(t))$.',
+      'Mensaje clave: la HNN no aprende directamente la trayectoria — aprende $H_\\theta(q(t), p(t))$; las ecuaciones de Hamilton convierten su gradiente en la dinámica y un integrador recupera $(q(t), p(t))$.',
     refs: [
       'Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks. NeurIPS 2019.',
       'Cranmer et al. Lagrangian Neural Networks. arXiv:2003.04630, 2020.',
@@ -241,18 +246,18 @@ export const SLIDES = [
     equations: [
       {
         heading: 'Paso 1 · Construcción del Hamiltoniano',
-        tex: '\\mathbf{q}(t) = x(t), \\quad \\mathbf{p}(t) = m\\,\\dot{x}(t), \\quad T = \\frac{p(t)^2}{2m}, \\quad V = \\frac{k\\,q(t)^2}{2} \\;\\Rightarrow\\; H = T + V = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2}',
+        tex: 'q(t) = x(t), \\quad p(t) = m\\,\\dot{x}(t), \\quad T = \\frac{p(t)^2}{2m}, \\quad V = \\frac{k\\,q(t)^2}{2} \\;\\Rightarrow\\; H = T + V = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2}',
         conn: '**Conexión:** el Hamiltoniano representa la energía total del sistema conservativo: energía cinética más energía potencial del resorte.',
       },
       {
         heading: 'Paso 2 · Ecuaciones de Hamilton',
-        tex: '\\dot{\\mathbf{q}}(t) = \\frac{\\partial H}{\\partial \\mathbf{p}} = \\frac{\\mathbf{p}(t)}{m}, \\qquad \\dot{\\mathbf{p}}(t) = -\\frac{\\partial H}{\\partial \\mathbf{q}} = -k\\,\\mathbf{q}(t)',
+        tex: '\\dot{q}(t) = \\frac{\\partial H}{\\partial p} = \\frac{p(t)}{m}, \\qquad \\dot{p}(t) = -\\frac{\\partial H}{\\partial q} = -k\\,q(t)',
         conn: '**Conexión:** las derivadas del Hamiltoniano determinan cómo cambia el estado del sistema. $H$ no entrega directamente la trayectoria: entrega la regla de evolución del sistema.',
       },
       {
         heading: 'Paso 3 · Recuperación de la ecuación física',
-        tex: '\\mathbf{p}(t) = m\\,\\dot{\\mathbf{q}}(t) \\;\\Rightarrow\\; \\dot{\\mathbf{p}}(t) = m\\,\\ddot{\\mathbf{q}}(t) \\;\\Rightarrow\\; m\\,\\ddot{q}(t) = -k\\,q(t) \\;\\Rightarrow\\; m\\,\\ddot{x}(t) + k\\,x(t) = 0',
-        conn: '**Conexión:** las ecuaciones de Hamilton recuperan exactamente la ecuación original del masa-resorte: la dinámica sale de $H$ por derivación, no se aprende.',
+        tex: 'p(t) = m\\,\\dot{q}(t) \\;\\Rightarrow\\; \\dot{p}(t) = m\\,\\ddot{q}(t) \\;\\Rightarrow\\; m\\,\\ddot{q}(t) + k\\,q(t) = 0 \\;\\Rightarrow\\; m\\,\\ddot{x}(t) + k\\,x(t) = 0',
+        conn: '**Conexión:** las ecuaciones de Hamilton recuperan exactamente la ecuación original del masa-resorte (identificación $q(t) \\equiv x(t)$ del Paso 1): la dinámica sale de $H$ por derivación, no se aprende.',
       },
       {
         heading: 'Conservación de energía (por construcción)',
@@ -277,45 +282,45 @@ export const SLIDES = [
     title: 'Puerta ② — Arquitectura (Lagrangian NN)',
     lema: 'La física entra en la **estructura del modelo**: se cumple **por construcción** para todo $\\theta$, ahora a través del principio de acción.',
     derivation: [
-      '$(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$',
+      '$(q(t), \\dot{q}(t))$',
       '$f_\\theta$ — red neuronal',
-      '$L_\\theta(\\mathbf{q}(t),\\dot{\\mathbf{q}}(t))$',
+      '$L_\\theta(q(t),\\dot{q}(t))$',
       '$\\partial L_\\theta$ (autodiff)',
       'Euler–Lagrange → dinámica',
     ],
     equations: [
       {
         heading: 'Estado generalizado y Lagrangiano físico',
-        tex: '\\mathbf{q}(t) = x(t), \\qquad \\dot{\\mathbf{q}}(t) = \\dot{x}(t), \\qquad L(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t)) = T - V = \\frac{m\\dot{q}(t)^2}{2} - \\frac{k\\,q(t)^2}{2} \\quad (c = 0)',
-        conn: '**Conexión:** para el sistema masa-resorte conservativo, el Lagrangiano es energía cinética menos energía potencial — misma notación $\\mathbf{q}(t)$, $\\dot{\\mathbf{q}}(t)$ y los mismos $m$, $k$ del bloque hamiltoniano ($H = T + V$, $L = T - V$). $L$: función escalar.',
+        tex: 'q(t) = x(t), \\qquad \\dot{q}(t) = \\dot{x}(t), \\qquad L(q(t), \\dot{q}(t)) = T - V = \\frac{m\\dot{q}(t)^2}{2} - \\frac{k\\,q(t)^2}{2} \\quad (c = 0)',
+        conn: '**Conexión:** para el sistema masa-resorte conservativo, el Lagrangiano es energía cinética menos energía potencial — misma notación $q(t)$, $\\dot{q}(t)$ y los mismos $m$, $k$ del bloque hamiltoniano ($H = T + V$, $L = T - V$). $L$: función escalar.',
       },
       {
         heading: 'La red aprende el Lagrangiano (función escalar)',
-        tex: 'f_\\theta:\\ (\\mathbf{q}(t), \\dot{\\mathbf{q}}(t)) \\;\\longmapsto\\; L_\\theta(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t)) \\approx L(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))',
-        conn: '**Conexión:** igual que la HNN, la LNN **no predice directamente** $q(t)$: aprende una función escalar. $L_\\theta$ **no se compara con etiquetas de energía**: se aprende porque sus derivadas deben reproducir la dinámica observada. Entrada de la red $= (\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$ · salida $= L_\\theta(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$.',
+        tex: 'f_\\theta:\\ (q(t), \\dot{q}(t)) \\;\\longmapsto\\; L_\\theta(q(t), \\dot{q}(t)) \\approx L(q(t), \\dot{q}(t))',
+        conn: '**Conexión:** igual que la HNN, la LNN **no predice directamente** $q(t)$: aprende una función escalar. $L_\\theta$ **no se compara con etiquetas de energía**: se aprende porque sus derivadas deben reproducir la dinámica observada. Entrada de la red $= (q(t), \\dot{q}(t))$ · salida $= L_\\theta(q(t), \\dot{q}(t))$.',
       },
       {
         heading: 'Autodiff y ecuación de Euler–Lagrange — ★ PUNTO DONDE ENTRA LA FÍSICA',
-        tex: '\\frac{d}{dt}\\,\\frac{\\partial L_\\theta}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L_\\theta}{\\partial \\mathbf{q}} = 0',
+        tex: '\\frac{d}{dt}\\,\\frac{\\partial L_\\theta}{\\partial \\dot{q}} - \\frac{\\partial L_\\theta}{\\partial q} = 0',
         bridge: {
           chain: [
-            { tex: 'L_\\theta(\\mathbf{q}(t),\\,\\dot{\\mathbf{q}}(t))' },
+            { tex: 'L_\\theta(q(t),\\,\\dot{q}(t))' },
             { step: 'Autodiff' },
-            { tex: '\\left( \\partial L_\\theta / \\partial \\mathbf{q},\\; \\partial L_\\theta / \\partial \\dot{\\mathbf{q}} \\right)' },
+            { tex: '\\left( \\partial L_\\theta / \\partial q,\\; \\partial L_\\theta / \\partial \\dot{q} \\right)' },
             { step: 'Ecs. de Euler–Lagrange' },
-            { tex: '\\ddot{\\mathbf{q}}_\\theta(t) \\Rightarrow \\text{dinámica}' },
+            { tex: '\\ddot{q}_\\theta(t) \\Rightarrow \\text{dinámica}' },
           ],
         },
-        conn: '**La física NO entra como penalización: entra en la estructura.** La ec. de Euler–Lagrange (principio de acción) es la regla física que convierte las derivadas parciales de $L_\\theta$ respecto al estado $(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$ en la aceleración $\\ddot{\\mathbf{q}}_\\theta(t)$: el análogo lagrangiano de $\\mathbb{J}\\,\\nabla H_\\theta$, con $\\partial L_\\theta$ en lugar de $\\nabla H_\\theta$.',
+        conn: '**La física NO entra como penalización: entra en la estructura.** La ec. de Euler–Lagrange (principio de acción) es la regla física que convierte las derivadas parciales de $L_\\theta$ respecto al estado $(q(t), \\dot{q}(t))$ en la aceleración $\\ddot{q}_\\theta(t)$: el análogo lagrangiano de $\\mathbb{J}\\,\\nabla H_\\theta$, con $\\partial L_\\theta$ en lugar de $\\nabla H_\\theta$.',
       },
       {
-        heading: 'Función de costo (dinámica) y optimización',
-        tex: '\\mathcal{L}_{LNN}(\\theta) = \\frac{1}{N}\\sum_{n=1}^{N}\\left| \\ddot{\\mathbf{q}}_\\theta(t_n) - \\ddot{\\mathbf{q}}(t_n) \\right|^2, \\qquad \\theta^* = \\arg\\min_{\\theta}\\, \\mathcal{L}_{LNN}(\\theta)',
-        conn: '**Conexión:** los objetivos salen de los datos: $\\ddot{\\mathbf{q}}(t_n) = \\ddot{x}_n$ (diferencias finitas si solo hay posición medida); $\\ddot{\\mathbf{q}}_\\theta(t_n)$ se obtiene resolviendo la ec. de Euler–Lagrange para $L_\\theta$. No existe $\\mathcal{L}_{physics}$ separado: la física ya está incorporada en la arquitectura, igual que en la HNN.',
+        heading: 'Función de pérdida (dinámica) y optimización',
+        tex: '\\mathcal{L}_{LNN}(\\theta) = \\frac{1}{N}\\sum_{n=1}^{N}\\left| \\ddot{q}_\\theta(t_n) - \\ddot{q}(t_n) \\right|^2, \\qquad \\theta^* = \\arg\\min_{\\theta}\\, \\mathcal{L}_{LNN}(\\theta)',
+        conn: '**Conexión:** los objetivos salen de los datos: $\\ddot{q}(t_n) = \\ddot{x}(t_n)$ (diferencias finitas si solo hay posición medida); $\\ddot{q}_\\theta(t_n)$ se obtiene resolviendo la ec. de Euler–Lagrange para $L_\\theta$. No existe $\\mathcal{L}_{phys}$ separado: la física ya está incorporada en la arquitectura, igual que en la HNN.',
       },
     ],
     notes:
-      'Mensaje clave: la LNN tampoco aprende directamente la trayectoria — aprende $L_\\theta(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$; la ecuación de Euler–Lagrange convierte sus derivadas en la aceleración y un integrador recupera $(q(t), \\dot{q}(t))$.',
+      'Mensaje clave: la LNN tampoco aprende directamente la trayectoria — aprende $L_\\theta(q(t), \\dot{q}(t))$; la ecuación de Euler–Lagrange convierte sus derivadas en la aceleración y un integrador recupera $(q(t), \\dot{q}(t))$.',
     refs: [
       'Cranmer et al. Lagrangian Neural Networks. arXiv:2003.04630, 2020.',
       'Greydanus, Dzamba, Yosinski. Hamiltonian Neural Networks. NeurIPS 2019.',
@@ -333,22 +338,22 @@ export const SLIDES = [
     equations: [
       {
         heading: 'Paso 1 · Construcción del Lagrangiano',
-        tex: '\\mathbf{q}(t) = x(t), \\quad \\dot{\\mathbf{q}}(t) = \\dot{x}(t), \\quad T = \\frac{m\\dot{q}(t)^2}{2}, \\quad V = \\frac{k\\,q(t)^2}{2} \\;\\Rightarrow\\; L = T - V = \\frac{m\\dot{q}(t)^2}{2} - \\frac{k\\,q(t)^2}{2}',
+        tex: 'q(t) = x(t), \\quad \\dot{q}(t) = \\dot{x}(t), \\quad T = \\frac{m\\dot{q}(t)^2}{2}, \\quad V = \\frac{k\\,q(t)^2}{2} \\;\\Rightarrow\\; L = T - V = \\frac{m\\dot{q}(t)^2}{2} - \\frac{k\\,q(t)^2}{2}',
         conn: '**Conexión:** el Lagrangiano usa las mismas $m$, $k$ y la misma trayectoria $x(t)$ que el Hamiltoniano: energía cinética menos potencial en lugar de más.',
       },
       {
         heading: 'Paso 2 · Ecuación de Euler–Lagrange',
-        tex: '\\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} = m\\,\\dot{\\mathbf{q}}(t), \\qquad \\frac{\\partial L}{\\partial \\mathbf{q}} = -k\\,\\mathbf{q}(t) \\;\\Rightarrow\\; \\frac{d}{dt}\\,\\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L}{\\partial \\mathbf{q}} = m\\,\\ddot{\\mathbf{q}}(t) + k\\,\\mathbf{q}(t) = 0',
+        tex: '\\frac{\\partial L}{\\partial \\dot{q}} = m\\,\\dot{q}(t), \\qquad \\frac{\\partial L}{\\partial q} = -k\\,q(t) \\;\\Rightarrow\\; \\frac{d}{dt}\\,\\frac{\\partial L}{\\partial \\dot{q}} - \\frac{\\partial L}{\\partial q} = m\\,\\ddot{q}(t) + k\\,q(t) = 0',
         conn: '**Conexión:** las derivadas del Lagrangiano determinan cómo cambia el estado del sistema. $L$ no entrega directamente la trayectoria: entrega la regla de evolución (principio de acción), igual que $H$ en la formulación anterior.',
       },
       {
         heading: 'Paso 3 · Recuperación de la ecuación física',
-        tex: 'm\\,\\ddot{\\mathbf{q}}(t) + k\\,\\mathbf{q}(t) = 0 \\;\\Rightarrow\\; m\\,\\ddot{q}(t) + k\\,q(t) = 0 \\;\\Rightarrow\\; m\\,\\ddot{x}(t) + k\\,x(t) = 0',
-        conn: '**Conexión:** la ecuación de Euler–Lagrange recupera exactamente la ecuación original del masa-resorte: la dinámica sale de $L$ por derivación, no se aprende.',
+        tex: 'm\\,\\ddot{q}(t) + k\\,q(t) = 0 \\;\\Rightarrow\\; m\\,\\ddot{x}(t) + k\\,x(t) = 0',
+        conn: '**Conexión:** la ecuación de Euler–Lagrange recupera exactamente la ecuación original del masa-resorte (identificación $q(t) \\equiv x(t)$ del Paso 1): la dinámica sale de $L$ por derivación, no se aprende.',
       },
       {
         heading: 'Equivalencia con la formulación hamiltoniana (transformada de Legendre)',
-        tex: '\\mathbf{p}(t) = \\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} = m\\,\\dot{\\mathbf{q}}(t) \\;\\Rightarrow\\; H = \\mathbf{p}(t)^{\\top}\\dot{\\mathbf{q}}(t) - L = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2} = T + V',
+        tex: 'p(t) = \\frac{\\partial L}{\\partial \\dot{q}} = m\\,\\dot{q}(t) \\;\\Rightarrow\\; H = p(t)\\,\\dot{q}(t) - L = \\frac{p(t)^2}{2m} + \\frac{k\\,q(t)^2}{2} = T + V',
         conn: '**Destacado:** para el MR conservativo ($c = 0$) las dos puertas ② son equivalentes: la transformada de Legendre lleva de $L$ a $H$ y recupera exactamente el Hamiltoniano del bloque anterior, con su conservación de energía incluida.',
       },
     ],
@@ -368,11 +373,11 @@ export const SLIDES = [
     kicker: '3 · Puerta ② · Comparativa',
     title: 'Hamiltoniano vs Lagrangiano: cuándo usar una u otra',
     table: [
-      ['Criterio', 'Hamiltoniano $H(\\mathbf{q}, \\mathbf{p})$', 'Lagrangiano $L(\\mathbf{q}, \\dot{\\mathbf{q}})$'],
+      ['Criterio', 'Hamiltoniano $H(q, p)$', 'Lagrangiano $L(q, \\dot{q})$'],
       [
         'Variables de estado',
-        'Coordenadas canónicas $(\\mathbf{q}(t), \\mathbf{p}(t))$: el momento $\\mathbf{p} = m\\,\\dot{\\mathbf{q}}(t)$ hay que construirlo.',
-        'Coordenadas generalizadas $(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t))$ directas de los datos; el momento se deriva después: $\\mathbf{p} = \\partial L / \\partial \\dot{\\mathbf{q}}$.',
+        'Coordenadas canónicas $(q(t), p(t))$: el momento $p = m\\,\\dot{q}(t)$ hay que construirlo.',
+        'Coordenadas generalizadas $(q(t), \\dot{q}(t))$ directas de los datos; el momento se deriva después: $p = \\partial L / \\partial \\dot{q}$.',
       ],
       [
         'Función escalar',
@@ -381,8 +386,8 @@ export const SLIDES = [
       ],
       [
         'Regla de evolución',
-        'Dos ecuaciones de primer orden: $\\dot{\\mathbf{q}}(t) = \\partial H / \\partial \\mathbf{p}$, $\\dot{\\mathbf{p}}(t) = -\\partial H / \\partial \\mathbf{q}$ (forma matricial $\\mathbb{J}\\,\\nabla H$).',
-        'Una ecuación de Euler–Lagrange de segundo orden: $\\frac{d}{dt}\\,\\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L}{\\partial \\mathbf{q}} = 0$.',
+        'Dos ecuaciones de primer orden: $\\dot{q}(t) = \\partial H / \\partial p$, $\\dot{p}(t) = -\\partial H / \\partial q$ (forma matricial $\\mathbb{J}\\,\\nabla H$).',
+        'Una ecuación de Euler–Lagrange de segundo orden: $\\frac{d}{dt}\\,\\frac{\\partial L}{\\partial \\dot{q}} - \\frac{\\partial L}{\\partial q} = 0$.',
       ],
       [
         'Marco y conservación',
@@ -391,18 +396,18 @@ export const SLIDES = [
       ],
       [
         'Red equivalente (puerta ②)',
-        'HNN: $f_\\theta(\\mathbf{q}(t), \\mathbf{p}(t)) \\mapsto H_\\theta$; pérdida sobre $(\\dot{\\mathbf{q}}, \\dot{\\mathbf{p}})$ en $t_n$.',
-        'LNN: $f_\\theta(\\mathbf{q}(t), \\dot{\\mathbf{q}}(t)) \\mapsto L_\\theta$; pérdida sobre las aceleraciones $\\ddot{\\mathbf{q}}(t_n)$.',
+        'HNN: $f_\\theta(q(t), p(t)) \\mapsto H_\\theta$; pérdida sobre $(\\dot{q}, \\dot{p})$ en $t_n$.',
+        'LNN: $f_\\theta(q(t), \\dot{q}(t)) \\mapsto L_\\theta$; pérdida sobre las aceleraciones $\\ddot{q}(t_n)$.',
       ],
       [
         'Paso de una a otra (Legendre)',
-        '$H(\\mathbf{q}, \\mathbf{p}) = \\mathbf{p}^{\\top}\\dot{\\mathbf{q}} - L(\\mathbf{q}, \\dot{\\mathbf{q}})$ con $\\mathbf{p} = \\partial L / \\partial \\dot{\\mathbf{q}}$ (inversa: $\\dot{\\mathbf{q}} = \\partial H / \\partial \\mathbf{p}$).',
-        'Para el MR ($c = 0$): $\\mathbf{p} = m\\,\\dot{\\mathbf{q}}(t) \\Rightarrow L = T - V \\Leftrightarrow H = T + V$ — misma trayectoria.',
+        '$H(q, p) = p\\,\\dot{q} - L(q, \\dot{q})$ con $p = \\partial L / \\partial \\dot{q}$ (inversa: $\\dot{q} = \\partial H / \\partial p$).',
+        'Para el MR ($c = 0$): $p = m\\,\\dot{q}(t) \\Rightarrow L = T - V \\Leftrightarrow H = T + V$ — misma trayectoria.',
       ],
       [
         'Cuándo recomendarla',
-        'Sistema conservativo con $(\\mathbf{q}, \\mathbf{p})$ a mano o construibles; predicción a largo plazo donde importa la energía exacta (órbitas, osciladores, estructura simpléctica).',
-        'Datos en $(\\mathbf{q}, \\dot{\\mathbf{q}})$ o coordenadas generalizadas con restricciones/vínculos; cuando los momentos deben derivarse y no se miden.',
+        'Sistema conservativo con $(q, p)$ a mano o construibles; predicción a largo plazo donde importa la energía exacta (órbitas, osciladores, estructura simpléctica).',
+        'Datos en $(q, \\dot{q})$ o coordenadas generalizadas con restricciones/vínculos; cuando los momentos deben derivarse y no se miden.',
       ],
     ],
     bullets: [
@@ -412,8 +417,8 @@ export const SLIDES = [
     equations: [
       {
         heading: 'Paso de una a otra: transformada de Legendre',
-        tex: '\\mathbf{p} = \\frac{\\partial L}{\\partial \\dot{\\mathbf{q}}} \\;\\Longleftrightarrow\\; \\dot{\\mathbf{q}} = \\frac{\\partial H}{\\partial \\mathbf{p}}, \\qquad H(\\mathbf{q}, \\mathbf{p}) = \\mathbf{p}^{\\top}\\dot{\\mathbf{q}} - L(\\mathbf{q}, \\dot{\\mathbf{q}})',
-        conn: '**Conexión:** puente exacto entre las dos columnas — para el MR ($c = 0$), $\\mathbf{p} = m\\,\\dot{\\mathbf{q}}(t)$ lleva de $L = T - V$ a $H = T + V$ y ambas producen la misma trayectoria $x(t)$.',
+        tex: 'p = \\frac{\\partial L}{\\partial \\dot{q}} \\;\\Longleftrightarrow\\; \\dot{q} = \\frac{\\partial H}{\\partial p}, \\qquad H(q, p) = p\\,\\dot{q} - L(q, \\dot{q})',
+        conn: '**Conexión:** puente exacto entre las dos columnas — para el MR ($c = 0$), $p = m\\,\\dot{q}(t)$ lleva de $L = T - V$ a $H = T + V$ y ambas producen la misma trayectoria $x(t)$.',
       },
     ],
     refs: [
@@ -435,7 +440,7 @@ export const SLIDES = [
       { color: '#16A085', label: 'Datos y medición' },
       { color: '#7D3C98', label: 'Red HNN · $H_\\theta$ · autodiff · estructura' },
       { color: '#E67E22', label: 'Comparación $\\to \\mathcal{L}_{HNN}(\\theta)$' },
-      { color: '#C0392B', label: 'Optimización → θ*' },
+      { color: '#C0392B', label: 'Optimización → $\\theta^{*}$' },
     ],
   },
   {
@@ -449,7 +454,7 @@ export const SLIDES = [
     equations: [
       {
         heading: 'Modelo (entrada aumentada)',
-        tex: '\\tilde{\\mathbf{x}} = \\left[ \\mathbf{x},\\; \\psi_{fis}(\\mathbf{x}) \\right], \\qquad \\psi_{fis} = \\left[\\, x,\\; \\dot{x},\\; E \\,\\right], \\qquad E = \\tfrac{1}{2} m \\dot{x}^2 + \\tfrac{1}{2} k x^2',
+        tex: '\\tilde{\\mathbf{x}} = \\left[ \\mathbf{x},\\; \\psi_{fis}(\\mathbf{x}) \\right], \\qquad \\psi_{fis} = \\left[\\, x(t),\\; \\dot{x}(t),\\; E(t) \\,\\right], \\qquad E(t) = \\tfrac{1}{2} m \\dot{x}(t)^2 + \\tfrac{1}{2} k\\,x(t)^2',
         conn: '**Conexión:** para el MR las features son el espacio de fases y la energía; el bloque "Features ψ_fis" transforma la entrada antes de $f_\\theta$.',
       },
       {
@@ -458,13 +463,13 @@ export const SLIDES = [
         conn: '**Conexión:** el simulador MR barato $f_{LF}$ genera datos; la discrepancia $\\delta_{mf}$ se aprende (Kennedy–O\'Hagan).',
       },
       {
-        heading: 'Función de costo (sobre datos aumentados)',
-        tex: '\\mathcal{L}_{MSE}(\\theta) = \\frac{1}{N_d}\\sum_{i=1}^{N_d} \\left| f_\\theta(\\tilde{\\mathbf{x}}_i) - y_i \\right|^2',
+        heading: 'Función de pérdida (sobre datos aumentados)',
+        tex: '\\mathcal{L}_{MSE}(\\theta) = \\frac{1}{N_d}\\sum_{i=1}^{N_d} \\left| f_\\theta(\\tilde{\\mathbf{x}}_i) - y(t_i) \\right|^2',
         conn: '**Conexión:** la física no aparece como término de penalización; vive en $\\tilde{\\mathbf{x}}$ y en los datos del simulador.',
       },
       {
         heading: 'Problema de optimización (+ physical bottleneck)',
-        tex: '\\theta^* = \\arg\\min_{\\theta \\in \\Theta}\\; \\mathcal{L}_{MSE}(\\theta; \\tilde{\\mathbf{x}}), \\qquad \\mathbf{z}_{bot} = E(\\mathbf{x})',
+        tex: '\\theta^* = \\arg\\min_{\\theta \\in \\Theta}\\; \\mathcal{L}_{MSE}(\\theta; \\tilde{\\mathbf{x}}), \\qquad \\mathbf{z}_{bot} = E(t)',
         conn: '**Conexión:** variante con bottleneck: la latente $\\mathbf{z}_{bot}$ queda restringida a significado físico explícito (Hao 2022).',
       },
     ],
@@ -487,7 +492,7 @@ export const SLIDES = [
       { color: '#1E3A5F', label: 'Sistema MR / física' },
       { color: '#16A085', label: '③ Datos / features' },
       { color: '#34495E', label: 'Modelo ML $f_\\theta$' },
-      { color: '#C0392B', label: 'Minimización → θ*' },
+      { color: '#C0392B', label: 'Minimización → $\\theta^{*}$' },
     ],
   },
   {
@@ -498,13 +503,13 @@ export const SLIDES = [
     kicker: '3 · Puerta ④ · Híbrido',
     title: 'Puerta ④ — Híbrido simulador + red (grey-box)',
     bullets: [
-      '**¿Por qué existen?:** un simulador confiable **subvenciona** a la red: $f_{fisica}$ da la predicción base —interpretable y físicamente correcta— y $g_\\theta$ aprende solo el residuo.',
+      '**¿Por qué existen?:** un simulador confiable **subvenciona** a la red: $f_{fis}$ da la predicción base —interpretable y físicamente correcta— y $g_\\theta$ aprende solo el residuo.',
       '**¿Cuándo se eligen sobre la PINN pura?:** cuando existe un simulador/ley confiable y el riesgo de soluciones no físicas del entrenamiento PINN es alto; hereda la tradición grey-box de identificación de parámetros.',
     ],
     equations: [
       {
         heading: '④ Híbrido simulador + red (grey-box)',
-        tex: '\\hat{y} = \\underbrace{f_{fisica}(\\mathbf{x})}_{\\text{predicción base física}} + \\underbrace{g_\\theta(\\mathbf{x})}_{\\text{residuo aprendido}} \\quad \\text{o} \\quad \\hat{y} = g_\\theta\\bigl(\\mathbf{x},\\, f_{fisica}(\\mathbf{x})\\bigr)',
+        tex: '\\hat{y} = \\underbrace{f_{fis}(\\mathbf{x})}_{\\text{predicción base física}} + \\underbrace{g_\\theta(\\mathbf{x})}_{\\text{residuo aprendido}} \\quad \\text{o} \\quad \\hat{y} = g_\\theta\\bigl(\\mathbf{x},\\, f_{fis}(\\mathbf{x})\\bigr)',
         conn: '**Conexión:** residual learning y feature stacking; tradición grey-box (Bacher & Madsen 2011).',
       },
     ],
@@ -522,7 +527,7 @@ export const SLIDES = [
     kicker: '4 · Diagrama 2',
     title: 'Familias PIML para series de tiempo (todas las aplicaciones)',
     bullets: [
-      'Punto de partida común: la serie $y(t)$ observa un sistema dinámico gobernado por una ley $\\mathcal{N}[u] = 0$ total o parcialmente conocida.',
+      'Punto de partida común: la serie $y[t]$ observa un sistema dinámico gobernado por una ley $\\mathcal{N}[u] = 0$ total o parcialmente conocida.',
       '**F1** PINN · **F2** PG-RNN · **F3** Neural ODE/SDE · **F4** física latente (PhyDNet) · **F5** kernel/GPR · **F6** física embebida (PINT/RFF).',
     ],
     diagram: 'd2',
@@ -554,17 +559,17 @@ export const SLIDES = [
       },
       {
         heading: 'F1 · Pérdida con puntos de colocación',
-        tex: '\\mathcal{L}(\\theta) = \\frac{1}{N_d}\\sum_{i=1}^{N_d} \\left| u_\\theta(t_i, \\mathbf{x}_i) - u_i \\right|^2 + \\lambda_{phys}\\,\\frac{1}{N_c}\\sum_{j=1}^{N_c} \\left\\| r_\\theta(t_j, \\mathbf{x}_j) \\right\\|^2',
+        tex: '\\mathcal{L}(\\theta) = \\frac{1}{N_d}\\sum_{i=1}^{N_d} \\left| u_\\theta(t_i, \\mathbf{x}_i) - u(t_i, \\mathbf{x}_i) \\right|^2 + \\lambda_{phys}\\,\\frac{1}{N_c}\\sum_{j=1}^{N_c} \\left\\| r_\\theta(t_j, \\mathbf{x}_j) \\right\\|^2',
       },
       {
         heading: 'F2 · Recurrencia estándar + término físico',
-        tex: '\\mathbf{h}_t = f_{RNN}(\\mathbf{x}_t, \\mathbf{h}_{t-1}; \\Theta_r), \\qquad \\hat{y}_t = g(\\mathbf{h}_t)',
+        tex: '\\mathbf{h}[t] = f_{RNN}(\\mathbf{x}[t], \\mathbf{h}[t-1]; \\Theta_r), \\qquad \\hat{y}[t] = g(\\mathbf{h}[t])',
         conn:
           '**Conexión:** "recurrencia estándar" ↔ $f_{RNN}$; "consistencia temporal" ↔ $\\mathcal{L}_{EC}$ (línea PGML de Karpatne).',
       },
       {
         heading: 'F2 · Pérdida de consistencia temporal',
-        tex: '\\mathcal{L} = \\mathcal{L}_{MSE} + \\lambda_{phys}\\,\\mathcal{L}_{EC}, \\qquad \\mathcal{L}_{EC} = \\sum_t \\left\\| r_{EC}(\\hat{y}_t, \\hat{y}_{t-1}, \\mathbf{x}_t) \\right\\|^2',
+        tex: '\\mathcal{L} = \\mathcal{L}_{MSE} + \\lambda_{phys}\\,\\mathcal{L}_{EC}, \\qquad \\mathcal{L}_{EC} = \\sum_t \\left\\| r_{EC}(\\hat{y}[t], \\hat{y}[t-1], \\mathbf{x}[t]) \\right\\|^2',
       },
     ],
   },
@@ -584,15 +589,15 @@ export const SLIDES = [
       },
       {
         heading: 'F3 · Lagrangian NN (Euler–Lagrange)',
-        tex: '\\frac{d}{dt}\\,\\frac{\\partial L_\\theta}{\\partial \\dot{\\mathbf{q}}} - \\frac{\\partial L_\\theta}{\\partial \\mathbf{q}} = 0',
+        tex: '\\frac{d}{dt}\\,\\frac{\\partial L_\\theta}{\\partial \\dot{q}} - \\frac{\\partial L_\\theta}{\\partial q} = 0',
         conn:
-          '**Conexión:** $\\mathbf{q} = \\mathbf{q}(t)$ y $\\dot{\\mathbf{q}} = \\dot{\\mathbf{q}}(t)$ dependen del tiempo; las derivadas parciales son respecto a esas variables (puerta ②, formulación lagrangiana).',
+          '**Conexión:** $q = q(t)$ y $\\dot{q} = \\dot{q}(t)$ dependen del tiempo; las derivadas parciales son respecto a esas variables (puerta ②, formulación lagrangiana).',
       },
       {
         heading: 'F4 · PhyDNet: latente descompuesta física + residual',
-        tex: '\\mathbf{z}_t = \\mathbf{z}_t^{phys} + \\mathbf{z}_t^{res}, \\qquad \\hat{y}_t = \\mathrm{Dec}(\\mathbf{z}_t), \\qquad \\mathbf{z}_t^{phys} = \\mathrm{PhyCell}(\\mathbf{z}_{t-1}^{phys})',
+        tex: '\\mathbf{z}[t] = \\mathbf{z}[t]^{phys} + \\mathbf{z}[t]^{res}, \\qquad \\hat{y}[t] = \\mathrm{Dec}(\\mathbf{z}[t]), \\qquad \\mathbf{z}[t]^{phys} = \\mathrm{PhyCell}(\\mathbf{z}[t-1]^{phys})',
         conn:
-          '**Conexión:** "encoder → latente donde actúa la física → decoder" ↔ $\\mathrm{Enc}$, PhyCell, $\\mathrm{Dec}$; "física + residual" ↔ $\\mathbf{z}_t^{phys} + \\mathbf{z}_t^{res}$.',
+          '**Conexión:** "encoder → latente donde actúa la física → decoder" ↔ $\\mathrm{Enc}$, PhyCell, $\\mathrm{Dec}$; "física + residual" ↔ $\\mathbf{z}[t]^{phys} + \\mathbf{z}[t]^{res}$.',
       },
     ],
   },
@@ -618,7 +623,7 @@ export const SLIDES = [
       },
       {
         heading: 'F6 · RFF multibanda del artículo guía (Ecuación 24)',
-        tex: '\\boldsymbol{\\phi}_k(\\mathbf{x}_t) = \\sqrt{\\frac{2}{N_f}}\\,\\cos\\!\\left(\\mathrm{softplus}(\\rho_k)\\,\\mathbf{W}_k^\\top \\mathbf{x}_t + \\mathbf{b}_k\\right)',
+        tex: '\\boldsymbol{\\phi}_k(\\mathbf{x}[t]) = \\sqrt{\\frac{2}{N_f}}\\,\\cos\\!\\left(\\mathrm{softplus}(\\rho_k)\\,\\mathbf{W}_k^\\top \\mathbf{x}[t] + \\mathbf{b}_k\\right)',
       },
     ],
   },
@@ -657,7 +662,7 @@ export const SLIDES = [
     equations: [
       {
         heading: 'E1 · SARIMA (Box–Jenkins; $\\mathcal{B}$ operador de rezago)',
-        tex: '\\phi_p(\\mathcal{B})\\,\\Phi_P(\\mathcal{B}^s)\\,(1-\\mathcal{B})^d\\,(1-\\mathcal{B}^s)^D\\, y_t = c + \\theta_q(\\mathcal{B})\\,\\Theta_Q(\\mathcal{B}^s)\\,\\varepsilon_t, \\qquad \\varepsilon_t \\sim \\mathcal{N}(0, \\sigma_\\varepsilon^2)',
+        tex: '\\phi_p(\\mathcal{B})\\,\\Phi_P(\\mathcal{B}^s)\\,(1-\\mathcal{B})^d\\,(1-\\mathcal{B}^s)^D\\, y[t] = c + \\theta_q(\\mathcal{B})\\,\\Theta_Q(\\mathcal{B}^s)\\,\\varepsilon[t], \\qquad \\varepsilon[t] \\sim \\mathcal{N}(0, \\sigma_\\varepsilon^2)',
         conn:
           '**Conexión:** "ARIMA/SARIMA/ETS" ↔ esta ecuación ($s$ = período estacional 24 h o 168 h); símbolos $s, d, D, c$ son **locales** de esta sección.',
       },
@@ -679,23 +684,23 @@ export const SLIDES = [
     equations: [
       {
         heading: 'LSTM · compuertas de entrada, olvido y salida',
-        tex: '\\mathbf{i}_t = \\sigma(\\mathbf{W}_i \\mathbf{x}_t + \\mathbf{U}_i \\mathbf{h}_{t-1} + \\mathbf{b}_i), \\qquad \\mathbf{f}_t = \\sigma(\\mathbf{W}_f \\mathbf{x}_t + \\mathbf{U}_f \\mathbf{h}_{t-1} + \\mathbf{b}_f)',
+        tex: '\\mathbf{i}[t] = \\sigma(\\mathbf{W}_i \\mathbf{x}[t] + \\mathbf{U}_i \\mathbf{h}[t-1] + \\mathbf{b}_i), \\qquad \\mathbf{f}[t] = \\sigma(\\mathbf{W}_f \\mathbf{x}[t] + \\mathbf{U}_f \\mathbf{h}[t-1] + \\mathbf{b}_f)',
         conn:
-          'Estado de celda y salida: $\\mathbf{c}_t = \\mathbf{f}_t \\odot \\mathbf{c}_{t-1} + \\mathbf{i}_t \\odot \\tilde{\\mathbf{c}}_t$ y $\\mathbf{h}_t = \\mathbf{o}_t \\odot \\tanh(\\mathbf{c}_t)$.',
+          'Estado de celda y salida: $\\mathbf{c}[t] = \\mathbf{f}[t] \\odot \\mathbf{c}[t-1] + \\mathbf{i}[t] \\odot \\tilde{\\mathbf{c}}[t]$ y $\\mathbf{h}[t] = \\mathbf{o}[t] \\odot \\tanh(\\mathbf{c}[t])$.',
       },
       {
-        heading: 'LSTM · estado de celda (compuerta de salida $\\mathbf{o}_t$)',
-        tex: '\\mathbf{o}_t = \\sigma(\\mathbf{W}_o \\mathbf{x}_t + \\mathbf{U}_o \\mathbf{h}_{t-1} + \\mathbf{b}_o), \\qquad \\tilde{\\mathbf{c}}_t = \\tanh(\\mathbf{W}_c \\mathbf{x}_t + \\mathbf{U}_c \\mathbf{h}_{t-1} + \\mathbf{b}_c)',
+        heading: 'LSTM · estado de celda (compuerta de salida $\\mathbf{o}[t]$)',
+        tex: '\\mathbf{o}[t] = \\sigma(\\mathbf{W}_o \\mathbf{x}[t] + \\mathbf{U}_o \\mathbf{h}[t-1] + \\mathbf{b}_o), \\qquad \\tilde{\\mathbf{c}}[t] = \\tanh(\\mathbf{W}_c \\mathbf{x}[t] + \\mathbf{U}_c \\mathbf{h}[t-1] + \\mathbf{b}_c)',
       },
       {
-        heading: 'GRU · compuertas de actualización $\\mathbf{u}_t$ y reinicio $\\mathbf{r}_t$ (decisión 5 de §1)',
-        tex: '\\mathbf{u}_t = \\sigma(\\mathbf{W}_u \\mathbf{x}_t + \\mathbf{U}_u \\mathbf{h}_{t-1} + \\mathbf{b}_u), \\qquad \\mathbf{r}_t = \\sigma(\\mathbf{W}_r \\mathbf{x}_t + \\mathbf{U}_u \\mathbf{h}_{t-1} + \\mathbf{b}_r)',
+        heading: 'GRU · compuertas de actualización $\\mathbf{u}[t]$ y reinicio $\\mathbf{r}[t]$ (decisión 5 de §1)',
+        tex: '\\mathbf{u}[t] = \\sigma(\\mathbf{W}_u \\mathbf{x}[t] + \\mathbf{U}_u \\mathbf{h}[t-1] + \\mathbf{b}_u), \\qquad \\mathbf{r}[t] = \\sigma(\\mathbf{W}_r \\mathbf{x}[t] + \\mathbf{U}_u \\mathbf{h}[t-1] + \\mathbf{b}_r)',
         conn:
-          '**Conexión:** "LSTM / GRU / BiLSTM + atención" ↔ estos sistemas de compuertas; el backbone del artículo guía ($\\breve{\\mathbf{h}}_t = f_{RNN}(\\tilde{\\mathbf{z}}_t, \\breve{\\mathbf{h}}_{t-1}; \\Theta_r)$) es exactamente una de estas celdas.',
+          '**Conexión:** "LSTM / GRU / BiLSTM + atención" ↔ estos sistemas de compuertas; el backbone del artículo guía ($\\breve{\\mathbf{h}}[t] = f_{RNN}(\\tilde{\\mathbf{z}}[t], \\breve{\\mathbf{h}}[t-1]; \\Theta_r)$) es exactamente una de estas celdas.',
       },
       {
         heading: 'GRU · candidato y estado oculto',
-        tex: '\\tilde{\\mathbf{h}}_t = \\tanh\\!\\bigl(\\mathbf{W}_h \\mathbf{x}_t + \\mathbf{U}_h (\\mathbf{r}_t \\odot \\mathbf{h}_{t-1}) + \\mathbf{b}_h\\bigr), \\qquad \\mathbf{h}_t = (1 - \\mathbf{u}_t) \\odot \\mathbf{h}_{t-1} + \\mathbf{u}_t \\odot \\tilde{\\mathbf{h}}_t',
+        tex: '\\tilde{\\mathbf{h}}[t] = \\tanh\\!\\bigl(\\mathbf{W}_h \\mathbf{x}[t] + \\mathbf{U}_h (\\mathbf{r}[t] \\odot \\mathbf{h}[t-1]) + \\mathbf{b}_h\\bigr), \\qquad \\mathbf{h}[t] = (1 - \\mathbf{u}[t]) \\odot \\mathbf{h}[t-1] + \\mathbf{u}[t] \\odot \\tilde{\\mathbf{h}}[t]',
       },
     ],
   },
@@ -709,7 +714,7 @@ export const SLIDES = [
     equations: [
       {
         heading: 'E4 · Convolución causal dilatada (campo receptivo exponencial en $\\breve{d}$)',
-        tex: '(\\mathbf{s} *_{\\breve{d}} \\mathbf{f})(t) = \\sum_{i=0}^{\\breve{k}-1} f_i\\, s_{t - \\breve{d}\\, i}',
+        tex: '(\\mathbf{s} *_{\\breve{d}} \\mathbf{f})[t] = \\sum_{i=0}^{\\breve{k}-1} f[i]\\, s[t-\\breve{d}\\,i]',
         conn:
           '**Conexión:** "CNN, TCN, híbridos CNN-LSTM" ↔ la convolución dilatada compuesta con una recurrencia E3; el TSB del artículo guía es un bloque TCN (residual + GELU + LN).',
       },
@@ -733,11 +738,11 @@ export const SLIDES = [
         heading: 'E6 · Espacio de estados continuo y discretización (recurrencia lineal)',
         tex: '\\mathbf{h}\'(t) = \\mathbf{A}\\,\\mathbf{h}(t) + \\mathbf{B}\\,x(t), \\qquad y(t) = \\mathbf{C}\\,\\mathbf{h}(t)',
         conn:
-          'Discretización → recurrencia $\\mathbf{h}_t = \\bar{\\mathbf{A}}\\,\\mathbf{h}_{t-1} + \\bar{\\mathbf{B}}\\,x_t$; Mamba (selective scan) vuelve los parámetros dependientes de la entrada: $\\mathcal{O}(\\tau)$ frente al $\\mathcal{O}(\\tau^2)$ de la atención.',
+          'Discretización → recurrencia $\\mathbf{h}[t] = \\bar{\\mathbf{A}}\\,\\mathbf{h}[t-1] + \\bar{\\mathbf{B}}\\,x[t]$; Mamba (selective scan) vuelve los parámetros dependientes de la entrada: $\\mathcal{O}(\\tau)$ frente al $\\mathcal{O}(\\tau^2)$ de la atención.',
       },
       {
         heading: 'E7 · Distribución predictiva pre-entrenada (zero/few-shot)',
-        tex: 'p_\\theta\\bigl(y_{\\tau+1}, \\dots, y_{\\tau+h} \\mid \\mathbf{X}\\bigr) \\quad \\text{con } \\theta \\text{ fijado en pre-entrenamiento masivo externo}',
+        tex: 'p_\\theta\\bigl(y[\\tau+1], \\dots, y[\\tau+h] \\mid \\mathbf{X}\\bigr) \\quad \\text{con } \\theta \\text{ fijado en pre-entrenamiento masivo externo}',
         conn:
           '**Conexión:** "zero/few-shot" ↔ evaluar $p_\\theta$ sin re-entrenar $\\theta$ (Chronos tokeniza valores; TimesFM parches; Moirai any-variate).',
       },
@@ -745,7 +750,7 @@ export const SLIDES = [
         heading: 'E8 · Descomposición (EMD: IMFs + residuo) y VMD variacional',
         tex: 'y(t) = \\sum_{j=1}^{J} c_j(t) + r(t)',
         conn:
-          '**Conexión:** "VMD/EMD/CEEMDAN + red profunda" ↔ $\\hat{c}_j = g_{\\theta_j}(\\mathbf{X}_j)$ por componente y $\\hat{y} = \\sum_j \\hat{c}_j + \\hat{r}$; preprocesamiento externo.',
+          '**Conexión:** "VMD/EMD/CEEMDAN + red profunda" ↔ $\\hat{c}_j = g_{\\theta_j}(\\mathbf{X}_j)$ por componente y $\\hat{y} = \\sum_j \\hat{c}_j + \\hat{r}$; la descomposición se implementa sobre la serie muestreada $y[t]$; preprocesamiento externo.',
       },
       {
         heading: 'E8 · Problema variacional de la VMD',
@@ -796,7 +801,7 @@ export const SLIDES = [
       },
       {
         heading: 'A · Residuo físico sobre la trayectoria estimada',
-        tex: 'r_\\theta(t) = M\\,\\frac{d\\hat{\\omega}}{dt} - \\left[ P_m - P_e(\\hat{\\delta}) - D\\,(\\hat{\\omega} - \\omega_s) \\right]',
+        tex: 'r_\\theta(t) = M\\,\\frac{d\\hat{\\omega}(t)}{dt} - \\left[ P_m - P_e(\\hat{\\delta}) - D\\,(\\hat{\\omega} - \\omega_s) \\right]',
       },
       {
         heading: 'B · Ecuaciones nodales de flujo de potencia',
@@ -819,7 +824,7 @@ export const SLIDES = [
     equations: [
       {
         heading: 'Penalización de rampas y de parabolicidad (ERCOT 2026)',
-        tex: '\\mathcal{L}_{rampa} = \\sum_{j=1}^{h-1} \\max\\!\\bigl(0,\\; \\left| \\hat{y}_{j+1} - \\hat{y}_j \\right| - r_{max}\\bigr), \\qquad \\mathcal{L}_{par} = \\sum_{j=2}^{h-1} \\left( \\hat{y}_{j-1} - 2\\hat{y}_j + \\hat{y}_{j+1} \\right)^2',
+        tex: '\\mathcal{L}_{rampa} = \\sum_{j=1}^{h-1} \\max\\!\\bigl(0,\\; \\left| \\hat{y}[j+1] - \\hat{y}[j] \\right| - r_{max}\\bigr), \\qquad \\mathcal{L}_{par} = \\sum_{j=2}^{h-1} \\left( \\hat{y}[j-1] - 2\\hat{y}[j] + \\hat{y}[j+1] \\right)^2',
         conn:
           '**Conexión:** "loss parabólica/ramp" ↔ $\\mathcal{L}_{par}$, $\\mathcal{L}_{rampa}$; monotonía para chillers (Tang 2026): $\\frac{\\partial \\hat{y}}{\\partial x_m} \\ge 0$ penalizada con $\\mathcal{L}_{mono}$.',
       },
@@ -849,7 +854,7 @@ export const SLIDES = [
         heading: 'D · Residuo físico y pérdida compuesta',
         tex: '\\mathcal{R}_{phys}(t) = C_{in} \\frac{d \\hat{T}_{in}(t)}{dt} - \\left[ \\frac{T_{out}(t) - \\hat{T}_{in}(t)}{R_{ea}} + A_w I_{sol}(t) + \\dot{Q}_{int}(t) + P_{HVAC}(t) \\right]',
         conn:
-          'La pérdida $\\mathcal{L}_{physics} = \\frac{1}{\\tilde{N} \\cdot h} \\sum_{n,j} \\lVert \\mathcal{R}_{phys}(t_{n,j}; \\Theta) \\rVert^2$ con $\\mathcal{L}_{total}$ estándar (puerta ①); sin evaluación multi-horizonte en la literatura ("horizontes cortos").',
+          'La pérdida $\\mathcal{L}_{phys} = \\frac{1}{\\tilde{N} \\cdot h} \\sum_{n,j} \\lVert \\mathcal{R}_{phys}(t_{n,j}; \\Theta) \\rVert^2$ con $\\mathcal{L}_{total}$ estándar (puerta ①); sin evaluación multi-horizonte en la literatura ("horizontes cortos").',
       },
       {
         heading: 'E · Rama física + rama residual + contexto (PhysEmbedFormer)',
@@ -893,7 +898,7 @@ export const SLIDES = [
     kicker: '6 · Matemática del Diagrama 5',
     title: 'Lectura matemática de las filas ①–④',
     bullets: [
-      '**① vs escasez:** $\\lambda_{phys}\\,\\mathcal{L}_{physics}$ restringe las funciones admisibles a las que casi satisfacen $\\mathcal{N}[u] = 0$ → aumenta la muestra efectiva; la ganancia aparece "EXACTAMENTE con pocos datos" (Loffa 2025).',
+      '**① vs escasez:** $\\lambda_{phys}\\,\\mathcal{L}_{phys}$ restringe las funciones admisibles a las que casi satisfacen $\\mathcal{N}[u] = 0$ → aumenta la muestra efectiva; la ganancia aparece "EXACTAMENTE con pocos datos" (Loffa 2025).',
       '**② y ④:** con $\\hat{y} = f_{fis}(\\mathbf{x}_{met}) + g_\\theta(\\mathbf{x}, \\mathbf{c}_{met})$ cada término es inspeccionable, y fuera del dominio $g_\\theta$ puede fallar pero $f_{fis}$ sigue correcta (error acotado por el componente físico).',
     ],
     equations: [
@@ -928,7 +933,7 @@ export const SLIDES = [
     ],
     bullets: [
       '**Eventos extremos:** particionar el test en $\\mathcal{E}$ y su complemento, reportando $\\mathcal{L}_{MSE}\\vert_{\\mathcal{E}}$ por separado — ERCOT 2026: $\\mathcal{L}_{par} + \\mathcal{L}_{rampa}$ mejora la forma durante $\\mathcal{E}$, no la magnitud del pico.',
-      '**Cómputo:** evaluar $\\mathcal{L}_{physics}$ crece con $N_c$ y el orden de $\\mathcal{N}$; no hay PINNs energéticas sobre datasets de $\\sim 10^6$–$10^7$ muestras.',
+      '**Cómputo:** evaluar $\\mathcal{L}_{phys}$ crece con $N_c$ y el orden de $\\mathcal{N}$; no hay PINNs energéticas sobre datasets de $\\sim 10^6$–$10^7$ muestras.',
     ],
   },
 
@@ -966,12 +971,12 @@ export const SLIDES = [
     kicker: '7 · Matemática del Diagrama 6',
     title: 'Anclajes A y B — régimen de escasez y bandas etiquetadas',
     bullets: [
-      '**Opción A (escasez de datos):** con $\\tilde{N}$ pequeño domina $\\lambda_{phys}\\,\\mathcal{L}_{physics}$; existe un umbral donde el residuo RC (§5b-D) supera a $\\mathcal{L}_{MSE}$ sola (Loffa 2025).',
+      '**Opción A (escasez de datos):** con $\\tilde{N}$ pequeño domina $\\lambda_{phys}\\,\\mathcal{L}_{phys}$; existe un umbral donde el residuo RC (§5b-D) supera a $\\mathcal{L}_{MSE}$ sola (Loffa 2025).',
     ],
     equations: [
       {
         heading: 'B · Descomposición por bandas espectralmente etiquetadas',
-        tex: '\\mathbf{z}_t = [\\boldsymbol{\\phi}_1(\\mathbf{x}_t), \\dots, \\boldsymbol{\\phi}_K(\\mathbf{x}_t)] \\in \\mathbb{R}^{F}, \\qquad F = K\\,N_f',
+        tex: '\\mathbf{z}[t] = [\\boldsymbol{\\phi}_1(\\mathbf{x}[t]), \\dots, \\boldsymbol{\\phi}_K(\\mathbf{x}[t])] \\in \\mathbb{R}^{F}, \\qquad F = K\\,N_f',
         conn:
           '**Conexión:** cada banda $\\boldsymbol{\\phi}_k$ queda *etiquetada* con su escala temporal ($B = (6, 24, 72)$ h o $(4, 24, 168)$ h): el análogo **aprendible** de la descomposición E8, dentro del modelo.',
       },
@@ -1000,7 +1005,7 @@ export const SLIDES = [
     title: 'Los seis diagramas en una tabla',
     table: [
       ['Diagrama', 'Pregunta que responde', 'Matemática asociada'],
-      ['1', 'Cómo entra la física (4 puertas)', '$\\mathcal{L}_{total}$, $\\mathbb{J}\\nabla H_\\theta$, $\\psi_{fis}$, $f_{fisica} + g_\\theta$ (§3)'],
+      ['1', 'Cómo entra la física (4 puertas)', '$\\mathcal{L}_{total}$, $\\mathbb{J}\\nabla H_\\theta$, $\\psi_{fis}$, $f_{fis} + g_\\theta$ (§3)'],
       ['2', 'Qué familias PIML existen para TS (general)', 'F1–F6: PINN, PG-RNN, Neural ODE/SDE, PhyDNet, kernel/GPR, PINT/RFF (§4)'],
       ['3', 'Qué familias data-driven hay en energía (base)', 'E1–E8: SARIMA, SVR/XGBoost, LSTM/GRU, TCN, atención, SSM, fundacionales, VMD (§5a)'],
       ['4', 'Dónde TS ∩ física ∩ energía (patrones A–E)', 'swing, flujo de potencia, pérdidas de forma, RC 2R2C + $\\mathcal{R}_{phys}$, rama física+residual (§5b)'],

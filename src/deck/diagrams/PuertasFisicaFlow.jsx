@@ -26,7 +26,7 @@ const nodes = [
       // R15: fórmula marcada `$…$` — \mathcal igual que las pérdidas del
       // resto del deck (deckContent $\mathcal{L} = \mathcal{L}_{MSE} + ...$).
       lines: [
-        '$\\mathcal{L} = \\mathcal{L}_{MSE} + \\lambda_{phys}\\,\\mathcal{L}_{physics}$',
+        '$\\mathcal{L} = \\mathcal{L}_{MSE} + \\lambda_{phys}\\,\\mathcal{L}_{phys}$',
         'se penaliza, no se garantiza',
       ],
     },
@@ -59,7 +59,7 @@ const nodes = [
       color: '#E67E22',
       title: '④ Híbrido',
       // R15: fórmula marcada `$…$`.
-      lines: ['$f_{fisica}(x) + g_\\theta(x)$', 'residual learning'],
+      lines: ['$f_{fis}(\\mathbf{x}) + g_\\theta(\\mathbf{x})$', 'residual learning'],
     },
     position: { x: 320, y: 300 },
   },
@@ -70,7 +70,7 @@ const nodes = [
       color: '#34495E',
       title: 'Modelo ML/DL',
       // R15: fórmula marcada `$…$`.
-      lines: ['$\\hat{y} = f_\\theta(x)$'],
+      lines: ['$\\hat{y} = f_\\theta(\\mathbf{x})$'],
       targetHandles: ML_TARGETS.map((yPct, j) => ({ id: `t${j}`, yPct })),
     },
     position: { x: 700, y: 150 },
