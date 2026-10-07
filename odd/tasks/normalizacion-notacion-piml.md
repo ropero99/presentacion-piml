@@ -159,9 +159,16 @@ label subscript are untouched. `\sum_t` becomes `\sum_t` with discrete `[t]` obj
   - `npm run build` → PASS (vite 376 ms).
   - Greps residuales §3 → 0 en todos, salvo la excepción documentada más abajo.
   - `node src/scripts/capture-slides.mjs` → 36/36 PNG frescos, sin error.
-  - Inspección visual `slide-02.png`: la fila nueva "Convención temporal" entra completa, la tabla no
-    desborda el marco. `slide-07.png`: `q(t)`, `p(t)` planos, `H(q(t),p(t))`, `\mathcal{L}_{HNN}(\theta)`
+  - Inspección visual `slide-02.png`: la fila nueva "Convención temporal" entra completa y la tabla
+    no recorta ninguna fila. `slide-07.png`: `q(t)`, `p(t)` planos, `H(q(t),p(t))`, `\mathcal{L}_{HNN}(\theta)`
     y `\theta^{*}` renderizan correctamente.
+  - **Corrección posterior (medición determinista, 2026-10-06):** la inspección visual no era
+    suficiente. Medido con Playwright, la slide 2 pasó de 0 a **+41 px** de
+    `scrollHeight − clientHeight` por la fila «Convención temporal» que introduce T1. Según el
+    hallazgo H3 de `regresores-base-d3.md`, esa métrica incluye el margen inferior de `.reading-table`
+    y no implica recorte visible; la métrica correcta (borde inferior de la última fila contra el borde
+    del contenido) da holgura. La unidad B recortó además cuatro celdas de la tabla, dejándola en
+    +13 px de margen con las 9 filas visibles. Lección: para aprobar T5 hay que medir, no sólo mirar.
 
 ---
 

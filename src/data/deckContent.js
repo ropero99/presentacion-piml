@@ -32,8 +32,8 @@ export const SLIDES = [
       ['Grupo', 'Símbolos', 'Uso'],
       [
         'Convención temporal (continuo y discreto)',
-        'tiempo continuo con paréntesis $(\\,)$: $x(t)$, $\\dot{x}(t)$, $u(t,\\mathbf{x})$; tiempo discreto con corchetes $[\\,]$ e índice entero: $y[t]$, $\\mathbf{z}[t]$, $\\mathbf{h}[t-1]$, $\\hat{y}[j]$.',
-        'Regla transversal de toda la presentación: toda magnitud dependiente del tiempo lleva argumento explícito, paréntesis en tiempo continuo y corchetes con índice entero en tiempo discreto; los paréntesis con argumento no temporal (parámetros, features) conservan su sentido habitual, $\\mathcal{L}_{total}(\\theta)$, sin ambigüedad con el tiempo.',
+        'continuo, paréntesis $(\\,)$: $x(t)$, $\\dot{x}(t)$, $u(t,\\mathbf{x})$; discreto, corchetes $[\\,]$ con índice entero: $y[t]$, $\\mathbf{z}[t]$, $\\mathbf{h}[t-1]$, $\\hat{y}[j]$.',
+        'Regla transversal: toda magnitud dependiente del tiempo lleva argumento explícito —paréntesis en continuo, corchetes con índice entero en discreto—; los paréntesis con argumento no temporal (parámetros, features) conservan su sentido, $\\mathcal{L}_{total}(\\theta)$.',
       ],
       [
         'Series y marco general',
@@ -43,7 +43,7 @@ export const SLIDES = [
       [
         'Codificador RFF multibanda (artículo guía)',
         'kernel $\\kappa$, bandas $K$ con ancho $\\mathrm{softplus}(\\rho_k)$, $N_f$ features por banda, mapeo $\\boldsymbol{\\phi}_k$ (Ecuación 24), embedding $\\mathbf{z}[t] \\in \\mathbb{R}^{F}$ con $F = K N_f$, secuencia $\\mathbf{Z} = \\Phi_{MB}(\\mathbf{X})$; pre-set $B = (6, 24, 72)$ h.',
-        'Codificador espectral del artículo guía (familia F6 — TS con física embebida, PINT como ejemplo canónico); el mapeo RFF canónico es la Ecuación (24) y la densidad espectral es $p(\\mathbf{w}) = \\mathcal{N}(\\mathbf{0}, \\rho^{-2}\\mathbf{I})$.',
+        'Codificador espectral del artículo guía (familia F6): el mapeo RFF canónico es la Ecuación (24) y la densidad espectral, $p(\\mathbf{w}) = \\mathcal{N}(\\mathbf{0}, \\rho^{-2}\\mathbf{I})$.',
       ],
       [
         'TSB y recurrencia',
@@ -62,12 +62,12 @@ export const SLIDES = [
       ],
       [
         'Símbolos locales',
-        '$\\mathcal{B}$ (rezago en E1), $\\mathbf{A}, \\mathbf{B}, \\mathbf{C}$ (SSM en E6), instantes de muestreo $t_i$, $t_j$ y muestras $i$, secuencias de la convolución E4 $f[i]$, $s[t]$.',
-        'Leyenda semántica: existen solo dentro de su ecuación y no se reutilizan fuera de contexto. Los instantes $t_i$ son valores de $t$ continuo y se evalúan con paréntesis, $x(t_i)$; el índice $i$ numera muestras y no es tiempo. Los corchetes de $\\mathcal{N}[u]$ y los de vector o intervalo no denotan tiempo discreto.',
+        '$\\mathcal{B}$ (E1), $\\mathbf{A}, \\mathbf{B}, \\mathbf{C}$ (E6), instantes $t_i$, $t_j$ y muestras $i$, convolución E4 $f[i]$, $s[t]$; regresión (D3 · E2): $\\boldsymbol{\\beta} \\in \\mathbb{R}^{d}$, diseño $\\mathbf{D}$, ruido $\\varepsilon_i$, regularización $\\lambda_{reg}$, umbral $c$ y parte positiva $(\\cdot)_{+}$.',
+        'Existen solo dentro de su ecuación. Los instantes $t_i$ son valores de $t$ continuo: paréntesis, $x(t_i)$; el índice $i$ numera muestras, no tiempo: subíndice, nunca corchete. Colisiones: $\\mathbf{D} \\neq \\mathbf{X}$; $\\lambda_{reg}$ no es $\\lambda_{phys}$ ni $\\lambda_{rk}$; $\\varepsilon_i$ no es $\\varepsilon[t]$. Los corchetes de $\\mathcal{N}[u]$, vector e intervalo no son tiempo discreto.',
       ],
       [
         'Decisiones de unificación',
-        '$\\lambda_{phys}$ peso físico (único); $\\breve{k}, \\breve{d}$ extremos del bloque TSB; $\\mathbf{u}[t]$ compuerta GRU (no $\\mathbf{z}[t]$); $f_{fis}$ rama física.',
+        '$\\lambda_{phys}$ peso físico (único); $\\lambda_{reg}$ fuerza de regularización (no $\\lambda_{phys}$ ni $\\lambda_{rk}$); $\\breve{k}, \\breve{d}$ extremos del bloque TSB; $\\mathbf{u}[t]$ compuerta GRU (no $\\mathbf{z}[t]$); $f_{fis}$ rama física.',
         'Reglas de escritura del documento verificable con esta tabla: cada decisión evita colisiones y ambigüedad entre familias E/F.',
       ],
     ],
@@ -672,6 +672,77 @@ export const SLIDES = [
         conn:
           '**Conexión:** "SVR, RF, XGBoost, ANFIS — features duras tabulares" ↔ $f(\\mathbf{x})$ sobre $\\mathbf{x}$ tabular (rezagos, calendario, meteorología); ensambles aditivos para XGBoost/RF.',
       },
+    ],
+  },
+  {
+    id: 'd3-reg-1',
+    module: 'd3',
+    tone: 'orange',
+    kind: 'wide',
+    kicker: '5a · Matemática del Diagrama 3',
+    title: 'E2 — Regresores base (I): mínimos cuadrados, verosimilitud, ridge y lasso',
+    equations: [
+      {
+        heading: 'E2 · Mínimos cuadrados ordinarios (OLS)',
+        tex: '\\hat{\\boldsymbol{\\beta}}_{OLS} = \\arg\\min_{\\boldsymbol{\\beta}} \\sum_{i=1}^{N} \\left( y_i - \\mathbf{x}_i^{\\top} \\boldsymbol{\\beta} \\right)^{2} = \\arg\\min_{\\boldsymbol{\\beta}} \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}',
+        conn:
+          '**Conexión:** $N$ muestras $(\\mathbf{x}_i, y_i)$ con $\\mathbf{x}_i \\in \\mathbb{R}^{d}$ features duras; **el índice $i$ numera muestras, no tiempo** (subíndice, como en la SVR anterior). $\\mathbf{D} \\in \\mathbb{R}^{N \\times d}$ es la matriz de diseño (local, no es la ventana $\\mathbf{X}$); el sesgo $\\beta_0$ se absorbe con un 1.',
+      },
+      {
+        heading: 'E2 · Máxima verosimilitud (MLE) con ruido gaussiano',
+        tex: 'y_i = \\mathbf{x}_i^{\\top}\\boldsymbol{\\beta} + \\varepsilon_i, \\qquad -\\log p(\\mathbf{y} \\mid \\mathbf{D}, \\boldsymbol{\\beta}, \\sigma^{2}) = \\frac{N}{2}\\log\\!\\left( 2\\pi\\sigma^{2} \\right) + \\frac{1}{2\\sigma^{2}} \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}',
+        conn:
+          '**Conexión:** $\\varepsilon_i \\sim \\mathcal{N}(0,\\sigma^{2})$ es el ruido **por muestra** (subíndice), no la innovación $\\varepsilon[t]$ de SARIMA. Los dos primeros términos de $-\\log p$ no dependen de $\\boldsymbol{\\beta}$: al optimizar desaparecen, así que **bajo ruido gaussiano iid MLE y OLS dan el mismo estimador**.',
+      },
+      {
+        heading: 'E2 · Ridge ($\\ell_2$): penalización cuadrática',
+        tex: '\\hat{\\boldsymbol{\\beta}}_{ridge} = \\arg\\min_{\\boldsymbol{\\beta}} \\left\\{ \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2} + \\lambda_{reg} \\lVert \\boldsymbol{\\beta} \\rVert_2^{2} \\right\\}, \\qquad \\lVert \\boldsymbol{\\beta} \\rVert_2^{2} = \\sum_{j=1}^{d} \\beta_j^{2}',
+        conn:
+          '**Conexión:** $\\lambda_{reg} \\ge 0$ es la fuerza de penalización, con símbolo propio: no es $\\lambda_{phys}$ ni $\\lambda_{rk}$. El término $\\ell_2$ contrae **sin anular**, y es el análogo lineal de la penalización de la puerta ①, $\\lambda_{phys}\\,\\mathcal{L}_{phys}$; con $\\lambda_{reg} = 0$ se recupera OLS.',
+      },
+      {
+        heading: 'E2 · Lasso ($\\ell_1$): penalización en valor absoluto',
+        tex: '\\hat{\\boldsymbol{\\beta}}_{lasso} = \\arg\\min_{\\boldsymbol{\\beta}} \\left\\{ \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2} + \\lambda_{reg} \\lVert \\boldsymbol{\\beta} \\rVert_1 \\right\\}, \\qquad \\lVert \\boldsymbol{\\beta} \\rVert_1 = \\sum_{j=1}^{d} \\left| \\beta_j \\right|',
+        conn:
+          '**Conexión:** misma familia que ridge, pero $\\ell_1$ cambia contraer por **seleccionar**: anula coeficientes exactamente y deja un modelo esparso, que es lo que resuelve la selección de variables sobre features correlacionadas. Con ambas normas es la red elástica (Zou & Hastie, 2005).',
+      },
+    ],
+  },
+  {
+    id: 'd3-reg-2',
+    module: 'd3',
+    tone: 'orange',
+    kind: 'wide',
+    kicker: '5a · Matemática del Diagrama 3',
+    title: 'E2 — Regresores base (II): solución cerrada y lectura geométrica',
+    equations: [
+      {
+        heading: 'E2 · OLS — ecuación normal y condición de rango',
+        tex: '\\hat{\\boldsymbol{\\beta}}_{OLS} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} \\right)^{-1} \\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\text{solución única} \\iff \\mathrm{rango}(\\mathbf{D}) = d',
+        conn:
+          '**Conexión:** de anular el gradiente de OLS, $-2\\mathbf{D}^{\\top}(\\mathbf{y}-\\mathbf{D}\\boldsymbol{\\beta})$. Hay solución única si el rango de $\\mathbf{D}$ es completo; con colinealidad, o si $d > N$, $\\mathbf{D}^{\\top}\\mathbf{D}$ es singular: la patología que corrigen ridge y lasso.',
+      },
+      {
+        heading: 'E2 · MLE — equivalencia con OLS y estimación de la varianza',
+        tex: '\\hat{\\boldsymbol{\\beta}}_{MLE} = \\hat{\\boldsymbol{\\beta}}_{OLS}, \\qquad \\hat{\\sigma}^{2}_{MLE} = \\frac{1}{N} \\lVert \\mathbf{y} - \\mathbf{D}\\hat{\\boldsymbol{\\beta}}_{OLS} \\rVert_2^{2}',
+        conn:
+          '**Conexión:** la equivalencia, explícita: maximizar la verosimilitud **no cambia** el estimador de $\\boldsymbol{\\beta}$, sólo justifica el error cuadrático y añade la varianza (errores estándar, contrastes, intervalos). Vale para ruido gaussiano iid homocedástico; con otro ruido se rompe.',
+      },
+      {
+        heading: 'E2 · Ridge — solución cerrada y contracción',
+        tex: '\\hat{\\boldsymbol{\\beta}}_{ridge} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} + \\lambda_{reg}\\mathbf{I} \\right)^{-1} \\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\mathbf{D}^{\\top}\\mathbf{D} + \\lambda_{reg}\\mathbf{I} \\succ 0 \\;\\; \\forall\\, \\lambda_{reg} > 0',
+        conn:
+          '**Conexión:** $\\lambda_{reg}\\mathbf{I}$ vuelve la matriz definida positiva y siempre invertible: el problema queda bien puesto aun con colinealidad o $d > N$. El factor de contracción por valor singular es $s_k^{2}/(s_k^{2}+\\lambda_{reg})$, **nunca nulo**: ridge reparte el peso entre variables correlacionadas, no las descarta.',
+      },
+      {
+        heading: 'E2 · Lasso — condiciones KKT, esparsidad y geometría',
+        tex: '\\hat{\\beta}^{lasso}_j = \\mathrm{sign}\\!\\left( \\hat{\\beta}^{OLS}_j \\right) \\left( \\left| \\hat{\\beta}^{OLS}_j \\right| - \\lambda_{reg} \\right)_{+}, \\qquad \\left\\{ \\boldsymbol{\\beta} : \\lVert \\boldsymbol{\\beta} \\rVert_1 \\le c \\right\\}',
+        conn:
+          '**Conexión:** la forma cerrada vale con diseño ortonormal, con $(\\cdot)_{+} = \\max(\\cdot,0)$; en general no existe y se resuelve por programación convexa. El politopo $\\ell_1$ tiene **vértices sobre los ejes** y allí cae el óptimo: por eso anula. La bola $\\ell_2$ de ridge es lisa y sólo contrae.',
+      },
+    ],
+    refs: [
+      'Referencias: Hoerl & Kennard, Technometrics 12(1), 1970 (ridge) · Tibshirani, JRSS-B 58(1), 1996 (lasso) · Zou & Hastie, JRSS-B 67(2), 2005 (red elástica) · Hastie, Tibshirani & Friedman, The Elements of Statistical Learning, 2.ª ed., 2009, cap. 3.',
     ],
   },
   {
