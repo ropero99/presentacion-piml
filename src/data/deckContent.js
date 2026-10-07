@@ -33,12 +33,12 @@ export const SLIDES = [
       [
         'Convención temporal (continuo y discreto)',
         'continuo, paréntesis $(\\,)$: $x(t)$, $\\dot{x}(t)$, $u(t,\\mathbf{x})$; discreto, corchetes $[\\,]$ con índice entero: $y[t]$, $\\mathbf{z}[t]$, $\\mathbf{h}[t-1]$, $\\hat{y}[j]$.',
-        'Regla transversal: toda magnitud dependiente del tiempo lleva argumento explícito —paréntesis en continuo, corchetes con índice entero en discreto—; los paréntesis con argumento no temporal (parámetros, features) conservan su sentido, $\\mathcal{L}_{total}(\\theta)$.',
+        'Regla transversal: toda magnitud dependiente del tiempo lleva argumento explícito —paréntesis en continuo, corchetes con índice entero en discreto—; los paréntesis con argumento no temporal conservan su sentido.',
       ],
       [
         'Series y marco general',
-        '$y[t]$ observada, $\\hat{\\mathbf{y}} \\in \\mathbb{R}^h$ multi-paso directa, ventana $\\mathbf{X} \\in \\mathbb{R}^{\\tau \\times d}$, pérdidas $\\mathcal{L}_{MSE}$, $\\mathcal{L}_{phys}$, $\\mathcal{L}_{total}$, peso $\\lambda_{phys}$, residuo $\\mathcal{R}_{phys}$, ley $\\mathcal{N}[u] = 0$ en dominio $\\Omega_T$.',
-        'Marco común de toda la revisión: series, pérdidas y ley física. Decisiones de unificación: el peso físico es siempre $\\lambda_{phys}$ y la rama física se escribe $f_{fis}$.',
+        '$y[t]$ observada, $\\hat{\\mathbf{y}} \\in \\mathbb{R}^h$ multi-paso directa, ventana $\\mathbf{X} \\in \\mathbb{R}^{\\tau \\times d}$, pérdidas $\\mathcal{L}_{MSE}$, $\\mathcal{L}_{phys}$, $\\mathcal{L}_{total}$, peso $\\lambda_{phys}$, residuo $\\mathcal{R}_{phys}$, ley $\\mathcal{F}[u] = 0$ en dominio $\\Omega_T$.',
+        'Marco común: series, pérdidas y ley física. Toda penalización es $\\lambda_{\\cdot}$ y la rama física se escribe $f_{fis}$.',
       ],
       [
         'Codificador RFF multibanda (artículo guía)',
@@ -62,13 +62,13 @@ export const SLIDES = [
       ],
       [
         'Símbolos locales',
-        '$\\mathcal{B}$ (E1), $\\mathbf{A}, \\mathbf{B}, \\mathbf{C}$ (E6), instantes $t_i$, $t_j$ y muestras $i$, convolución E4 $f[i]$, $s[t]$; regresión (D3 · E2): $\\boldsymbol{\\beta} \\in \\mathbb{R}^{d}$, diseño $\\mathbf{D}$, ruido $\\varepsilon_i$, regularización $\\lambda_{reg}$, umbral $c$ y parte positiva $(\\cdot)_{+}$.',
-        'Existen solo dentro de su ecuación. Los instantes $t_i$ son valores de $t$ continuo: paréntesis, $x(t_i)$; el índice $i$ numera muestras, no tiempo: subíndice, nunca corchete. Colisiones: $\\mathbf{D} \\neq \\mathbf{X}$; $\\lambda_{reg}$ no es $\\lambda_{phys}$ ni $\\lambda_{rk}$; $\\varepsilon_i$ no es $\\varepsilon[t]$. Los corchetes de $\\mathcal{N}[u]$, vector e intervalo no son tiempo discreto.',
+        '$\\mathcal{B}$ (E1), $\\mathbf{A}, \\mathbf{B}, \\mathbf{C}$ (E6), instantes $t_i$, $t_j$ y muestras $i$, convolución E4 $f[i]$, $s[t]$; E2: $\\theta \\in \\mathbb{R}^{d}$, $\\mathbf{D}$, $\\varepsilon_i$, $\\lambda_{reg}$, $c$, $(\\cdot)_{+}$, $\\varepsilon_{svr}$, $\\lambda_{svr}$; SVD: $\\mathbf{U}, \\mathbf{S}, \\mathbf{V}$.',
+        'Existen solo dentro de su ecuación. $t_i$ son valores de $t$ continuo: paréntesis, $x(t_i)$; $i$ numera muestras, no tiempo: subíndice, nunca corchete. Colisiones: $\\varepsilon_i$ (ruido), $\\varepsilon[t]$ (innovación) y $\\varepsilon_{svr}$ (tolerancia del tubo) son conceptos distintos; $\\mathbf{U}$ es factor del SVD y $\\mathbf{U}_i$ compuerta; $\\mathcal{N}$ es sólo la normal —la ley física es $\\mathcal{F}[u] = 0$—.',
       ],
       [
         'Decisiones de unificación',
-        '$\\lambda_{phys}$ peso físico (único); $\\lambda_{reg}$ fuerza de regularización (no $\\lambda_{phys}$ ni $\\lambda_{rk}$); $\\breve{k}, \\breve{d}$ extremos del bloque TSB; $\\mathbf{u}[t]$ compuerta GRU (no $\\mathbf{z}[t]$); $f_{fis}$ rama física.',
-        'Reglas de escritura del documento verificable con esta tabla: cada decisión evita colisiones y ambigüedad entre familias E/F.',
+        '$\\theta$ parámetros del modelo (único); $\\Theta$ conjunto de parámetros; $\\lambda_{phys}, \\lambda_{reg}, \\lambda_{svr}, \\lambda_{rk}$ penalizaciones; $\\mathcal{L}$ pérdida; $\\mathbf{u}[t]$ compuerta GRU; $f_{fis}$ rama física.',
+        '$\\theta$ es el **único** símbolo de los parámetros: los coeficientes de una regresión, los pesos de una red y las matrices de compuerta son $\\theta$ o bloques con nombre de $\\theta$; $\\Theta$ es el conjunto donde vive.',
       ],
     ],
   },
@@ -82,7 +82,7 @@ export const SLIDES = [
     kicker: '3 · Diagrama 1',
     title: 'Las cuatro puertas por las que entra la física',
     lead: [
-      'Un solo punto de partida: el modelo ML $\\hat{y} = f_\\theta(\\mathbf{x})$ y el conocimiento físico $\\mathcal{N}[u] = 0$.',
+      'Un solo punto de partida: el modelo ML $\\hat{y} = f_\\theta(\\mathbf{x})$ y el conocimiento físico $\\mathcal{F}[u] = 0$.',
       'De ese binomio **modelo + ley física** salen cuatro canales de entrada, ordenados por fuerza de garantía: **① penalización débil → ② arquitectura → ③ datos/features → ④ híbrido**.',
     ],
     diagram: 'd1',
@@ -107,13 +107,13 @@ export const SLIDES = [
     kicker: '3 · Sistema ejemplar',
     title: 'El sistema ejemplar: masa-resorte-amortiguador (MR)',
     bullets: [
-      'Un solo sistema físico para comparar las tres puertas: la ley $\\mathcal{N}[u]=0$ instanciada en el MR.',
+      'Un solo sistema físico para comparar las tres puertas: la ley $\\mathcal{F}[u]=0$ instanciada en el MR.',
       '**Envolvente amortiguada:** en régimen subamortiguado la solución $x(t) \\sim e^{-\\gamma t}\\cos(\\omega t)$, con $\\omega = \\sqrt{k/m - \\gamma^2}$, decae dentro de una envolvente exponencial $\\pm e^{-\\gamma t}$; $\\gamma = c/2m$ controla cuánto tarda en apagarse la oscilación — conexión directa con la disipación térmica que la puerta ① inyecta como pérdida.',
     ],
     equations: [
       {
         heading: 'Ecuación de movimiento (residuo físico)',
-        tex: '\\mathcal{N}[x] \\;\\equiv\\; m\\,\\ddot{x}(t) + c\\,\\dot{x}(t) + k\\,x(t) = 0',
+        tex: '\\mathcal{F}[x] \\;\\equiv\\; m\\,\\ddot{x}(t) + c\\,\\dot{x}(t) + k\\,x(t) = 0',
         conn: '**MR:** masa $m$, rigidez $k$, amortiguamiento $c$; la trayectoria $x(t)$ es lo que cada puerta predice.',
       },
       {
@@ -128,7 +128,7 @@ export const SLIDES = [
       },
     ],
     notes:
-      'Las tres páginas siguientes instancian $\\mathcal{N}[u]=0$ sobre este sistema: misma física, distinto punto de entrada.',
+      'Las tres páginas siguientes instancian $\\mathcal{F}[u]=0$ sobre este sistema: misma física, distinto punto de entrada.',
   },
   {
     id: 'd1-puerta1',
@@ -147,7 +147,7 @@ export const SLIDES = [
       {
         heading: 'Residuo físico (diferenciación automática)',
         tex: 'r_\\theta(t_j) = m\\,\\ddot{\\hat{x}}_\\theta(t_j) + c\\,\\dot{\\hat{x}}_\\theta(t_j) + k\\,\\hat{x}_\\theta(t_j)',
-        conn: '**Conexión:** la caja punteada "Diff. automática" produce $r_\\theta$ en los puntos de colocación $t_j$; es $\\mathcal{N}[\\hat{x}_\\theta]$ de la ley $\\mathcal{N}[u]=0$.',
+        conn: '**Conexión:** la caja punteada "Diff. automática" produce $r_\\theta$ en los puntos de colocación $t_j$; es $\\mathcal{F}[\\hat{x}_\\theta]$ de la ley $\\mathcal{F}[u]=0$.',
       },
       {
         heading: 'Función de pérdida',
@@ -527,7 +527,7 @@ export const SLIDES = [
     kicker: '4 · Diagrama 2',
     title: 'Familias PIML para series de tiempo (todas las aplicaciones)',
     bullets: [
-      'Punto de partida común: la serie $y[t]$ observa un sistema dinámico gobernado por una ley $\\mathcal{N}[u] = 0$ total o parcialmente conocida.',
+      'Punto de partida común: la serie $y[t]$ observa un sistema dinámico gobernado por una ley $\\mathcal{F}[u] = 0$ total o parcialmente conocida.',
       '**F1** PINN · **F2** PG-RNN · **F3** Neural ODE/SDE · **F4** física latente (PhyDNet) · **F5** kernel/GPR · **F6** física embebida (PINT/RFF).',
     ],
     diagram: 'd2',
@@ -553,7 +553,7 @@ export const SLIDES = [
     equations: [
       {
         heading: 'F1 · La red aproxima la solución del sistema dinámico',
-        tex: '\\partial_t u + \\mathcal{N}[u] = 0 \\;\\; \\text{en } \\Omega_T, \\qquad r_\\theta(t, \\mathbf{x}) = \\partial_t u_\\theta + \\mathcal{N}[u_\\theta]',
+        tex: '\\partial_t u + \\mathcal{F}[u] = 0 \\;\\; \\text{en } \\Omega_T, \\qquad r_\\theta(t, \\mathbf{x}) = \\partial_t u_\\theta + \\mathcal{F}[u_\\theta]',
         conn:
           '**Conexión:** "la red aprende LA SOLUCIÓN" ↔ $u_\\theta(t, \\mathbf{x})$; el residuo se evalúa en los $N_c$ puntos de colocación $(t_j, \\mathbf{x}_j)$.',
       },
@@ -611,7 +611,7 @@ export const SLIDES = [
     equations: [
       {
         heading: 'F5 · Kernel ridge con restricciones de forma',
-        tex: '\\hat{f}(x) = \\sum_{i=1}^{N} a_i\\, \\kappa(x, x_i), \\qquad \\mathbf{a} = (\\mathbf{K}_{GP} + \\lambda_{rk} \\mathbf{I})^{-1} \\mathbf{y}',
+        tex: '\\hat{f}_\\theta(\\mathbf{x}) = \\sum_{i=1}^{N} \\theta_i\\, \\kappa(\\mathbf{x}, \\mathbf{x}_i), \\qquad \\theta = (\\mathbf{K}_{GP} + \\lambda_{rk} \\mathbf{I})^{-1} \\mathbf{y}',
         conn:
           '**Conexión:** "bounds, rampas, parabolicidad, estacionalidad" ↔ las restricciones sobre $f$; GPR con prior físico (formulación de Doumèche 2025 / PhI-GPR).',
       },
@@ -667,10 +667,10 @@ export const SLIDES = [
           '**Conexión:** "ARIMA/SARIMA/ETS" ↔ esta ecuación ($s$ = período estacional 24 h o 168 h); símbolos $s, d, D, c$ son **locales** de esta sección.',
       },
       {
-        heading: 'E2 · SVR con pérdida ε-insensible y ensambles aditivos',
-        tex: 'f(\\mathbf{x}) = \\langle \\mathbf{w}, \\varphi(\\mathbf{x}) \\rangle + b, \\qquad \\min_{\\mathbf{w}, b, \\boldsymbol{\\xi}, \\boldsymbol{\\xi}^*} \\frac{1}{2}\\lVert \\mathbf{w} \\rVert^2 + C_{svr} \\sum_{i=1}^{N} (\\xi_i + \\xi_i^*) \\;\\; \\text{s.a. } \\left| y_i - f(\\mathbf{x}_i) \\right| \\le \\varepsilon + \\xi_i^{(*)}',
+        heading: 'E2 · SVR con pérdida $\\varepsilon_{svr}$-insensible y ensambles aditivos',
+        tex: 'f_\\theta(\\mathbf{x}) = \\langle \\theta, \\varphi(\\mathbf{x}) \\rangle, \\qquad \\min_{\\theta, \\boldsymbol{\\xi}, \\boldsymbol{\\xi}^*} \\frac{1}{2}\\lVert \\theta \\rVert_2^2 + \\lambda_{svr} \\sum_{i=1}^{N} (\\xi_i + \\xi_i^*) \\;\\; \\text{s.a. } \\left| y_i - f_\\theta(\\mathbf{x}_i) \\right| \\le \\varepsilon_{svr} + \\xi_i^{(*)}',
         conn:
-          '**Conexión:** "SVR, RF, XGBoost, ANFIS — features duras tabulares" ↔ $f(\\mathbf{x})$ sobre $\\mathbf{x}$ tabular (rezagos, calendario, meteorología); ensambles aditivos para XGBoost/RF.',
+          '**Conexión:** "SVR, RF, XGBoost, ANFIS — features duras tabulares" ↔ $f_\\theta(\\mathbf{x})$ sobre $\\mathbf{x}$ tabular (rezagos, calendario, meteorología); ensambles aditivos para XGBoost/RF.',
       },
     ],
   },
@@ -682,25 +682,25 @@ export const SLIDES = [
     kicker: '5a · Matemática del Diagrama 3',
     title: 'E2 — Regresión lineal por mínimos cuadrados',
     bullets: [
-      'Gauss–Markov: con los supuestos clásicos, $\\hat{\\boldsymbol{\\beta}}_{OLS}$ es el mejor estimador **lineal** insesgado (BLUE).',
+      'Gauss–Markov: con los supuestos clásicos, $\\hat{\\theta}_{OLS}$ es el mejor estimador **lineal** insesgado (BLUE).',
       'Su dispersión es $\\sigma^{2}\\left(\\mathbf{D}^{\\top}\\mathbf{D}\\right)^{-1}$: el modelo lineal no sólo ajusta, también permite inferir.',
       'Se rompe con colinealidad o con $d > N$; de esas dos fallas nacen ridge y lasso.',
     ],
     equations: [
       {
         heading: 'E2 · El modelo lineal y sus supuestos',
-        tex: 'f_{\\boldsymbol{\\beta}}(\\mathbf{x}) = \\mathbf{x}^{\\top}\\boldsymbol{\\beta}, \\qquad \\mathbf{y} = \\mathbf{D}\\boldsymbol{\\beta} + \\boldsymbol{\\varepsilon}, \\qquad \\mathbb{E}[\\boldsymbol{\\varepsilon}] = \\mathbf{0}, \\ \\mathrm{Var}(\\boldsymbol{\\varepsilon}) = \\sigma^{2}\\mathbf{I}',
-        conn: '**Conexión:** el sesgo $\\beta_0$ va absorbido en $\\mathbf{x}_i$, así que $\\boldsymbol{\\beta} \\in \\mathbb{R}^{d}$; $\\mathbf{D} \\in \\mathbb{R}^{N \\times d}$ es la matriz de diseño (no la ventana $\\mathbf{X}$). Cada $\\beta_j$ es el **efecto marginal** de la variable $j$ con el resto fijo: de ahí la interpretabilidad del modelo lineal frente a las familias E3–E7. Los dos supuestos escritos —media cero y varianza constante— son los que usa Gauss–Markov.',
+        tex: 'f_{\\theta}(\\mathbf{x}) = \\mathbf{x}^{\\top}\\theta, \\qquad \\mathbf{y} = \\mathbf{D}\\theta + \\boldsymbol{\\varepsilon}, \\qquad \\mathbb{E}[\\boldsymbol{\\varepsilon}] = \\mathbf{0}, \\ \\mathrm{Var}(\\boldsymbol{\\varepsilon}) = \\sigma^{2}\\mathbf{I}',
+        conn: '**Conexión:** el sesgo $\\theta_0$ va absorbido en $\\mathbf{x}_i$, así que $\\theta \\in \\mathbb{R}^{d}$; $\\mathbf{D} \\in \\mathbb{R}^{N \\times d}$ es la matriz de diseño (no la ventana $\\mathbf{X}$). Cada $\\theta_j$ es el **efecto marginal** de la variable $j$ con el resto fijo: de ahí la interpretabilidad del modelo lineal frente a las familias E3–E7. Los dos supuestos escritos —media cero y varianza constante— son los que usa Gauss–Markov.',
       },
       {
         heading: 'E2 · El criterio: residuo cuadrático mínimo',
-        tex: '\\hat{\\boldsymbol{\\beta}} = \\arg\\min_{\\boldsymbol{\\beta}} \\sum_{i=1}^{N} \\left( y_i - \\mathbf{x}_i^{\\top}\\boldsymbol{\\beta} \\right)^{2}',
-        conn: '**Conexión:** $i$ numera muestras y no es tiempo, por eso va como subíndice y nunca con corchetes. El criterio tampoco es arbitrario: es la pérdida $\\mathcal{L}_{MSE}$ sin normalizar, equivalente a $\\arg\\min_{\\boldsymbol{\\beta}} \\lVert \\mathbf{y}-\\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}$, la misma que el resto del deck usa para comparar predicciones. Y sobrevive intacto cuando se le añade la penalización de ridge y lasso en las tres slides siguientes: lo único que cambia es el término que se suma.',
+        tex: '\\hat{\\theta} = \\arg\\min_{\\theta} \\sum_{i=1}^{N} \\left( y_i - \\mathbf{x}_i^{\\top}\\theta \\right)^{2}',
+        conn: '**Conexión:** $i$ numera muestras y no es tiempo, por eso va como subíndice y nunca con corchetes. El criterio tampoco es arbitrario: es la pérdida $\\mathcal{L}_{MSE}$ sin normalizar, equivalente a $\\arg\\min_{\\theta} \\lVert \\mathbf{y}-\\mathbf{D}\\theta \\rVert_2^{2}$, la misma que el resto del deck usa para comparar predicciones. Y sobrevive intacto cuando se le añade la penalización de ridge y lasso en las tres slides siguientes: lo único que cambia es el término que se suma.',
       },
       {
         heading: 'E2 · La solución: ecuación normal y proyección ortogonal',
-        tex: '\\hat{\\boldsymbol{\\beta}} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} \\right)^{-1}\\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\mathbf{H} = \\mathbf{D}\\left( \\mathbf{D}^{\\top}\\mathbf{D} \\right)^{-1}\\mathbf{D}^{\\top}',
-        conn: '**Conexión:** igualar a cero el gradiente $-2\\mathbf{D}^{\\top}(\\mathbf{y}-\\mathbf{D}\\boldsymbol{\\beta})$ da la ecuación normal $\\mathbf{D}^{\\top}\\mathbf{D}\\hat{\\boldsymbol{\\beta}} = \\mathbf{D}^{\\top}\\mathbf{y}$. $\\hat{\\mathbf{y}} = \\mathbf{H}\\mathbf{y}$, con $\\mathbf{H}$ la **matriz sombrero**, proyecta $\\mathbf{y}$ sobre el espacio columna de $\\mathbf{D}$: el residuo $\\mathbf{e} = \\mathbf{y}-\\hat{\\mathbf{y}}$ queda ortogonal a las columnas ($\\mathbf{D}^{\\top}\\mathbf{e} = \\mathbf{0}$) y se cumple Pitágoras, $\\lVert\\mathbf{y}\\rVert^{2} = \\lVert\\hat{\\mathbf{y}}\\rVert^{2} + \\lVert\\mathbf{e}\\rVert^{2}$. Solución única sii $\\mathrm{rango}(\\mathbf{D}) = d$.',
+        tex: '\\hat{\\theta} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} \\right)^{-1}\\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\mathbf{H} = \\mathbf{D}\\left( \\mathbf{D}^{\\top}\\mathbf{D} \\right)^{-1}\\mathbf{D}^{\\top}',
+        conn: '**Conexión:** igualar a cero el gradiente $-2\\mathbf{D}^{\\top}(\\mathbf{y}-\\mathbf{D}\\theta)$ da la ecuación normal $\\mathbf{D}^{\\top}\\mathbf{D}\\hat{\\theta} = \\mathbf{D}^{\\top}\\mathbf{y}$. $\\hat{\\mathbf{y}} = \\mathbf{H}\\mathbf{y}$, con $\\mathbf{H}$ la **matriz sombrero**, proyecta $\\mathbf{y}$ sobre el espacio columna de $\\mathbf{D}$: el residuo $\\mathbf{e} = \\mathbf{y}-\\hat{\\mathbf{y}}$ queda ortogonal a las columnas ($\\mathbf{D}^{\\top}\\mathbf{e} = \\mathbf{0}$) y se cumple Pitágoras, $\\lVert\\mathbf{y}\\rVert^{2} = \\lVert\\hat{\\mathbf{y}}\\rVert^{2} + \\lVert\\mathbf{e}\\rVert^{2}$. Solución única sii $\\mathrm{rango}(\\mathbf{D}) = d$.',
       },
     ],
     notes: '**Idea central:** mínimos cuadrados no elige el modelo, elige los coeficientes: es la proyección ortogonal de $\\mathbf{y}$ sobre lo que el modelo puede representar. Todo lo que sigue —verosimilitud, ridge, lasso— cambia el criterio o le añade un término, pero conserva esta geometría. Ojo con el vocabulario: $\\mathbf{e}$ es residuo (observable), $\\boldsymbol{\\varepsilon}$ es error (no observable), y $R^{2} = 1 - \\lVert\\mathbf{e}\\rVert_2^{2}/\\lVert\\mathbf{y}-\\bar{y}\\mathbf{1}\\rVert_2^{2}$ crece siempre al añadir variables, por eso se reporta el ajustado.',
@@ -720,21 +720,21 @@ export const SLIDES = [
     equations: [
       {
         heading: 'E2 · El modelo generativo y la verosimilitud',
-        tex: 'p(\\mathbf{y}\\mid\\mathbf{D},\\boldsymbol{\\beta},\\sigma^{2}) = \\left( 2\\pi\\sigma^{2} \\right)^{-N/2} \\exp\\!\\left( -\\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}/(2\\sigma^{2}) \\right)',
-        conn: '**Conexión:** el modelo generativo es $y_i = \\mathbf{x}_i^{\\top}\\boldsymbol{\\beta} + \\varepsilon_i$ con $\\varepsilon_i \\sim \\mathcal{N}(0,\\sigma^{2})$ **iid**, donde $\\varepsilon_i$ es el ruido **por muestra** (subíndice porque $i$ no es tiempo): no confundirlo con la innovación $\\varepsilon[t]$ de SARIMA, que sí va con corchete. El paso de «iid» al producto es todo lo que hace la verosimilitud: multiplica las densidades porque las muestras son independientes. Y al ser lineal-gaussiano, la densidad conjunta queda en **forma cerrada** — sin optimización numérica, a diferencia de E3–E7.',
+        tex: 'p(\\mathbf{y}\\mid\\mathbf{D},\\theta,\\sigma^{2}) = \\left( 2\\pi\\sigma^{2} \\right)^{-N/2} \\exp\\!\\left( -\\lVert \\mathbf{y} - \\mathbf{D}\\theta \\rVert_2^{2}/(2\\sigma^{2}) \\right)',
+        conn: '**Conexión:** el modelo generativo es $y_i = \\mathbf{x}_i^{\\top}\\theta + \\varepsilon_i$ con $\\varepsilon_i \\sim \\mathcal{N}(0,\\sigma^{2})$ **iid**, donde $\\varepsilon_i$ es el ruido **por muestra** (subíndice porque $i$ no es tiempo): no confundirlo con la innovación $\\varepsilon[t]$ de SARIMA, que sí va con corchete. El paso de «iid» al producto es todo lo que hace la verosimilitud: multiplica las densidades porque las muestras son independientes. Y al ser lineal-gaussiano, la densidad conjunta queda en **forma cerrada** — sin optimización numérica, a diferencia de E3–E7.',
       },
       {
         heading: 'E2 · Log-verosimilitud negativa: el puente con mínimos cuadrados',
-        tex: '-\\log p(\\mathbf{y}\\mid\\mathbf{D},\\boldsymbol{\\beta},\\sigma^{2}) = \\;\\propto\\; \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}',
-        conn: '**Conexión:** con $\\sigma^{2}$ fijo, ni la constante $\\frac{N}{2}\\log(2\\pi\\sigma^{2})$ ni el factor $\\frac{1}{2\\sigma^{2}}$ afectan al óptimo sobre $\\boldsymbol{\\beta}$: queda una **proporcionalidad** con el residuo cuadrático. Por tanto **maximizar la verosimilitud es minimizar el error cuadrático**: el criterio de mínimos cuadrados de la slide anterior no era una elección estética, es lo que produce suponer ruido gaussiano iid. Con otra distribución la equivalencia se rompe y la pérdida óptima puede no ser la cuadrática.',
+        tex: '-\\log p(\\mathbf{y}\\mid\\mathbf{D},\\theta,\\sigma^{2}) = \\;\\propto\\; \\lVert \\mathbf{y} - \\mathbf{D}\\theta \\rVert_2^{2}',
+        conn: '**Conexión:** con $\\sigma^{2}$ fijo, ni la constante $\\frac{N}{2}\\log(2\\pi\\sigma^{2})$ ni el factor $\\frac{1}{2\\sigma^{2}}$ afectan al óptimo sobre $\\theta$: queda una **proporcionalidad** con el residuo cuadrático. Por tanto **maximizar la verosimilitud es minimizar el error cuadrático**: el criterio de mínimos cuadrados de la slide anterior no era una elección estética, es lo que produce suponer ruido gaussiano iid. Con otra distribución la equivalencia se rompe y la pérdida óptima puede no ser la cuadrática.',
       },
       {
         heading: 'E2 · Los estimadores y su dispersión',
-        tex: '\\hat{\\boldsymbol{\\beta}} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} \\right)^{-1}\\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\hat{\\sigma}^{2}_{MLE} = \\frac{1}{N}\\lVert \\mathbf{y} - \\mathbf{D}\\hat{\\boldsymbol{\\beta}} \\rVert_2^{2}',
-        conn: '**Conexión:** el estimador de $\\boldsymbol{\\beta}$ coincide con OLS, y con él llega la **matriz de covarianza** $\\mathrm{Var}(\\hat{\\boldsymbol{\\beta}}) = \\sigma^{2}\\left(\\mathbf{D}^{\\top}\\mathbf{D}\\right)^{-1}$: de ahí salen los errores estándar, los contrastes $t$ y los intervalos de confianza. Cuidado con $\\hat{\\sigma}^{2}_{MLE}$: divide por $N$ y es **sesgado**; el insesgado divide por $N-d$. La verosimilitud no mejora el estimador puntual, le añade la incertidumbre.',
+        tex: '\\hat{\\theta} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} \\right)^{-1}\\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\hat{\\sigma}^{2}_{MLE} = \\frac{1}{N}\\lVert \\mathbf{y} - \\mathbf{D}\\hat{\\theta} \\rVert_2^{2}',
+        conn: '**Conexión:** el estimador de $\\theta$ coincide con OLS, y con él llega la **matriz de covarianza** $\\mathrm{Var}(\\hat{\\theta}) = \\sigma^{2}\\left(\\mathbf{D}^{\\top}\\mathbf{D}\\right)^{-1}$: de ahí salen los errores estándar, los contrastes $t$ y los intervalos de confianza. Cuidado con $\\hat{\\sigma}^{2}_{MLE}$: divide por $N$ y es **sesgado**; el insesgado divide por $N-d$. La verosimilitud no mejora el estimador puntual, le añade la incertidumbre.',
       },
     ],
-    notes: '**Idea central:** MLE no cambia a $\\hat{\\boldsymbol{\\beta}}$; justifica el criterio, da varianza e inferencia, y abre el punto de vista bayesiano. **Puente:** un prior sobre $\\boldsymbol{\\beta}$ más esta verosimilitud produce un estimador MAP —gaussiano da ridge, Laplace da lasso—; regularizar es declarar una creencia previa.',
+    notes: '**Idea central:** MLE no cambia a $\\hat{\\theta}$; justifica el criterio, da varianza e inferencia, y abre el punto de vista bayesiano. **Puente:** un prior sobre $\\theta$ más esta verosimilitud produce un estimador MAP —gaussiano da ridge, Laplace da lasso—; regularizar es declarar una creencia previa.',
   },
   {
     id: 'd3-reg-ridge',
@@ -746,23 +746,23 @@ export const SLIDES = [
     bullets: [
       'Añade un castigo cuadrático al ajuste: $\\ell_2$ contrae los coeficientes hacia cero **sin anularlos**.',
       'Gana cuando $\\mathbf{D}^{\\top}\\mathbf{D}$ está mal condicionada: la penalización vuelve el problema invertible.',
-      'Es el estimador **MAP** con prior gaussiano sobre $\\boldsymbol{\\beta}$: regularizar es imponer una creencia previa.',
+      'Es el estimador **MAP** con prior gaussiano sobre $\\theta$: regularizar es imponer una creencia previa.',
       'El precio es sesgo deliberado, y $\\lambda_{reg}$ se elige por validación cruzada.',
     ],
     equations: [
       {
         heading: 'E2 · El objetivo penalizado',
-        tex: '\\mathcal{J}_{ridge}(\\boldsymbol{\\beta}) = \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2} + \\lambda_{reg} \\lVert \\boldsymbol{\\beta} \\rVert_2^{2}',
-        conn: '**Conexión:** $\\hat{\\boldsymbol{\\beta}}_{ridge} = \\arg\\min_{\\boldsymbol{\\beta}} \\mathcal{J}_{ridge}(\\boldsymbol{\\beta})$. Aquí $\\lambda_{reg} \\ge 0$ es la fuerza de penalización y lleva símbolo propio: no es $\\lambda_{phys}$ (el peso físico de las puertas ① y ④) ni $\\lambda_{rk}$ (kernel ridge, familia F5). Con $\\lambda_{reg} = 0$ se recupera OLS exactamente. La forma es idéntica a la pérdida compuesta $\\mathcal{L}_{MSE} + \\lambda_{phys}\\mathcal{L}_{phys}$: cambia qué se castiga, no la estructura. (Hoerl & Kennard, 1970.)',
+        tex: '\\mathcal{L}_{ridge}(\\theta) = \\lVert \\mathbf{y} - \\mathbf{D}\\theta \\rVert_2^{2} + \\lambda_{reg} \\lVert \\theta \\rVert_2^{2}',
+        conn: '**Conexión:** $\\hat{\\theta}_{ridge} = \\arg\\min_{\\theta} \\mathcal{L}_{ridge}(\\theta)$. Aquí $\\lambda_{reg} \\ge 0$ es la fuerza de penalización y lleva símbolo propio: no es $\\lambda_{phys}$ (el peso físico de las puertas ① y ④) ni $\\lambda_{rk}$ (kernel ridge, familia F5). Con $\\lambda_{reg} = 0$ se recupera OLS exactamente. La forma es idéntica a la pérdida compuesta $\\mathcal{L}_{MSE} + \\lambda_{phys}\\mathcal{L}_{phys}$: cambia qué se castiga, no la estructura. (Hoerl & Kennard, 1970.)',
       },
       {
         heading: 'E2 · Solución cerrada y buen planteamiento',
-        tex: '\\hat{\\boldsymbol{\\beta}}_{ridge} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} + \\lambda_{reg}\\mathbf{I} \\right)^{-1} \\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\mathbf{D}^{\\top}\\mathbf{D} + \\lambda_{reg}\\mathbf{I} \\succ 0',
+        tex: '\\hat{\\theta}_{ridge} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} + \\lambda_{reg}\\mathbf{I} \\right)^{-1} \\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\mathbf{D}^{\\top}\\mathbf{D} + \\lambda_{reg}\\mathbf{I} \\succ 0',
         conn: '**Conexión:** para todo $\\lambda_{reg} > 0$, sumar $\\lambda_{reg}\\mathbf{I}$ desplaza todos los autovalores a $\\mu_k + \\lambda_{reg} > 0$, así que la matriz es definida positiva —y por tanto invertible— **siempre**. El problema queda bien puesto incluso en los dos casos que dejan a OLS sin solución única: colinealidad perfecta y $d > N$.',
       },
       {
         heading: 'E2 · Contracción espectral, vía la SVD de $\\mathbf{D}$',
-        tex: '\\hat{\\boldsymbol{\\beta}}_{ridge} = \\sum_k \\kappa_k\\, \\mathbf{v}_k \\mathbf{u}_k^{\\top} \\mathbf{y}, \\qquad \\mathbf{D} = \\mathbf{U}\\mathbf{S}\\mathbf{V}^{\\top}',
+        tex: '\\hat{\\theta}_{ridge} = \\sum_k \\kappa_k\\, \\mathbf{v}_k \\mathbf{u}_k^{\\top} \\mathbf{y}, \\qquad \\mathbf{D} = \\mathbf{U}\\mathbf{S}\\mathbf{V}^{\\top}',
         conn: '**Conexión:** con la SVD $\\mathbf{D} = \\mathbf{U}\\mathbf{S}\\mathbf{V}^{\\top}$, cada dirección singular $k$ se contrae por el factor $\\kappa_k = s_k^{2}/(s_k^{2}+\\lambda_{reg}) \\in (0,1)$, que **nunca llega a cero**. De ahí las dos propiedades que definen a ridge: ninguna dirección se elimina, y la contracción es más fuerte precisamente donde $s_k$ es pequeño, es decir, en las direcciones peor condicionadas. La suma de esos factores es el número efectivo de parámetros $\\mathrm{df}(\\lambda_{reg})$, que decrece con $\\lambda_{reg}$.',
       },
     ],
@@ -783,17 +783,17 @@ export const SLIDES = [
     equations: [
       {
         heading: 'E2 · El objetivo penalizado y su forma restringida',
-        tex: '\\mathcal{J}_{lasso}(\\boldsymbol{\\beta}) = \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2} + \\lambda_{reg} \\lVert \\boldsymbol{\\beta} \\rVert_1',
-        conn: '**Conexión:** $\\hat{\\boldsymbol{\\beta}}_{lasso} = \\arg\\min_{\\boldsymbol{\\beta}} \\mathcal{J}_{lasso}(\\boldsymbol{\\beta})$. Misma familia que ridge, con $\\lVert \\boldsymbol{\\beta} \\rVert_1 = \\sum_j |\\beta_j|$; pero la norma $\\ell_1$ no es diferenciable en el origen y por eso **no tiene solución cerrada general**. $\\lambda_{reg}$ tiene aquí una lectura distinta y directamente interpretable: es el umbral por debajo del cual un coeficiente se anula, no una simple contracción. Su forma restringida equivalente es $\\min \\lVert \\mathbf{y}-\\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}$ sujeto a $\\lVert \\boldsymbol{\\beta} \\rVert_1 \\le c$, con $c$ decreciente en $\\lambda_{reg}$. (Tibshirani, 1996.)',
+        tex: '\\mathcal{L}_{lasso}(\\theta) = \\lVert \\mathbf{y} - \\mathbf{D}\\theta \\rVert_2^{2} + \\lambda_{reg} \\lVert \\theta \\rVert_1',
+        conn: '**Conexión:** $\\hat{\\theta}_{lasso} = \\arg\\min_{\\theta} \\mathcal{L}_{lasso}(\\theta)$. Misma familia que ridge, con $\\lVert \\theta \\rVert_1 = \\sum_j |\\theta_j|$; pero la norma $\\ell_1$ no es diferenciable en el origen y por eso **no tiene solución cerrada general**. $\\lambda_{reg}$ tiene aquí una lectura distinta y directamente interpretable: es el umbral por debajo del cual un coeficiente se anula, no una simple contracción. Su forma restringida equivalente es $\\min \\lVert \\mathbf{y}-\\mathbf{D}\\theta \\rVert_2^{2}$ sujeto a $\\lVert \\theta \\rVert_1 \\le c$, con $c$ decreciente en $\\lambda_{reg}$. (Tibshirani, 1996.)',
       },
       {
         heading: 'E2 · Condiciones KKT: por qué anula coeficientes',
-        tex: '\\mathbf{d}_j^{\\top}\\left( \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\right) = \\lambda_{reg}\\,\\mathrm{sign}(\\beta_j) \\ \\text{si } \\beta_j \\neq 0, \\qquad \\left| \\mathbf{d}_j^{\\top}\\left( \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\right) \\right| \\le \\lambda_{reg} \\ \\text{si } \\beta_j = 0',
+        tex: '\\mathbf{d}_j^{\\top}\\left( \\mathbf{y} - \\mathbf{D}\\theta \\right) = \\lambda_{reg}\\,\\mathrm{sign}(\\theta_j) \\ \\text{si } \\theta_j \\neq 0, \\qquad \\left| \\mathbf{d}_j^{\\top}\\left( \\mathbf{y} - \\mathbf{D}\\theta \\right) \\right| \\le \\lambda_{reg} \\ \\text{si } \\theta_j = 0',
         conn: '**Conexión:** $j = 1 \\dots d$ indexa variables, ni muestras ni tiempo. Mientras la correlación de la variable $j$ con el residuo no supere $\\lambda_{reg}$ en valor absoluto, su coeficiente queda **exactamente** en cero — así es como $\\ell_1$ selecciona. Con diseño ortonormal el sistema se resuelve a mano y aparece el operador de umbral suave de la ecuación siguiente.',
       },
       {
         heading: 'E2 · Umbral suave (ortonormal) y geometría del politopo',
-        tex: '\\hat{\\beta}^{lasso}_j = \\mathrm{sign}(\\hat{\\beta}^{OLS}_j)\\max\\left( | \\hat{\\beta}^{OLS}_j | - \\lambda_{reg},\\ 0 \\right)',
+        tex: '\\hat{\\theta}^{lasso}_j = \\mathrm{sign}(\\hat{\\theta}^{OLS}_j)\\max\\left( | \\hat{\\theta}^{OLS}_j | - \\lambda_{reg},\\ 0 \\right)',
         conn: '**Conexión:** $(\\cdot)_{+} = \\max(\\cdot, 0)$; la forma cerrada vale con diseño ortonormal, y en general se resuelve por programación convexa (descenso por coordenadas, LARS). La restricción $\\ell_1$ es un politopo —un rombo en dos dimensiones— con **vértices sobre los ejes**, y el óptimo cae en un vértice: ahí la mayoría de las coordenadas son cero. La bola $\\ell_2$ de ridge, al ser lisa, sólo contrae. Ésa es toda la diferencia entre **seleccionar** y **repartir**.',
       },
     ],
@@ -1026,13 +1026,13 @@ export const SLIDES = [
     kicker: '6 · Matemática del Diagrama 5',
     title: 'Lectura matemática de las filas ①–④',
     bullets: [
-      '**① vs escasez:** $\\lambda_{phys}\\,\\mathcal{L}_{phys}$ restringe las funciones admisibles a las que casi satisfacen $\\mathcal{N}[u] = 0$ → aumenta la muestra efectiva; la ganancia aparece "EXACTAMENTE con pocos datos" (Loffa 2025).',
+      '**① vs escasez:** $\\lambda_{phys}\\,\\mathcal{L}_{phys}$ restringe las funciones admisibles a las que casi satisfacen $\\mathcal{F}[u] = 0$ → aumenta la muestra efectiva; la ganancia aparece "EXACTAMENTE con pocos datos" (Loffa 2025).',
       '**② y ④:** con $\\hat{y} = f_{fis}(\\mathbf{x}_{met}) + g_\\theta(\\mathbf{x}, \\mathbf{c}_{met})$ cada término es inspeccionable, y fuera del dominio $g_\\theta$ puede fallar pero $f_{fis}$ sigue correcta (error acotado por el componente físico).',
     ],
     equations: [
       {
         heading: '③ vs estados no observables: posterior del GP con prior físico',
-        tex: '\\bar{f}(x) = \\mathbf{k}(x)^\\top (\\mathbf{K}_{GP} + \\sigma_n^2 \\mathbf{I})^{-1} \\mathbf{y}',
+        tex: '\\bar{f}(\\mathbf{x}) = \\mathbf{k}(\\mathbf{x})^\\top (\\mathbf{K}_{GP} + \\sigma_n^2 \\mathbf{I})^{-1} \\mathbf{y}',
         conn:
           '**Conexión:** puerta ③ — con prior físico $f \\sim \\mathcal{GP}(m_{fis}, \\kappa_{fis})$ (PhI-GPR), la posterior reconstruye estados no medidos si el modelo dinámico está bien especificado.',
       },

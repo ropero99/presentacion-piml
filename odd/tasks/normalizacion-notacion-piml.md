@@ -3,6 +3,9 @@
 **Estado:** cerrado y verificado (rama `feat/presentacion-notacion-regresores`)
 **Corrección posterior:** ver **H6** al final del documento — esta unidad introdujo una regresión
 visual en el diagrama de la puerta ③, ya corregida.
+**Complemento:** la política de **símbolos** (un solo nombre por concepto) vive en
+`odd/tasks/unificacion-simbolos-piml.md` (S1–S9). Este documento fija la política **temporal**
+(N1–N11); juntos son la política notacional completa del deck.
 **Razón:** revisor de la tesis exige (a) que toda magnitud dependiente del tiempo lo muestre de forma
 explícita en todo el documento, (b) `()` para tiempo continuo y `[]` para tiempo discreto, de forma
 consistente, sin que las funciones de costo queden ambiguas, y (c) simbología homogénea.

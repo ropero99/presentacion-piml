@@ -264,7 +264,7 @@ export function buildMrDiagram({ entry }) {
     id: 'theta',
     type: 'label',
     position: { x: thetaX - 52, y: thetaY },
-    data: { label: '$\\theta = \\{W_\\ell, b_\\ell\\}_{\\ell=1}^{L}$', variant: 'theta', color: 'var(--fg)' },
+    data: { label: '$\\theta = \\{\\mathbf{W}_\\ell, \\mathbf{b}_\\ell\\}_{\\ell=1}^{L}$', variant: 'theta', color: 'var(--fg)' },
   });
 
   // ── Cajas punteadas de rol (columna derecha) ──
@@ -320,7 +320,7 @@ export function buildMrDiagram({ entry }) {
     type: 'deck',
     position: fisPos,
     sourcePosition: 'right',
-    data: { color: NAVY, title: 'Física $\\mathcal{N}[u] = 0$', lines: ['$m\\,\\ddot{x}(t) + c\\,\\dot{x}(t) + k\\,x(t) = 0$'] },
+    data: { color: NAVY, title: 'Física $\\mathcal{F}[u] = 0$', lines: ['$m\\,\\ddot{x}(t) + c\\,\\dot{x}(t) + k\\,x(t) = 0$'] },
   });
 
   // ── Optimización (derecha de las cajas de rol) ──
@@ -544,7 +544,7 @@ export function buildHnnDiagram() {
   edges.push(...neuronMesh(hnnHiddenIds[1], ['hnn-out']));
   nodes.push(layerLabel('hnn-cap', 'La red aprende el Hamiltoniano', 600, 66));
   nodes.push(layerLabel('hnn-sal', 'salida única: $H_\\theta(q(t), p(t))$', 770, 308));
-  nodes.push(layerLabel('hnn-theta', '$\\theta = \\{W_\\ell, b_\\ell\\}_{\\ell=1}^{L}$', 680, 428, 'theta'));
+  nodes.push(layerLabel('hnn-theta', '$\\theta = \\{\\mathbf{W}_\\ell, \\mathbf{b}_\\ell\\}_{\\ell=1}^{L}$', 680, 428, 'theta'));
 
   // 6 · Autodiff (dentro del panel de la física)
   // R15: derivadas parciales marcadas `$…$` (tipografado en DeckNode).
