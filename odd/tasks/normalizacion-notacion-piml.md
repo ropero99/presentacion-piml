@@ -1,6 +1,8 @@
 # Feature: Normalización notacional — tiempo continuo/discreto y homogeneidad (PIML deck)
 
 **Estado:** cerrado y verificado (rama `feat/presentacion-notacion-regresores`)
+**Corrección posterior:** ver **H6** al final del documento — esta unidad introdujo una regresión
+visual en el diagrama de la puerta ③, ya corregida.
 **Razón:** revisor de la tesis exige (a) que toda magnitud dependiente del tiempo lo muestre de forma
 explícita en todo el documento, (b) `()` para tiempo continuo y `[]` para tiempo discreto, de forma
 consistente, sin que las funciones de costo queden ambiguas, y (c) simbología homogénea.
@@ -76,6 +78,13 @@ In the scalar Legendre product drop the transpose: `\mathbf{p}(t)^{\top}\dot{\ma
 **N10 — Only *signals* lose their `_t` subscript.**
 `\mathcal{L}_{total}`, `\Omega_T`, `\mathcal{L}_{EC}`, `t_i`, `z_{bot}`, `dW_t` (SDE increment) and any
 label subscript are untouched. `\sum_t` becomes `\sum_t` with discrete `[t]` objects inside.
+
+**N11 — Diagram boxes have content-driven width and fixed positions, so text edits can
+close a gap.** The `deck` node boxes size themselves to their content, but `mrPipeline.js`
+positions them at hard-coded `x` values. Adding `(t)` extended the `mr`/`fis` MR equation from
+~165 to ~187 px of width and closed the 24 px gap to `datos`/`feat` (2.5 px of real overlap on
+slides 6 and 14). Rule: after editing the text of a diagram box, re-measure node overlaps — do
+not assume the layout absorbs it.
 
 ---
 
@@ -196,3 +205,29 @@ An N4-compliant run therefore expects exactly **1** match on that grep and 0 on 
 ## 4. Pending (out of scope, reported to the user)
 - `GUION.md` still describes a 24-slide structure while the deck has 36: slide numbering and titles in
   the script do not match the current deck. Requires a separate re-authoring pass.
+
+---
+
+## 5. H6 — Regresión de layout introducida por T2/T3 (corregida)
+
+**Qué pasó.** El diagrama `mrPipeline.js` posiciona las cajas con coordenadas `x` fijas, pero el ancho
+de cada caja lo determina su contenido. Al reescribir la EDO del masa-resorte con argumento temporal
+explícito (`m\,\ddot{x}(t) + c\,\dot{x}(t) + k\,x(t) = 0` en lugar de la versión sin `(t)`), las cajas
+`mr` y `fis` crecieron de ~165 a ~187 px y cerraron el hueco de 24 px que las separaba de
+`datos`/`feat`, que estaban en `x: 185`.
+
+**Medición.** Detector determinista de solapamiento de nodos ReactFlow, sobre las 38 slides:
+
+| Estado | `mr × datos` | `fis × feat` |
+| --- | --- | --- |
+| `main` (`e2ea076`, previo a T2/T3) | hueco de 24 px | hueco de 24 px |
+| `ecef378` (esta unidad) | **solape 2,4–2,5 px** (slides 6 y 14) | **solape 2,5 px** (slide 14) |
+
+**Corrección.** Se ancló la columna izquierda en `LEFT_COL_X = -25` en `src/deck/diagrams/mrPipeline.js`,
+lo que reabre ~23 px de hueco sin tocar texto ni el resto de la geometría. `datos` no puede moverse a la
+derecha (sólo quedan ~3 px hasta la neurona de entrada en `x: 360`) y la fórmula MathJax inline no se
+parte, así que encoger la caja tampoco era viable. Tras la corrección: **0 solapamientos** en las 38
+slides (salvo el panel de fondo `hnn-panel-fisica`, que es un contenedor intencional con `zIndex: 0`
+idéntico en `main`).
+
+**Lección.** Ver N11.

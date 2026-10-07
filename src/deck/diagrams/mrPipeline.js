@@ -115,10 +115,17 @@ export function buildMrDiagram({ entry }) {
   const edges = [];
 
   // ── Sistema MR y datos (esqueleto aprobado, compacto) ──
+  // La EDO con argumento temporal explícito ($\ddot{x}(t)$, $\dot{x}(t)$,
+  // $x(t)$) ensancha la caja 'mr' de ~165 a ~187 px. Con 'mr' en x=0 y
+  // 'datos' en x=185 los bordes se tocaban (2.5 px de solape). La columna
+  // izquierda se ancla en LEFT_COL_X para reabrir ~23 px de hueco sin tocar
+  // el texto ni el resto de la geometría. 'datos' NO puede moverse a la
+  // derecha: sólo quedan ~3 px hasta la neurona de entrada (x=360).
+  const LEFT_COL_X = -25;
   nodes.push({
     id: 'mr',
     type: 'deck',
-    position: { x: 0, y: 170 },
+    position: { x: LEFT_COL_X, y: 170 },
     data: {
       color: NAVY,
       title: 'Sistema MR',
@@ -307,7 +314,7 @@ export function buildMrDiagram({ entry }) {
       ? { x: 640, y: 440 } // bajo la salida: flecha corta a la caja autodiff
       : entry === 'modelo'
         ? { x: 240, y: 415 } // bajo la red: flecha corta a la estructura
-        : { x: 0, y: 500 }; // a la izquierda de feat: arista horizontal a t-fis
+        : { x: LEFT_COL_X, y: 500 }; // a la izquierda de feat: arista horizontal a t-fis
   nodes.push({
     id: 'fis',
     type: 'deck',
