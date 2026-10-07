@@ -675,75 +675,132 @@ export const SLIDES = [
     ],
   },
   {
-    id: 'd3-reg-1',
+    id: 'd3-reg-ols',
     module: 'd3',
     tone: 'orange',
     kind: 'wide',
     kicker: '5a · Matemática del Diagrama 3',
-    title: 'E2 — Regresores base (I): mínimos cuadrados, verosimilitud, ridge y lasso',
+    title: 'E2 — Regresión lineal por mínimos cuadrados',
+    bullets: [
+      'Gauss–Markov: con los supuestos clásicos, $\\hat{\\boldsymbol{\\beta}}_{OLS}$ es el mejor estimador **lineal** insesgado (BLUE).',
+      'Su dispersión es $\\sigma^{2}\\left(\\mathbf{D}^{\\top}\\mathbf{D}\\right)^{-1}$: el modelo lineal no sólo ajusta, también permite inferir.',
+      'Se rompe con colinealidad o con $d > N$; de esas dos fallas nacen ridge y lasso.',
+    ],
     equations: [
       {
-        heading: 'E2 · Mínimos cuadrados ordinarios (OLS)',
-        tex: '\\hat{\\boldsymbol{\\beta}}_{OLS} = \\arg\\min_{\\boldsymbol{\\beta}} \\sum_{i=1}^{N} \\left( y_i - \\mathbf{x}_i^{\\top} \\boldsymbol{\\beta} \\right)^{2} = \\arg\\min_{\\boldsymbol{\\beta}} \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}',
-        conn:
-          '**Conexión:** $N$ muestras $(\\mathbf{x}_i, y_i)$ con $\\mathbf{x}_i \\in \\mathbb{R}^{d}$ features duras; **el índice $i$ numera muestras, no tiempo** (subíndice, como en la SVR anterior). $\\mathbf{D} \\in \\mathbb{R}^{N \\times d}$ es la matriz de diseño (local, no es la ventana $\\mathbf{X}$); el sesgo $\\beta_0$ se absorbe con un 1.',
+        heading: 'E2 · El modelo lineal y sus supuestos',
+        tex: 'f_{\\boldsymbol{\\beta}}(\\mathbf{x}) = \\mathbf{x}^{\\top}\\boldsymbol{\\beta}, \\qquad \\mathbf{y} = \\mathbf{D}\\boldsymbol{\\beta} + \\boldsymbol{\\varepsilon}, \\qquad \\mathbb{E}[\\boldsymbol{\\varepsilon}] = \\mathbf{0}, \\ \\mathrm{Var}(\\boldsymbol{\\varepsilon}) = \\sigma^{2}\\mathbf{I}',
+        conn: '**Conexión:** el sesgo $\\beta_0$ va absorbido en $\\mathbf{x}_i$, así que $\\boldsymbol{\\beta} \\in \\mathbb{R}^{d}$; $\\mathbf{D} \\in \\mathbb{R}^{N \\times d}$ es la matriz de diseño (no la ventana $\\mathbf{X}$). Cada $\\beta_j$ es el **efecto marginal** de la variable $j$ con el resto fijo: de ahí la interpretabilidad del modelo lineal frente a las familias E3–E7. Los dos supuestos escritos —media cero y varianza constante— son los que usa Gauss–Markov.',
       },
       {
-        heading: 'E2 · Máxima verosimilitud (MLE) con ruido gaussiano',
-        tex: 'y_i = \\mathbf{x}_i^{\\top}\\boldsymbol{\\beta} + \\varepsilon_i, \\qquad -\\log p(\\mathbf{y} \\mid \\mathbf{D}, \\boldsymbol{\\beta}, \\sigma^{2}) = \\frac{N}{2}\\log\\!\\left( 2\\pi\\sigma^{2} \\right) + \\frac{1}{2\\sigma^{2}} \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}',
-        conn:
-          '**Conexión:** $\\varepsilon_i \\sim \\mathcal{N}(0,\\sigma^{2})$ es el ruido **por muestra** (subíndice), no la innovación $\\varepsilon[t]$ de SARIMA. Los dos primeros términos de $-\\log p$ no dependen de $\\boldsymbol{\\beta}$: al optimizar desaparecen, así que **bajo ruido gaussiano iid MLE y OLS dan el mismo estimador**.',
+        heading: 'E2 · El criterio: residuo cuadrático mínimo',
+        tex: '\\hat{\\boldsymbol{\\beta}} = \\arg\\min_{\\boldsymbol{\\beta}} \\sum_{i=1}^{N} \\left( y_i - \\mathbf{x}_i^{\\top}\\boldsymbol{\\beta} \\right)^{2}',
+        conn: '**Conexión:** $i$ numera muestras y no es tiempo, por eso va como subíndice y nunca con corchetes. El criterio tampoco es arbitrario: es la pérdida $\\mathcal{L}_{MSE}$ sin normalizar, equivalente a $\\arg\\min_{\\boldsymbol{\\beta}} \\lVert \\mathbf{y}-\\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}$, la misma que el resto del deck usa para comparar predicciones. Y sobrevive intacto cuando se le añade la penalización de ridge y lasso en las tres slides siguientes: lo único que cambia es el término que se suma.',
       },
       {
-        heading: 'E2 · Ridge ($\\ell_2$): penalización cuadrática',
-        tex: '\\hat{\\boldsymbol{\\beta}}_{ridge} = \\arg\\min_{\\boldsymbol{\\beta}} \\left\\{ \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2} + \\lambda_{reg} \\lVert \\boldsymbol{\\beta} \\rVert_2^{2} \\right\\}, \\qquad \\lVert \\boldsymbol{\\beta} \\rVert_2^{2} = \\sum_{j=1}^{d} \\beta_j^{2}',
-        conn:
-          '**Conexión:** $\\lambda_{reg} \\ge 0$ es la fuerza de penalización, con símbolo propio: no es $\\lambda_{phys}$ ni $\\lambda_{rk}$. El término $\\ell_2$ contrae **sin anular**, y es el análogo lineal de la penalización de la puerta ①, $\\lambda_{phys}\\,\\mathcal{L}_{phys}$; con $\\lambda_{reg} = 0$ se recupera OLS.',
-      },
-      {
-        heading: 'E2 · Lasso ($\\ell_1$): penalización en valor absoluto',
-        tex: '\\hat{\\boldsymbol{\\beta}}_{lasso} = \\arg\\min_{\\boldsymbol{\\beta}} \\left\\{ \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2} + \\lambda_{reg} \\lVert \\boldsymbol{\\beta} \\rVert_1 \\right\\}, \\qquad \\lVert \\boldsymbol{\\beta} \\rVert_1 = \\sum_{j=1}^{d} \\left| \\beta_j \\right|',
-        conn:
-          '**Conexión:** misma familia que ridge, pero $\\ell_1$ cambia contraer por **seleccionar**: anula coeficientes exactamente y deja un modelo esparso, que es lo que resuelve la selección de variables sobre features correlacionadas. Con ambas normas es la red elástica (Zou & Hastie, 2005).',
+        heading: 'E2 · La solución: ecuación normal y proyección ortogonal',
+        tex: '\\hat{\\boldsymbol{\\beta}} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} \\right)^{-1}\\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\mathbf{H} = \\mathbf{D}\\left( \\mathbf{D}^{\\top}\\mathbf{D} \\right)^{-1}\\mathbf{D}^{\\top}',
+        conn: '**Conexión:** igualar a cero el gradiente $-2\\mathbf{D}^{\\top}(\\mathbf{y}-\\mathbf{D}\\boldsymbol{\\beta})$ da la ecuación normal $\\mathbf{D}^{\\top}\\mathbf{D}\\hat{\\boldsymbol{\\beta}} = \\mathbf{D}^{\\top}\\mathbf{y}$. $\\hat{\\mathbf{y}} = \\mathbf{H}\\mathbf{y}$, con $\\mathbf{H}$ la **matriz sombrero**, proyecta $\\mathbf{y}$ sobre el espacio columna de $\\mathbf{D}$: el residuo $\\mathbf{e} = \\mathbf{y}-\\hat{\\mathbf{y}}$ queda ortogonal a las columnas ($\\mathbf{D}^{\\top}\\mathbf{e} = \\mathbf{0}$) y se cumple Pitágoras, $\\lVert\\mathbf{y}\\rVert^{2} = \\lVert\\hat{\\mathbf{y}}\\rVert^{2} + \\lVert\\mathbf{e}\\rVert^{2}$. Solución única sii $\\mathrm{rango}(\\mathbf{D}) = d$.',
       },
     ],
+    notes: '**Idea central:** mínimos cuadrados no elige el modelo, elige los coeficientes: es la proyección ortogonal de $\\mathbf{y}$ sobre lo que el modelo puede representar. Todo lo que sigue —verosimilitud, ridge, lasso— cambia el criterio o le añade un término, pero conserva esta geometría. Ojo con el vocabulario: $\\mathbf{e}$ es residuo (observable), $\\boldsymbol{\\varepsilon}$ es error (no observable), y $R^{2} = 1 - \\lVert\\mathbf{e}\\rVert_2^{2}/\\lVert\\mathbf{y}-\\bar{y}\\mathbf{1}\\rVert_2^{2}$ crece siempre al añadir variables, por eso se reporta el ajustado.',
   },
   {
-    id: 'd3-reg-2',
+    id: 'd3-reg-mle',
     module: 'd3',
     tone: 'orange',
     kind: 'wide',
     kicker: '5a · Matemática del Diagrama 3',
-    title: 'E2 — Regresores base (II): solución cerrada y lectura geométrica',
+    title: 'E2 — Máxima verosimilitud con ruido gaussiano',
+    bullets: [
+      'La verosimilitud convierte un supuesto sobre el **ruido** en un criterio de ajuste.',
+      'Añade dos cosas: la varianza $\\hat{\\sigma}^{2}$ —y con ella la inferencia— y la lectura bayesiana de ridge y lasso.',
+      'No valida la linealidad del modelo: sólo describe el error.',
+    ],
     equations: [
       {
-        heading: 'E2 · OLS — ecuación normal y condición de rango',
-        tex: '\\hat{\\boldsymbol{\\beta}}_{OLS} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} \\right)^{-1} \\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\text{solución única} \\iff \\mathrm{rango}(\\mathbf{D}) = d',
-        conn:
-          '**Conexión:** de anular el gradiente de OLS, $-2\\mathbf{D}^{\\top}(\\mathbf{y}-\\mathbf{D}\\boldsymbol{\\beta})$. Hay solución única si el rango de $\\mathbf{D}$ es completo; con colinealidad, o si $d > N$, $\\mathbf{D}^{\\top}\\mathbf{D}$ es singular: la patología que corrigen ridge y lasso.',
+        heading: 'E2 · El modelo generativo y la verosimilitud',
+        tex: 'p(\\mathbf{y}\\mid\\mathbf{D},\\boldsymbol{\\beta},\\sigma^{2}) = \\left( 2\\pi\\sigma^{2} \\right)^{-N/2} \\exp\\!\\left( -\\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}/(2\\sigma^{2}) \\right)',
+        conn: '**Conexión:** el modelo generativo es $y_i = \\mathbf{x}_i^{\\top}\\boldsymbol{\\beta} + \\varepsilon_i$ con $\\varepsilon_i \\sim \\mathcal{N}(0,\\sigma^{2})$ **iid**, donde $\\varepsilon_i$ es el ruido **por muestra** (subíndice porque $i$ no es tiempo): no confundirlo con la innovación $\\varepsilon[t]$ de SARIMA, que sí va con corchete. El paso de «iid» al producto es todo lo que hace la verosimilitud: multiplica las densidades porque las muestras son independientes. Y al ser lineal-gaussiano, la densidad conjunta queda en **forma cerrada** — sin optimización numérica, a diferencia de E3–E7.',
       },
       {
-        heading: 'E2 · MLE — equivalencia con OLS y estimación de la varianza',
-        tex: '\\hat{\\boldsymbol{\\beta}}_{MLE} = \\hat{\\boldsymbol{\\beta}}_{OLS}, \\qquad \\hat{\\sigma}^{2}_{MLE} = \\frac{1}{N} \\lVert \\mathbf{y} - \\mathbf{D}\\hat{\\boldsymbol{\\beta}}_{OLS} \\rVert_2^{2}',
-        conn:
-          '**Conexión:** la equivalencia, explícita: maximizar la verosimilitud **no cambia** el estimador de $\\boldsymbol{\\beta}$, sólo justifica el error cuadrático y añade la varianza (errores estándar, contrastes, intervalos). Vale para ruido gaussiano iid homocedástico; con otro ruido se rompe.',
+        heading: 'E2 · Log-verosimilitud negativa: el puente con mínimos cuadrados',
+        tex: '-\\log p(\\mathbf{y}\\mid\\mathbf{D},\\boldsymbol{\\beta},\\sigma^{2}) = \\;\\propto\\; \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}',
+        conn: '**Conexión:** con $\\sigma^{2}$ fijo, ni la constante $\\frac{N}{2}\\log(2\\pi\\sigma^{2})$ ni el factor $\\frac{1}{2\\sigma^{2}}$ afectan al óptimo sobre $\\boldsymbol{\\beta}$: queda una **proporcionalidad** con el residuo cuadrático. Por tanto **maximizar la verosimilitud es minimizar el error cuadrático**: el criterio de mínimos cuadrados de la slide anterior no era una elección estética, es lo que produce suponer ruido gaussiano iid. Con otra distribución la equivalencia se rompe y la pérdida óptima puede no ser la cuadrática.',
       },
       {
-        heading: 'E2 · Ridge — solución cerrada y contracción',
-        tex: '\\hat{\\boldsymbol{\\beta}}_{ridge} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} + \\lambda_{reg}\\mathbf{I} \\right)^{-1} \\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\mathbf{D}^{\\top}\\mathbf{D} + \\lambda_{reg}\\mathbf{I} \\succ 0 \\;\\; \\forall\\, \\lambda_{reg} > 0',
-        conn:
-          '**Conexión:** $\\lambda_{reg}\\mathbf{I}$ vuelve la matriz definida positiva y siempre invertible: el problema queda bien puesto aun con colinealidad o $d > N$. El factor de contracción por valor singular es $s_k^{2}/(s_k^{2}+\\lambda_{reg})$, **nunca nulo**: ridge reparte el peso entre variables correlacionadas, no las descarta.',
+        heading: 'E2 · Los estimadores y su dispersión',
+        tex: '\\hat{\\boldsymbol{\\beta}} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} \\right)^{-1}\\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\hat{\\sigma}^{2}_{MLE} = \\frac{1}{N}\\lVert \\mathbf{y} - \\mathbf{D}\\hat{\\boldsymbol{\\beta}} \\rVert_2^{2}',
+        conn: '**Conexión:** el estimador de $\\boldsymbol{\\beta}$ coincide con OLS, y con él llega la **matriz de covarianza** $\\mathrm{Var}(\\hat{\\boldsymbol{\\beta}}) = \\sigma^{2}\\left(\\mathbf{D}^{\\top}\\mathbf{D}\\right)^{-1}$: de ahí salen los errores estándar, los contrastes $t$ y los intervalos de confianza. Cuidado con $\\hat{\\sigma}^{2}_{MLE}$: divide por $N$ y es **sesgado**; el insesgado divide por $N-d$. La verosimilitud no mejora el estimador puntual, le añade la incertidumbre.',
+      },
+    ],
+    notes: '**Idea central:** MLE no cambia a $\\hat{\\boldsymbol{\\beta}}$; justifica el criterio, da varianza e inferencia, y abre el punto de vista bayesiano. **Puente:** un prior sobre $\\boldsymbol{\\beta}$ más esta verosimilitud produce un estimador MAP —gaussiano da ridge, Laplace da lasso—; regularizar es declarar una creencia previa.',
+  },
+  {
+    id: 'd3-reg-ridge',
+    module: 'd3',
+    tone: 'orange',
+    kind: 'wide',
+    kicker: '5a · Matemática del Diagrama 3',
+    title: 'E2 — Ridge: penalización cuadrática y contracción',
+    bullets: [
+      'Añade un castigo cuadrático al ajuste: $\\ell_2$ contrae los coeficientes hacia cero **sin anularlos**.',
+      'Gana cuando $\\mathbf{D}^{\\top}\\mathbf{D}$ está mal condicionada: la penalización vuelve el problema invertible.',
+      'Es el estimador **MAP** con prior gaussiano sobre $\\boldsymbol{\\beta}$: regularizar es imponer una creencia previa.',
+      'El precio es sesgo deliberado, y $\\lambda_{reg}$ se elige por validación cruzada.',
+    ],
+    equations: [
+      {
+        heading: 'E2 · El objetivo penalizado',
+        tex: '\\mathcal{J}_{ridge}(\\boldsymbol{\\beta}) = \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2} + \\lambda_{reg} \\lVert \\boldsymbol{\\beta} \\rVert_2^{2}',
+        conn: '**Conexión:** $\\hat{\\boldsymbol{\\beta}}_{ridge} = \\arg\\min_{\\boldsymbol{\\beta}} \\mathcal{J}_{ridge}(\\boldsymbol{\\beta})$. Aquí $\\lambda_{reg} \\ge 0$ es la fuerza de penalización y lleva símbolo propio: no es $\\lambda_{phys}$ (el peso físico de las puertas ① y ④) ni $\\lambda_{rk}$ (kernel ridge, familia F5). Con $\\lambda_{reg} = 0$ se recupera OLS exactamente. La forma es idéntica a la pérdida compuesta $\\mathcal{L}_{MSE} + \\lambda_{phys}\\mathcal{L}_{phys}$: cambia qué se castiga, no la estructura. (Hoerl & Kennard, 1970.)',
       },
       {
-        heading: 'E2 · Lasso — condiciones KKT, esparsidad y geometría',
-        tex: '\\hat{\\beta}^{lasso}_j = \\mathrm{sign}\\!\\left( \\hat{\\beta}^{OLS}_j \\right) \\left( \\left| \\hat{\\beta}^{OLS}_j \\right| - \\lambda_{reg} \\right)_{+}, \\qquad \\left\\{ \\boldsymbol{\\beta} : \\lVert \\boldsymbol{\\beta} \\rVert_1 \\le c \\right\\}',
-        conn:
-          '**Conexión:** la forma cerrada vale con diseño ortonormal, con $(\\cdot)_{+} = \\max(\\cdot,0)$; en general no existe y se resuelve por programación convexa. El politopo $\\ell_1$ tiene **vértices sobre los ejes** y allí cae el óptimo: por eso anula. La bola $\\ell_2$ de ridge es lisa y sólo contrae.',
+        heading: 'E2 · Solución cerrada y buen planteamiento',
+        tex: '\\hat{\\boldsymbol{\\beta}}_{ridge} = \\left( \\mathbf{D}^{\\top}\\mathbf{D} + \\lambda_{reg}\\mathbf{I} \\right)^{-1} \\mathbf{D}^{\\top}\\mathbf{y}, \\qquad \\mathbf{D}^{\\top}\\mathbf{D} + \\lambda_{reg}\\mathbf{I} \\succ 0',
+        conn: '**Conexión:** para todo $\\lambda_{reg} > 0$, sumar $\\lambda_{reg}\\mathbf{I}$ desplaza todos los autovalores a $\\mu_k + \\lambda_{reg} > 0$, así que la matriz es definida positiva —y por tanto invertible— **siempre**. El problema queda bien puesto incluso en los dos casos que dejan a OLS sin solución única: colinealidad perfecta y $d > N$.',
+      },
+      {
+        heading: 'E2 · Contracción espectral, vía la SVD de $\\mathbf{D}$',
+        tex: '\\hat{\\boldsymbol{\\beta}}_{ridge} = \\sum_k \\kappa_k\\, \\mathbf{v}_k \\mathbf{u}_k^{\\top} \\mathbf{y}, \\qquad \\mathbf{D} = \\mathbf{U}\\mathbf{S}\\mathbf{V}^{\\top}',
+        conn: '**Conexión:** con la SVD $\\mathbf{D} = \\mathbf{U}\\mathbf{S}\\mathbf{V}^{\\top}$, cada dirección singular $k$ se contrae por el factor $\\kappa_k = s_k^{2}/(s_k^{2}+\\lambda_{reg}) \\in (0,1)$, que **nunca llega a cero**. De ahí las dos propiedades que definen a ridge: ninguna dirección se elimina, y la contracción es más fuerte precisamente donde $s_k$ es pequeño, es decir, en las direcciones peor condicionadas. La suma de esos factores es el número efectivo de parámetros $\\mathrm{df}(\\lambda_{reg})$, que decrece con $\\lambda_{reg}$.',
+      },
+    ],
+    notes: '**Sesgo–varianza:** OLS es insesgado y de varianza mínima dentro de su clase lineal; ridge acepta sesgo a cambio de menos varianza, y por eso gana cuando $\\mathbf{D}^{\\top}\\mathbf{D}$ está mal condicionada. **Lo que lo separa de lasso:** reparte el peso entre variables correlacionadas y nunca produce un modelo esparso: un coeficiente puede quedar diminuto, pero no exactamente cero.',
+  },
+  {
+    id: 'd3-reg-lasso',
+    module: 'd3',
+    tone: 'orange',
+    kind: 'wide',
+    kicker: '5a · Matemática del Diagrama 3',
+    title: 'E2 — Lasso: penalización en valor absoluto y selección',
+    bullets: [
+      'Cambia la norma: $\\ell_1$ en vez de $\\ell_2$, y con ella la penalización deja de ser diferenciable en el origen.',
+      'Consecuencia: anula coeficientes **exactamente**. Selecciona variables, no sólo las contrae.',
+      'Es el estimador **MAP** con prior Laplace: la masa del prior en cero produce la esparsidad.',
+    ],
+    equations: [
+      {
+        heading: 'E2 · El objetivo penalizado y su forma restringida',
+        tex: '\\mathcal{J}_{lasso}(\\boldsymbol{\\beta}) = \\lVert \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2} + \\lambda_{reg} \\lVert \\boldsymbol{\\beta} \\rVert_1',
+        conn: '**Conexión:** $\\hat{\\boldsymbol{\\beta}}_{lasso} = \\arg\\min_{\\boldsymbol{\\beta}} \\mathcal{J}_{lasso}(\\boldsymbol{\\beta})$. Misma familia que ridge, con $\\lVert \\boldsymbol{\\beta} \\rVert_1 = \\sum_j |\\beta_j|$; pero la norma $\\ell_1$ no es diferenciable en el origen y por eso **no tiene solución cerrada general**. $\\lambda_{reg}$ tiene aquí una lectura distinta y directamente interpretable: es el umbral por debajo del cual un coeficiente se anula, no una simple contracción. Su forma restringida equivalente es $\\min \\lVert \\mathbf{y}-\\mathbf{D}\\boldsymbol{\\beta} \\rVert_2^{2}$ sujeto a $\\lVert \\boldsymbol{\\beta} \\rVert_1 \\le c$, con $c$ decreciente en $\\lambda_{reg}$. (Tibshirani, 1996.)',
+      },
+      {
+        heading: 'E2 · Condiciones KKT: por qué anula coeficientes',
+        tex: '\\mathbf{d}_j^{\\top}\\left( \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\right) = \\lambda_{reg}\\,\\mathrm{sign}(\\beta_j) \\ \\text{si } \\beta_j \\neq 0, \\qquad \\left| \\mathbf{d}_j^{\\top}\\left( \\mathbf{y} - \\mathbf{D}\\boldsymbol{\\beta} \\right) \\right| \\le \\lambda_{reg} \\ \\text{si } \\beta_j = 0',
+        conn: '**Conexión:** $j = 1 \\dots d$ indexa variables, ni muestras ni tiempo. Mientras la correlación de la variable $j$ con el residuo no supere $\\lambda_{reg}$ en valor absoluto, su coeficiente queda **exactamente** en cero — así es como $\\ell_1$ selecciona. Con diseño ortonormal el sistema se resuelve a mano y aparece el operador de umbral suave de la ecuación siguiente.',
+      },
+      {
+        heading: 'E2 · Umbral suave (ortonormal) y geometría del politopo',
+        tex: '\\hat{\\beta}^{lasso}_j = \\mathrm{sign}(\\hat{\\beta}^{OLS}_j)\\max\\left( | \\hat{\\beta}^{OLS}_j | - \\lambda_{reg},\\ 0 \\right)',
+        conn: '**Conexión:** $(\\cdot)_{+} = \\max(\\cdot, 0)$; la forma cerrada vale con diseño ortonormal, y en general se resuelve por programación convexa (descenso por coordenadas, LARS). La restricción $\\ell_1$ es un politopo —un rombo en dos dimensiones— con **vértices sobre los ejes**, y el óptimo cae en un vértice: ahí la mayoría de las coordenadas son cero. La bola $\\ell_2$ de ridge, al ser lisa, sólo contrae. Ésa es toda la diferencia entre **seleccionar** y **repartir**.',
       },
     ],
     refs: [
       'Referencias: Hoerl & Kennard, Technometrics 12(1), 1970 (ridge) · Tibshirani, JRSS-B 58(1), 1996 (lasso) · Zou & Hastie, JRSS-B 67(2), 2005 (red elástica) · Hastie, Tibshirani & Friedman, The Elements of Statistical Learning, 2.ª ed., 2009, cap. 3.',
     ],
+    notes: '**Cierre del bloque:** las cuatro comparten el esqueleto —ajuste más castigo— y ese esqueleto reaparece en $\\mathcal{L}_{MSE} + \\lambda_{phys}\\mathcal{L}_{phys}$. **Límites de lasso:** con $d > N$ selecciona a lo sumo $N$ variables y ante variables correlacionadas elige de forma inestable; la red elástica ($\\ell_1 + \\ell_2$) corrige ambos casos.',
   },
   {
     id: 'd3-mat-2',

@@ -1,7 +1,11 @@
 # Feature: Regresores base en D3/E2 — mínimos cuadrados, máxima verosimilitud, ridge y lasso
 
-**Estado:** en progreso
+**Estado:** cerrado y verificado
 **Rama:** `feat/presentacion-notacion-regresores`
+**Iteración 2:** el usuario pidió **extender cada modelo a su propia slide densa**. Las dos slides
+resumen originales (`d3-reg-1` formulaciones y `d3-reg-2` soluciones) fueron **reemplazadas** por cuatro
+slides, una por modelo, con regresión lineal y mínimos cuadrados **fusionadas** en una sola.
+Deck: 38 → **40 slides**. `GUION.md` queda diferido por decisión explícita del usuario.
 **Razón:** el revisor de la tesis pide incorporar la matemática de los modelos regresores base en la
 presentación. Se arranca por los cuatro cimientos que sostienen la familia E2 (ML clásico) del
 Diagrama 3: mínimos cuadrados ordinarios (OLS), máxima verosimilitud (MLE), ridge ($\ell_2$) y
@@ -146,7 +150,52 @@ grep -rn 'lambda_{reg}' src/data/deckContent.js # ≥ 6 (4 formulaciones + ≥2 
 grep -rn 'boldsymbol{\\\\beta}' src/data/deckContent.js | wc -l  # > 0
 ```
 
-## 5. Pendientes (fuera de alcance, reportados al usuario)
+## 5. Iteración 2 — una slide densa por modelo
+
+**Estructura acordada:** 4 slides reemplazan a las 2 resumen. `d3-reg-ols` (=slide 22),
+`d3-reg-mle` (23), `d3-reg-ridge` (24), `d3-reg-lasso` (25). Forma: **3 bloques de ecuaciones +
+viñetas + notas**, con `kicker: '5a · Matemática del Diagrama 3'`, `tone: orange`, `module: d3`.
+
+| Slide | Bloques |
+| --- | --- |
+| `d3-reg-ols` | modelo lineal y supuestos · criterio de mínimos cuadrados · ecuación normal y proyección ($\mathbf{H}$) |
+| `d3-reg-mle` | verosimilitud · log-verosimilitud negativa (puente con OLS) · estimadores y dispersión |
+| `d3-reg-ridge` | objetivo penalizado · solución cerrada e invertibilidad · contracción espectral (SVD) |
+| `d3-reg-lasso` | objetivo y forma restringida · condiciones KKT · umbral suave y politopo |
+
+**Restricciones de maquetación descubiertas y medidas** (valen para cualquier slide nueva de este deck):
+
+1. **El orden de render en las slides `wide` es viñetas → ecuaciones → notas.** Las viñetas se leen
+   como entrada del tema y las notas como cierre; no se puede invertir desde los datos.
+2. **La altura de un display NO mide envoltura, mide construcciones altas.** `\arg\min_{\beta}`,
+   `\sum_{k=1}^{d}` y `\left(\dots\right)^{2}` suben el bloque de 24 px a 41–62 px. `scrollWidth`
+   no detecta envoltura: un display que envuelve crece en alto, no en ancho.
+3. **Las `notes` tienen un piso de ~51 px (3 líneas):** recortar su texto no libera altura. Los
+   recortes útiles son el número de viñetas (~31 px cada una) y la altura de los displays.
+4. **Presupuesto medido por slide** (contenido disponible 891 px): kicker 24 + h2 41 + viñetas +
+   3 bloques + notas 51 + refs 18 + ~87 px de márgenes entre bloques.
+5. **`refs` cuesta 18 px** y sólo cabe en una slide con holgura.
+
+**Verificación (determinista, Playwright, 40 slides):** `npm run lint` y `npm run build` en verde;
+**0 errores de MathJax** (`mjx-merror`) en las cuatro slides nuevas; **0 recorte real** en las cuatro
+(holguras: −18 / −52 / −4 / −2 px). En el deck completo quedan **sólo los 3 recortes heredados de
+`main`** (`d1-puerta2` +1,7 px, `d1-puerta2-deriv` +1,8 px, `d1-puerta2-lagrange-deriv` +9,3 px), con
+valores idénticos a antes. Solapamiento de nodos ReactFlow: 0 en las slides del diagrama MR.
+
+## 6. Incidente de escape de barras invertidas (corregido y prevenido)
+
+**Qué pasó.** Al escribir el bloque nuevo con el archivo de contenido generado a mano, el LaTeX de los
+campos `conn`, `bullets` y `notes` quedó con **una sola barra invertida** dentro de comillas simples de
+JavaScript. En JS, `'\l'` es `'l'` y `'\b'` es un retroceso (0x08), así que el LaTeX se destruía al
+interpretarse: MathJax reportaba 4–6 `Math input error` por slide. Los campos `tex` sí llevaban doble
+barra y se renderizaban bien.
+
+**Prevención.** Las 4 slides se generan con `String.raw` (LaTeX en su forma natural) más un serializador
+que escapa `\` y `'` de forma garantizada, con un control automático que cuenta barras invertidas
+sueltas en **todo** el archivo: el criterio de aceptación es **0**. Ese control debe volver a ejecutarse
+cada vez que se edite `src/data/deckContent.js` a mano.
+
+## 7. Pendientes (fuera de alcance, reportados al usuario)
 - `GUION.md` no recibe estas dos slides nuevas (decisión explícita del usuario).
 - El desfase estructural de `GUION.md` (24 slides descritas vs. 38 tras este cambio) sigue abierto.
 - Otros regresores (elastic net, regularización robusta, GLM) quedan para una iteración siguiente.
