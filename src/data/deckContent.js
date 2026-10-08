@@ -822,7 +822,7 @@ export const SLIDES = [
       },
       {
         heading: 'GRU · compuertas de actualización $\\mathbf{u}[t]$ y reinicio $\\mathbf{r}[t]$ (decisión 5 de §1)',
-        tex: '\\mathbf{u}[t] = \\sigma(\\mathbf{W}_u \\mathbf{x}[t] + \\mathbf{U}_u \\mathbf{h}[t-1] + \\mathbf{b}_u), \\qquad \\mathbf{r}[t] = \\sigma(\\mathbf{W}_r \\mathbf{x}[t] + \\mathbf{U}_u \\mathbf{h}[t-1] + \\mathbf{b}_r)',
+        tex: '\\mathbf{u}[t] = \\sigma(\\mathbf{W}_u \\mathbf{x}[t] + \\mathbf{U}_u \\mathbf{h}[t-1] + \\mathbf{b}_u), \\qquad \\mathbf{r}[t] = \\sigma(\\mathbf{W}_r \\mathbf{x}[t] + \\mathbf{U}_r \\mathbf{h}[t-1] + \\mathbf{b}_r)',
         conn:
           '**Conexión:** "LSTM / GRU / BiLSTM + atención" ↔ estos sistemas de compuertas; el backbone del artículo guía ($\\breve{\\mathbf{h}}[t] = f_{RNN}(\\tilde{\\mathbf{z}}[t], \\breve{\\mathbf{h}}[t-1]; \\Theta_r)$) es exactamente una de estas celdas.',
       },
@@ -980,7 +980,7 @@ export const SLIDES = [
       },
       {
         heading: 'D · Residuo físico y pérdida compuesta',
-        tex: '\\mathcal{R}_{phys}(t) = C_{in} \\frac{d \\hat{T}_{in}(t)}{dt} - \\left[ \\frac{T_{out}(t) - \\hat{T}_{in}(t)}{R_{ea}} + A_w I_{sol}(t) + \\dot{Q}_{int}(t) + P_{HVAC}(t) \\right]',
+        tex: '\\mathcal{R}_{phys}(t) = C_{in} \\frac{d \\hat{T}_{in}(t)}{dt} - \\left[ \\frac{T_{out}(t) - \\hat{T}_{in}(t)}{R_{ea}} + \\frac{T_m(t) - \\hat{T}_{in}(t)}{R_{in}} + A_w I_{sol}(t) + \\dot{Q}_{int}(t) + P_{HVAC}(t) \\right]',
         conn:
           'La pérdida $\\mathcal{L}_{phys} = \\frac{1}{\\tilde{N} \\cdot h} \\sum_{n,j} \\lVert \\mathcal{R}_{phys}(t_{n,j}; \\Theta) \\rVert^2$ con $\\mathcal{L}_{total}$ estándar (puerta ①); sin evaluación multi-horizonte en la literatura ("horizontes cortos").',
       },
